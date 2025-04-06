@@ -49,10 +49,10 @@ return function (puzzle_index)
 
   local N_ORI = 8
 
-  local ant_ori = 0
+  local ant_ori = math.pi * 1.5
   local ori_step = math.pi * 2 / N_ORI / 240 * 1.5
   local ant_speed = 0
-  local ant_sector = 0
+  local ant_sector = 6
   local ant_sector_last, ant_sector_anim = ant_sector, 0
   local SECTOR_ANIM_DUR = 40
   local RESP_DISP_DUR = 720
@@ -71,7 +71,10 @@ return function (puzzle_index)
   local responses = {}  -- responses[i] = list of {symbol = number, timestamp = number}
   local transmits = {}  -- Same as above
   for i = 0, N_ORI - 1 do
-    responders[i] = puzzle.resp[i + 1]()
+    local resp_idx = (i + 4) % N_ORI + 1
+    if not puzzle.earthbound or (i == 0 or i >= 4) then
+      responders[i] = puzzle.resp[resp_idx]()
+    end
     responses[i] = {}
     transmits[i] = {}
   end
@@ -175,8 +178,12 @@ return function (puzzle_index)
       else ant_speed = math.min(0, ant_speed + 1 / 90) end
     end
     ant_ori = ant_ori + ori_step * ant_speed
-    if ant_ori < 0 then ant_ori = ant_ori + math.pi * 2
-    elseif ant_ori >= math.pi * 2 then ant_ori = ant_ori - math.pi * 2 end
+    if puzzle.earthbound then
+      ant_ori = clamp(ant_ori, math.pi, math.pi * 2)
+    else
+      if ant_ori < 0 then ant_ori = ant_ori + math.pi * 2
+      elseif ant_ori >= math.pi * 2 then ant_ori = ant_ori - math.pi * 2 end
+    end
     ant_sector = math.floor(ant_ori / (math.pi * 2 / N_ORI) + 0.5) % N_ORI
     if ant_sector_backup ~= ant_sector then
       ant_sector_last = ant_sector_backup
@@ -194,7 +201,7 @@ return function (puzzle_index)
     end
 
     -- Update all responders and collect responses
-    for i = 0, N_ORI - 1 do
+    for i = 0, N_ORI - 1 do if responders[i] then
       local sym = responders[i].update()
       if sym ~= nil then
         table.insert(responses[i], {symbol = sym, timestamp = T})
@@ -222,7 +229,7 @@ return function (puzzle_index)
       while #transmits[i] > 0 and transmits[i][1].timestamp < T - RESP_DISP_DUR do
         table.remove(transmits[i], 1)
       end
-    end
+    end end
 
     if since_clear >= 0 then
       since_clear = since_clear + 1

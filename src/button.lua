@@ -8,9 +8,13 @@ return function (drawable, fn, drawable_scale)
   s.enabled = true
 
   local w, h = drawable:getDimensions()
-  drawable_scale = drawable_scale or 1
-  w = w * drawable_scale
-  h = h * drawable_scale
+  if drawable_scale then
+    drawable_scale = drawable_scale / w
+    w = w * drawable_scale
+    h = h * drawable_scale
+  else
+    drawable_scale = 1
+  end
 
   local scale = 1
 

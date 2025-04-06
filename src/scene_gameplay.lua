@@ -30,6 +30,7 @@ return function ()
   local sym_btns = {}
   local refresh_sym_btns
 
+  local sym_btns_imgs = {'icon_sym_1', 'icon_sym_2', 'icon_sym_3'}
   local select_sym = function (i)
     sel_sym = i
     refresh_sym_btns()
@@ -37,14 +38,14 @@ return function ()
   refresh_sym_btns = function ()
     for j = 1, #sym_btns do
       sym_btns[j].set_drawable(
-        draw.get(sel_sym == j and 'nn_01' or 'intro_bg'))
+        draw.get(sel_sym == j and 'nn_01' or sym_btns_imgs[j]))
     end
   end
   for i = 1, 3 do
     local btn = button(
-      draw.get('intro_bg'),
+      draw.get(sym_btns_imgs[i]),
       function () select_sym(i) end,
-      H * 0.1 / 300
+      H * 0.1
     )
     btn.x = W * (0.5 + (i - 2) * 0.15)
     btn.y = H * 0.8
@@ -58,7 +59,7 @@ return function ()
   local btn_lever = button(
     draw.get('intro_bg'),
     function () pull_lever() end,
-    W * 0.1 / 500
+    W * 0.1
   )
   btn_lever.x = W * 0.78
   btn_lever.y = H * 0.5

@@ -296,7 +296,7 @@ return function ()
         offs_x = offs_x + dx
         scales[j] = s
       end
-      local global_offs = -(offs[#rs] + offs[1]) / 2
+      local global_offs = -offs_x / 2
       local orth_x = math.sin(-i * math.pi * 2 / N_ORI)
       local orth_y = math.cos(-i * math.pi * 2 / N_ORI)
       if is_transmit then love.graphics.setColor(0, 0, 1)

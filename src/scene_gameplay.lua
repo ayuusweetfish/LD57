@@ -1,6 +1,28 @@
 local draw = require 'draw_utils'
 local button = require 'button'
 
+local space_responder = function ()
+  local o = {}
+
+  local q = {}
+
+  o.send = function (sym)
+    q[#q + 1] = {sym, 360}
+  end
+
+  -- Returns responded symbol, if any
+  o.update = function ()
+    if #q > 0 then
+      for i = 1, #q do q[i][2] = q[i][2] - 1 end
+      if q[1][2] <= 0 then
+        return table.remove(q, 1)[1]
+      end
+    end
+  end
+
+  return o
+end
+
 return function ()
   local s = {}
   local W, H = W, H
@@ -12,8 +34,10 @@ return function ()
   ------ Game state ------
   local T = 0
 
+  local N_ORI = 8
+
   local ant_ori = 0
-  local ori_step = math.pi * 2 / 8 / 240
+  local ori_step = math.pi * 2 / N_ORI / 240
   local ant_sector = 0
   local ant_sector_last, ant_sector_anim = ant_sector, 0
   local SECTOR_ANIM_DUR = 40
@@ -22,6 +46,14 @@ return function ()
 
   local LEVER_COOLDOWN = 240
   local T_last_lever = -LEVER_COOLDOWN
+
+  -- Deep space entities!
+  local responders = {}
+  local responses = {}  -- responses[i] = list of {symbol = number, timestamp = number}
+  for i = 0, N_ORI - 1 do
+    responders[i] = space_responder()
+    responses[i] = {}
+  end
 
   ------ Buttons ------
   local buttons = { }
@@ -68,6 +100,9 @@ return function ()
     if T < T_last_lever + LEVER_COOLDOWN then return end
     btn_lever.set_drawable(draw.get('nn_01'))
     T_last_lever = T
+
+    -- Send to responder
+    responders[ant_sector].send(sel_sym)
   end
 
   ------ Scene methods ------
@@ -105,12 +140,12 @@ return function ()
     if love.keyboard.isDown('left') then
       ant_ori = ant_ori - ori_step
       if ant_ori < 0 then ant_ori = ant_ori + math.pi * 2 end
-      ant_sector = math.floor(ant_ori / (math.pi * 2 / 8) + 0.5) % 8
+      ant_sector = math.floor(ant_ori / (math.pi * 2 / N_ORI) + 0.5) % N_ORI
     end
     if love.keyboard.isDown('right') then
       ant_ori = ant_ori + ori_step
       if ant_ori >= math.pi * 2 then ant_ori = ant_ori - math.pi * 2 end
-      ant_sector = math.floor(ant_ori / (math.pi * 2 / 8) + 0.5) % 8
+      ant_sector = math.floor(ant_ori / (math.pi * 2 / N_ORI) + 0.5) % N_ORI
     end
     if ant_sector_backup ~= ant_sector then
       ant_sector_last = ant_sector_backup
@@ -126,6 +161,18 @@ return function ()
     if ant_sector_anim > 0 then
       ant_sector_anim = ant_sector_anim - 1
     end
+
+    -- Update all responders and collect responses
+    for i = 0, N_ORI - 1 do
+      local sym = responders[i].update()
+      if sym ~= nil then
+        table.insert(responses[i], {symbol = sym, timestamp = T})
+      end
+      -- Remove expired ones
+      while #responses[i] > 0 and responses[i][1].timestamp < T - 480 do
+        table.remove(responses[i], 1)
+      end
+    end
   end
 
   s.draw = function ()
@@ -136,10 +183,11 @@ return function ()
     love.graphics.setLineWidth(2)
     love.graphics.circle('line', radar_x, radar_y, radar_r)
 
+    -- Sector highlight
     local sector = function (n)
       love.graphics.arc('fill', radar_x, radar_y, radar_r,
-        (n - 0.5) * math.pi * 2 / 8,
-        (n + 0.5) * math.pi * 2 / 8
+        (n - 0.5) * math.pi * 2 / N_ORI,
+        (n + 0.5) * math.pi * 2 / N_ORI
       )
     end
     local sector_alpha = 1
@@ -153,6 +201,7 @@ return function ()
     love.graphics.setColor(0.5, 0.5, 0.5, sector_alpha * 0.3)
     sector(ant_sector)
 
+    -- Radar line
     love.graphics.setColor(0, 0, 0)
     love.graphics.line(radar_x, radar_y,
       radar_x + radar_r * math.cos(ant_ori),
@@ -163,6 +212,21 @@ return function ()
       radar_y + radar_r * math.sin(ant_ori),
       H * 0.1, nil, 1, 0.5, ant_ori
     )
+
+    -- Sector responses
+    for i = 0, N_ORI - 1 do
+      local rs = responses[i]
+      local x = radar_x + radar_r * math.cos(i * math.pi * 2 / N_ORI)
+      local y = radar_y + radar_r * math.sin(i * math.pi * 2 / N_ORI)
+      for j = 1, #rs do
+        local t = T - rs[j].timestamp
+        local s = 1
+        if t < 30 then s = t / 30
+        elseif t > 480 - 30 then s = (480 - t) / 30 end
+        draw.img('icon_sym_' .. rs[j].symbol,
+          x + (j - 1) * 80, y, 80 * s, 80 * s)
+      end
+    end
 
     love.graphics.setColor(1, 1, 1)
     for i = 1, #buttons do buttons[i].draw() end

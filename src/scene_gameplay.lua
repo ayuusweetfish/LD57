@@ -84,9 +84,11 @@ return function ()
   -- Deep space entities!
   local responders = {}
   local responses = {}  -- responses[i] = list of {symbol = number, timestamp = number}
+  local transmits = {}  -- Same as above
   for i = 0, N_ORI - 1 do
     responders[i] = space_responder()
     responses[i] = {}
+    transmits[i] = {}
   end
 
   ------ Buttons ------
@@ -261,26 +263,43 @@ return function ()
     )
 
     -- Sector responses
-    for i = 0, N_ORI - 1 do
-      local rs = responses[i]
+    local symbol_list = function (rs, i)
       local x = radar_x + radar_r * math.cos(i * math.pi * 2 / N_ORI)
       local y = radar_y + radar_r * math.sin(i * math.pi * 2 / N_ORI)
       local offs_x = 0
+      local offs = {}
+      local scales = {}
       for j = 1, #rs do
         local t = T - rs[j].timestamp
-        local offs_x_prev = offs_x
+        offs[j] = offs_x
         local s = 1
         if t < 30 then
           local x = t / 30
           s = ease_quad_out(x)
+          offs_x = offs_x + ease_quad(x)
         elseif t > RESP_DISP_DUR - 60 then
           local x = 1 - (RESP_DISP_DUR - t) / 60
           s = ease_quad_in(1 - x)
-          offs_x = offs_x + ease_quad(x)
+          offs_x = offs_x + 1 - ease_quad(x)
+        else
+          offs_x = offs_x + 1
         end
-        draw.img('icon_sym_' .. rs[j].symbol,
-          x + (j - 1 - offs_x_prev) * 80, y, 80 * s, 80 * s)
+        scales[j] = s
       end
+      local global_offs = -(offs_x - 1) / 2
+      local orth_x = math.sin(-i * math.pi * 2 / N_ORI)
+      local orth_y = math.cos(-i * math.pi * 2 / N_ORI)
+      for j = 1, #rs do
+        local s = scales[j]
+        draw.img('icon_sym_' .. rs[j].symbol,
+          x + (offs[j] + global_offs) * 80 * orth_x,
+          y + (offs[j] + global_offs) * 80 * orth_y,
+          80 * s, 80 * s)
+      end
+    end
+    for i = 0, N_ORI - 1 do
+      local rs = responses[i]
+      symbol_list(rs, i)
     end
 
     -- Objective sequence

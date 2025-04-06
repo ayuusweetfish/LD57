@@ -5,10 +5,17 @@ return function ()
   local s = {}
   local W, H = W, H
 
-  -- Game state
+  ------ Display ------
+  local radar_x, radar_y = W * 0.5, H * 0.42
+  local radar_r = H * 0.3
+
+  ------ Game state ------
   local ant_ori = 0
+  local ori_step = math.pi * 2 / 8 / 240
+
   local sel_sym = 1
 
+  ------ Buttons ------
   local buttons = { }
 
   local sym_btns = {}
@@ -28,8 +35,8 @@ return function ()
       end,
       H * 0.1 / 300
     )
-    btn.x = W * (0.5 + (i - 2) * 0.27)
-    btn.y = H * 0.65
+    btn.x = W * (0.5 + (i - 2) * 0.15)
+    btn.y = H * 0.8
     sym_btns[i] = btn
     buttons[#buttons + 1] = btn
   end
@@ -52,12 +59,37 @@ return function ()
 
   s.update = function ()
     for i = 1, #buttons do buttons[i].update() end
+
+    if love.keyboard.isDown('left') then
+      ant_ori = ant_ori - ori_step
+      if ant_ori < 0 then ant_ori = ant_ori + math.pi * 2 end
+    end
+    if love.keyboard.isDown('right') then
+      ant_ori = ant_ori + ori_step
+      if ant_ori >= math.pi * 2 then ant_ori = ant_ori - math.pi * 2 end
+    end
   end
 
   s.draw = function ()
     love.graphics.clear(0.99, 0.99, 0.98)
     love.graphics.setColor(1, 1, 1)
 
+    love.graphics.setColor(0, 0, 0)
+    love.graphics.setLineWidth(2)
+    love.graphics.circle('line', radar_x, radar_y, radar_r)
+
+    love.graphics.setColor(0, 0, 0)
+    love.graphics.line(radar_x, radar_y,
+      radar_x + radar_r * math.cos(ant_ori),
+      radar_y + radar_r * math.sin(ant_ori))
+    love.graphics.setColor(1, 1, 1)
+    draw.img('nn_01',
+      radar_x + radar_r * math.cos(ant_ori),
+      radar_y + radar_r * math.sin(ant_ori),
+      H * 0.1, nil, 1, 0.5, ant_ori
+    )
+
+    love.graphics.setColor(1, 1, 1)
     for i = 1, #buttons do buttons[i].draw() end
   end
 

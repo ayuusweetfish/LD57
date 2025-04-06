@@ -139,6 +139,9 @@ return function ()
 
     -- Send to responder
     responders[ant_sector].send(sel_sym)
+
+    -- Record transmission
+    table.insert(transmits[ant_sector], {symbol = sel_sym, timestamp = T})
   end
 
   ------ Scene methods ------
@@ -221,6 +224,10 @@ return function ()
       while #responses[i] > 0 and responses[i][1].timestamp < T - RESP_DISP_DUR do
         table.remove(responses[i], 1)
       end
+      -- And also transmissions
+      while #transmits[i] > 0 and transmits[i][1].timestamp < T - RESP_DISP_DUR do
+        table.remove(transmits[i], 1)
+      end
     end
   end
 
@@ -263,9 +270,9 @@ return function ()
     )
 
     -- Sector responses
-    local symbol_list = function (rs, i)
-      local x = radar_x + radar_r * math.cos(i * math.pi * 2 / N_ORI)
-      local y = radar_y + radar_r * math.sin(i * math.pi * 2 / N_ORI)
+    local symbol_list = function (rs, i, radius, is_transmit)
+      local x = radar_x + radius * math.cos(i * math.pi * 2 / N_ORI)
+      local y = radar_y + radius * math.sin(i * math.pi * 2 / N_ORI)
       local offs_x = 0
       local offs = {}
       local scales = {}
@@ -289,6 +296,8 @@ return function ()
       local global_offs = -(offs_x - 1) / 2
       local orth_x = math.sin(-i * math.pi * 2 / N_ORI)
       local orth_y = math.cos(-i * math.pi * 2 / N_ORI)
+      if is_transmit then love.graphics.setColor(0, 0, 1)
+      else love.graphics.setColor(1, 1, 1) end
       for j = 1, #rs do
         local s = scales[j]
         draw.img('icon_sym_' .. rs[j].symbol,
@@ -298,8 +307,8 @@ return function ()
       end
     end
     for i = 0, N_ORI - 1 do
-      local rs = responses[i]
-      symbol_list(rs, i)
+      symbol_list(responses[i], i, radar_r, false)
+      symbol_list(transmits[i], i, radar_r * 0.5, true)
     end
 
     -- Objective sequence

@@ -18,8 +18,8 @@ local space_responder = function ()
   local q = {}
 
   o.send = function (sym)
-    q[#q + 1] = {sym, 80}
-    q[#q + 1] = {sym == 2 and 2 or 4 - sym, 360}
+    q[#q + 1] = {sym, 120}
+    q[#q + 1] = {sym == 2 and 2 or 4 - sym, 600}
     table.sort(q, function (a, b) return a[2] < b[2] end)
   end
 
@@ -66,11 +66,11 @@ return function ()
   local N_ORI = 8
 
   local ant_ori = 0
-  local ori_step = math.pi * 2 / N_ORI / 240
+  local ori_step = math.pi * 2 / N_ORI / 240 * 1.5
   local ant_sector = 0
   local ant_sector_last, ant_sector_anim = ant_sector, 0
   local SECTOR_ANIM_DUR = 40
-  local RESP_DISP_DUR = 480
+  local RESP_DISP_DUR = 720
 
   local sel_sym = 1
 

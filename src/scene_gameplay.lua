@@ -18,7 +18,7 @@ local space_responder = function ()
   local q = {}
 
   o.send = function (sym)
-    q[#q + 1] = {sym, 120}
+    q[#q + 1] = {sym, 60}
     q[#q + 1] = {sym == 2 and 2 or 4 - sym, 600}
     table.sort(q, function (a, b) return a[2] < b[2] end)
   end
@@ -74,7 +74,7 @@ return function ()
 
   local sel_sym = 1
 
-  local LEVER_COOLDOWN = 240
+  local LEVER_COOLDOWN = 360
   local T_last_lever = -LEVER_COOLDOWN
 
   local objective_seq = {1, 2, 1, 3, 2}

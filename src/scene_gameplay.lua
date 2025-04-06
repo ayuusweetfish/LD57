@@ -10,17 +10,28 @@ return function ()
   local radar_r = H * 0.3
 
   ------ Game state ------
+  local T = 0
+
   local ant_ori = 0
   local ori_step = math.pi * 2 / 8 / 240
 
   local sel_sym = 1
 
+  local LEVER_COOLDOWN = 240
+  local T_last_lever = -LEVER_COOLDOWN
+
   ------ Buttons ------
   local buttons = { }
 
+  -- Symbol buttons
   local sym_btns = {}
+  local refresh_sym_btns
 
-  local refresh_sym_btns = function ()
+  local select_sym = function (i)
+    sel_sym = i
+    refresh_sym_btns()
+  end
+  refresh_sym_btns = function ()
     for j = 1, #sym_btns do
       sym_btns[j].set_drawable(
         draw.get(sel_sym == j and 'nn_01' or 'intro_bg'))
@@ -29,10 +40,7 @@ return function ()
   for i = 1, 3 do
     local btn = button(
       draw.get('intro_bg'),
-      function ()
-        sel_sym = i
-        refresh_sym_btns()
-      end,
+      function () select_sym(i) end,
       H * 0.1 / 300
     )
     btn.x = W * (0.5 + (i - 2) * 0.15)
@@ -41,6 +49,25 @@ return function ()
     buttons[#buttons + 1] = btn
   end
   refresh_sym_btns()
+
+  -- Lever button
+  local pull_lever
+  local btn_lever = button(
+    draw.get('intro_bg'),
+    function () pull_lever() end,
+    W * 0.1 / 500
+  )
+  btn_lever.x = W * 0.78
+  btn_lever.y = H * 0.5
+  buttons[#buttons + 1] = btn_lever
+
+  pull_lever = function ()
+    if T < T_last_lever + LEVER_COOLDOWN then return end
+    btn_lever.set_drawable(draw.get('nn_01'))
+    T_last_lever = T
+  end
+
+  ------ Scene methods ------
 
   s.press = function (x, y)
     for i = 1, #buttons do if buttons[i].press(x, y) then return true end end
@@ -57,7 +84,16 @@ return function ()
     for i = 1, #buttons do if buttons[i].release(x, y) then return true end end
   end
 
+  s.key = function (key)
+    if key == '1' then select_sym(1)
+    elseif key == '2' then select_sym(2)
+    elseif key == '3' then select_sym(3)
+    elseif key == 'return' then pull_lever()
+    end
+  end
+
   s.update = function ()
+    T = T + 1
     for i = 1, #buttons do buttons[i].update() end
 
     if love.keyboard.isDown('left') then
@@ -67,6 +103,12 @@ return function ()
     if love.keyboard.isDown('right') then
       ant_ori = ant_ori + ori_step
       if ant_ori >= math.pi * 2 then ant_ori = ant_ori - math.pi * 2 end
+    end
+
+    if T <= T_last_lever + LEVER_COOLDOWN then
+      if T == T_last_lever + LEVER_COOLDOWN then
+        btn_lever.set_drawable(draw.get('intro_bg'))
+      end
     end
   end
 

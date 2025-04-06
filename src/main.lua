@@ -149,5 +149,7 @@ function love.keypressed(key)
       love.window.setFullscreen(not love.window.getFullscreen())
       updateLogicalDimensions()
     end
+  elseif curScene.key ~= nil then
+    curScene.key(key)
   end
 end

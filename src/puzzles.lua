@@ -34,6 +34,16 @@ local murmur = function (n) return function ()
   return o
 end end
 
+local filter = function (pass_sym) return function ()
+  local o = {}
+  local q = decay_priority_queue()
+  o.send = function (sym)
+    q.insert({sym == pass_sym and sym or 4, 180})
+  end
+  o.update = q.pop
+  return o
+end end
+
 local echo = function ()
   local o = {}
   local q = decay_priority_queue()
@@ -67,21 +77,26 @@ end
 
 return {
   [1] = {
-    seq = {1, 2, 3, 2, 1},
+    seq = {1, 1, 2, 3, 2},
     earthbound = true,
-    resp = {mirror, mirror, mirror, mirror, mirror},
+    resp = {filter(3), filter(2), filter(1), filter(2), filter(3)},
   },
   [2] = {
+    seq = {1, 1, 2, 3, 2},
+    earthbound = true,
+    resp = {murmur(4), murmur(4), murmur(4), echo, murmur(4)},
+  },
+  [3] = {
     seq = {1, 2},
     earthbound = true,
     resp = {murmur(3), murmur(2), murmur(1), murmur(2), murmur(3)},
   },
-  [3] = {
+  [4] = {
     seq = {2, 1, 3, 2},
     earthbound = true,
     resp = {symmetry, symmetry, symmetry, symmetry, symmetry},
   },
-  [4] = {
+  [5] = {
     seq = {1, 2, 1, 3, 2},
     earthbound = true,
     resp = {symmetry, symmetry, symmetry, symmetry, symmetry},

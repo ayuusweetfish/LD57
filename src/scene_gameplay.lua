@@ -36,6 +36,22 @@ local space_responder = function ()
   return o
 end
 
+-- Knuth-Morris-Pratt's partial match table (failure/next function)
+local calc_kmp_next = function (a)
+  local next = {[0] = -1, [1] = 0}
+  for i = 2, #a do
+    local j = next[i - 1]
+    while j > 0 and a[i] ~= a[j + 1] do
+      j = next[j]
+    end
+    if a[i] == a[j + 1] then
+      j = j + 1
+    end
+    next[i] = j
+  end
+  return next
+end
+
 return function ()
   local s = {}
   local W, H = W, H
@@ -63,6 +79,7 @@ return function ()
 
   local objective_seq = {1, 2, 1, 3, 2}
   local objective_pos = 0
+  local objective_next = calc_kmp_next(objective_seq)
 
   -- Deep space entities!
   local responders = {}
@@ -184,6 +201,19 @@ return function ()
       local sym = responders[i].update()
       if sym ~= nil then
         table.insert(responses[i], {symbol = sym, timestamp = T})
+        -- Update objective progression
+        -- KMP's `next` array
+        while objective_pos >= 0 do
+          if objective_seq[objective_pos + 1] == sym then
+            break
+          else
+            objective_pos = objective_next[objective_pos]
+          end
+        end
+        objective_pos = objective_pos + 1
+        if objective_pos == #objective_seq then
+          print('Clear!')
+        end
       end
       -- Remove expired ones
       while #responses[i] > 0 and responses[i][1].timestamp < T - RESP_DISP_DUR do

@@ -42,7 +42,7 @@ return function (puzzle_index)
   local earthbound = (#puzzle.resp <= 5)
 
   ------ Display ------
-  local radar_x, radar_y = W * 0.5, H * 0.42
+  local radar_x, radar_y = W * 0.498, H * 0.367
   local radar_r = H * 0.3
 
   ------ Game state ------
@@ -251,10 +251,14 @@ return function (puzzle_index)
   s.draw = function ()
     love.graphics.clear(0.99, 0.99, 0.98)
     love.graphics.setColor(1, 1, 1)
+    local s = 2/3
+    draw.img('out_1', -ant_ori / (math.pi * 2) * 8294 * s, 0, 8294 * s, 600 * s, 0, 0)
+    draw.img('out_1', (1 + -ant_ori / (math.pi * 2)) * 8294 * s, 0, 8294 * s, 600 * s, 0, 0)
+    draw.img('bg_1', W / 2, H / 2, W, H)
 
     love.graphics.setColor(0, 0, 0)
     love.graphics.setLineWidth(2)
-    love.graphics.circle('line', radar_x, radar_y, radar_r)
+    -- love.graphics.circle('line', radar_x, radar_y, radar_r)
 
     -- Sector highlight
     local sector = function (n)

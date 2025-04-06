@@ -80,6 +80,10 @@ end
 return {
   {
     seq = {4, 4, 4, 4, 4, 4, 4},
+    resp = {murmur(4), murmur(4), murmur(4), murmur(4), murmur(4), murmur(4), murmur(4), murmur(4)},
+  },
+  {
+    seq = {4, 4, 4, 4, 4, 4, 4},
     resp = {murmur(4), murmur(4), murmur(4), murmur(4), murmur(4)},
   },
   {

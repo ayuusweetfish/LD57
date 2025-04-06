@@ -1,6 +1,8 @@
 local draw = require 'draw_utils'
 local button = require 'button'
 
+local puzzles = require 'puzzles'
+
 local clamp = function (x, a, b)
   if x < a then return a elseif x > b then return b else return x end
 end
@@ -14,30 +16,6 @@ local ease_quad_out = function (x)
 end
 local ease_quad_in = function (x)
   return x * x
-end
-
-local space_responder = function ()
-  local o = {}
-
-  local q = {}
-
-  o.send = function (sym)
-    q[#q + 1] = {sym, 60}
-    q[#q + 1] = {sym == 2 and 2 or 4 - sym, 600}
-    table.sort(q, function (a, b) return a[2] < b[2] end)
-  end
-
-  -- Returns responded symbol, if any
-  o.update = function ()
-    if #q > 0 then
-      for i = 1, #q do q[i][2] = q[i][2] - 1 end
-      if q[1][2] <= 0 then
-        return table.remove(q, 1)[1]
-      end
-    end
-  end
-
-  return o
 end
 
 -- Knuth-Morris-Pratt's partial match table (failure/next function)
@@ -56,9 +34,11 @@ local calc_kmp_next = function (a)
   return next
 end
 
-return function ()
+return function (puzzle_index)
   local s = {}
   local W, H = W, H
+
+  local puzzle = puzzles[puzzle_index]
 
   ------ Display ------
   local radar_x, radar_y = W * 0.5, H * 0.42
@@ -82,7 +62,7 @@ return function ()
   local LEVER_COOLDOWN = 360
   local T_last_lever = -LEVER_COOLDOWN
 
-  local objective_seq = {1, 2, 1, 3, 2}
+  local objective_seq = puzzle.seq
   local objective_pos = 0
   local objective_next = calc_kmp_next(objective_seq)
 
@@ -91,7 +71,7 @@ return function ()
   local responses = {}  -- responses[i] = list of {symbol = number, timestamp = number}
   local transmits = {}  -- Same as above
   for i = 0, N_ORI - 1 do
-    responders[i] = space_responder()
+    responders[i] = puzzle.resp[i + 1]()
     responses[i] = {}
     transmits[i] = {}
   end

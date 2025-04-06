@@ -76,27 +76,32 @@ local symmetry = function ()
 end
 
 return {
-  [1] = {
+  {
+    seq = {1, 1, 1, 1, 1, 1, 1},
+    earthbound = true,
+    resp = {murmur(1), murmur(1), murmur(1), murmur(1), murmur(1)},
+  },
+  {
+    seq = {1, 2, 3, 2, 1},
+    earthbound = true,
+    resp = {murmur(4), murmur(4), murmur(4), echo, murmur(4)},
+  },
+  {
     seq = {1, 1, 2, 3, 2},
     earthbound = true,
     resp = {filter(3), filter(2), filter(1), filter(2), filter(3)},
   },
-  [2] = {
-    seq = {1, 1, 2, 3, 2},
-    earthbound = true,
-    resp = {murmur(4), murmur(4), murmur(4), echo, murmur(4)},
-  },
-  [3] = {
+  {
     seq = {1, 2},
     earthbound = true,
     resp = {murmur(3), murmur(2), murmur(1), murmur(2), murmur(3)},
   },
-  [4] = {
+  {
     seq = {2, 1, 3, 2},
     earthbound = true,
     resp = {symmetry, symmetry, symmetry, symmetry, symmetry},
   },
-  [5] = {
+  {
     seq = {1, 2, 1, 3, 2},
     earthbound = true,
     resp = {symmetry, symmetry, symmetry, symmetry, symmetry},

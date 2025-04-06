@@ -159,6 +159,14 @@ return function (puzzle_index)
     elseif key == '2' then select_sym(2)
     elseif key == '3' then select_sym(3)
     elseif key == 'return' then pull_lever()
+    elseif key == 'n' then
+      if puzzles[puzzle_index + 1] then
+        replaceScene(scene_gameplay(puzzle_index + 1), transitions['fade'](0.1, 0.1, 0.1))
+      end
+    elseif key == 'p' then
+      if puzzles[puzzle_index - 1] then
+        replaceScene(scene_gameplay(puzzle_index - 1), transitions['fade'](0.1, 0.1, 0.1))
+      end
     end
   end
 
@@ -329,6 +337,9 @@ return function (puzzle_index)
       love.graphics.setColor(1, 1, 1, i <= objective_pos and 1 or 0.3)
       draw.img('icon_sym_' .. objective_seq[i], x, y, 60, 60)
     end
+
+    love.graphics.setColor(0.1, 0.1, 0.1)
+    love.graphics.print(tostring(puzzle_index), W * 0.07, H * 0.8)
 
     love.graphics.setColor(1, 1, 1)
     for i = 1, #buttons do buttons[i].draw() end

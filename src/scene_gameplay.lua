@@ -39,6 +39,7 @@ return function (puzzle_index)
   local W, H = W, H
 
   local puzzle = puzzles[puzzle_index]
+  local earthbound = (#puzzle.resp <= 5)
 
   ------ Display ------
   local radar_x, radar_y = W * 0.5, H * 0.42
@@ -72,7 +73,7 @@ return function (puzzle_index)
   local transmits = {}  -- Same as above
   for i = 0, N_ORI - 1 do
     local resp_idx = (i + 4) % N_ORI + 1
-    if not puzzle.earthbound or (i == 0 or i >= 4) then
+    if not earthbound or (i == 0 or i >= 4) then
       responders[i] = puzzle.resp[resp_idx]()
     end
     responses[i] = {}
@@ -186,7 +187,7 @@ return function (puzzle_index)
       else ant_speed = math.min(0, ant_speed + 1 / 90) end
     end
     ant_ori = ant_ori + ori_step * ant_speed
-    if puzzle.earthbound then
+    if earthbound then
       ant_ori = clamp(ant_ori, math.pi, math.pi * 2)
     else
       if ant_ori < 0 then ant_ori = ant_ori + math.pi * 2

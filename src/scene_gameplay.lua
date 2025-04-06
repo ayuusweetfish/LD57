@@ -30,20 +30,19 @@ return function ()
   local sym_btns = {}
   local refresh_sym_btns
 
-  local sym_btns_imgs = {'icon_sym_1', 'icon_sym_2', 'icon_sym_3'}
   local select_sym = function (i)
     sel_sym = i
     refresh_sym_btns()
   end
   refresh_sym_btns = function ()
-    for j = 1, #sym_btns do
-      sym_btns[j].set_drawable(
-        draw.get(sel_sym == j and 'nn_01' or sym_btns_imgs[j]))
+    for i = 1, #sym_btns do
+      sym_btns[i].set_drawable(
+        draw.get('icon_sym_' .. tostring(i) .. (sel_sym == i and '_sel' or '')))
     end
   end
   for i = 1, 3 do
     local btn = button(
-      draw.get(sym_btns_imgs[i]),
+      draw.get('icon_sym_' .. tostring(i)),
       function () select_sym(i) end,
       H * 0.1
     )

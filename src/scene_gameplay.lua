@@ -1,6 +1,10 @@
 local draw = require 'draw_utils'
 local button = require 'button'
 
+local clamp = function (x, a, b)
+  if x < a then return a elseif x > b then return b else return x end
+end
+
 local ease_quad = function (x)
   if x < 0.5 then return x * x * 2
   else return 1 - (1 - x) * (1 - x) * 2 end
@@ -67,6 +71,7 @@ return function ()
 
   local ant_ori = 0
   local ori_step = math.pi * 2 / N_ORI / 240 * 1.5
+  local ant_speed = 0
   local ant_sector = 0
   local ant_sector_last, ant_sector_anim = ant_sector, 0
   local SECTOR_ANIM_DUR = 40
@@ -176,16 +181,18 @@ return function ()
     -- `ant_sector_last` is for animation,
     -- here we do a backup to check whether sector changed
     local ant_sector_backup = ant_sector
-    if love.keyboard.isDown('left') then
-      ant_ori = ant_ori - ori_step
-      if ant_ori < 0 then ant_ori = ant_ori + math.pi * 2 end
-      ant_sector = math.floor(ant_ori / (math.pi * 2 / N_ORI) + 0.5) % N_ORI
+    local accel = 0
+    if love.keyboard.isDown('left') then accel = accel - 1 end
+    if love.keyboard.isDown('right') then accel = accel + 1 end
+    ant_speed = clamp(ant_speed + accel / 20, -1, 1)
+    if accel == 0 then
+      if ant_speed > 0 then ant_speed = math.max(0, ant_speed - 1 / 90)
+      else ant_speed = math.min(0, ant_speed + 1 / 90) end
     end
-    if love.keyboard.isDown('right') then
-      ant_ori = ant_ori + ori_step
-      if ant_ori >= math.pi * 2 then ant_ori = ant_ori - math.pi * 2 end
-      ant_sector = math.floor(ant_ori / (math.pi * 2 / N_ORI) + 0.5) % N_ORI
-    end
+    ant_ori = ant_ori + ori_step * ant_speed
+    if ant_ori < 0 then ant_ori = ant_ori + math.pi * 2
+    elseif ant_ori >= math.pi * 2 then ant_ori = ant_ori - math.pi * 2 end
+    ant_sector = math.floor(ant_ori / (math.pi * 2 / N_ORI) + 0.5) % N_ORI
     if ant_sector_backup ~= ant_sector then
       ant_sector_last = ant_sector_backup
       ant_sector_anim = SECTOR_ANIM_DUR

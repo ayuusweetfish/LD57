@@ -5,14 +5,35 @@ return function ()
   local s = {}
   local W, H = W, H
 
-  local btn = button(
-    draw.get('intro_bg'),
-    function () end,
-    H * 0.1 / 300
-  )
-  btn.x = W * 0.5
-  btn.y = H * 0.65
-  local buttons = { btn }
+  -- Game state
+  local ant_ori = 0
+  local sel_sym = 1
+
+  local buttons = { }
+
+  local sym_btns = {}
+
+  local refresh_sym_btns = function ()
+    for j = 1, #sym_btns do
+      sym_btns[j].set_drawable(
+        draw.get(sel_sym == j and 'nn_01' or 'intro_bg'))
+    end
+  end
+  for i = 1, 3 do
+    local btn = button(
+      draw.get('intro_bg'),
+      function ()
+        sel_sym = i
+        refresh_sym_btns()
+      end,
+      H * 0.1 / 300
+    )
+    btn.x = W * (0.5 + (i - 2) * 0.27)
+    btn.y = H * 0.65
+    sym_btns[i] = btn
+    buttons[#buttons + 1] = btn
+  end
+  refresh_sym_btns()
 
   s.press = function (x, y)
     for i = 1, #buttons do if buttons[i].press(x, y) then return true end end

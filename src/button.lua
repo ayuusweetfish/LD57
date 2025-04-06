@@ -59,6 +59,10 @@ return function (drawable, fn, drawable_scale)
     end
   end
 
+  s.set_drawable = function (d)
+    drawable = d
+  end
+
   s.draw = function ()
     local sc = scale * s.s
     local x, y, sc = s.x - w/2 * sc, s.y - h/2 * sc, sc

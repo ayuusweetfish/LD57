@@ -271,6 +271,7 @@ return function ()
 
     -- Sector responses
     local symbol_list = function (rs, i, radius, is_transmit)
+      if #rs == 0 then return end
       local x = radar_x + radius * math.cos(i * math.pi * 2 / N_ORI)
       local y = radar_y + radius * math.sin(i * math.pi * 2 / N_ORI)
       local offs_x = 0
@@ -278,22 +279,24 @@ return function ()
       local scales = {}
       for j = 1, #rs do
         local t = T - rs[j].timestamp
-        offs[j] = offs_x
+        local dx
         local s = 1
         if t < 30 then
           local x = t / 30
           s = ease_quad_out(x)
-          offs_x = offs_x + ease_quad(x)
+          dx = ease_quad(x)
         elseif t > RESP_DISP_DUR - 60 then
           local x = 1 - (RESP_DISP_DUR - t) / 60
           s = ease_quad_in(1 - x)
-          offs_x = offs_x + 1 - ease_quad(x)
+          dx = 1 - ease_quad(x)
         else
-          offs_x = offs_x + 1
+          dx = 1
         end
+        offs[j] = offs_x + dx / 2
+        offs_x = offs_x + dx
         scales[j] = s
       end
-      local global_offs = -(offs_x - 1) / 2
+      local global_offs = -(offs[#rs] + offs[1]) / 2
       local orth_x = math.sin(-i * math.pi * 2 / N_ORI)
       local orth_y = math.cos(-i * math.pi * 2 / N_ORI)
       if is_transmit then love.graphics.setColor(0, 0, 1)

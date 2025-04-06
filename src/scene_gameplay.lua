@@ -76,6 +76,9 @@ return function (puzzle_index)
     transmits[i] = {}
   end
 
+  ------ State animations ------
+  local since_clear = -1
+
   ------ Buttons ------
   local buttons = { }
 
@@ -119,6 +122,8 @@ return function (puzzle_index)
 
   pull_lever = function ()
     if T < T_last_lever + LEVER_COOLDOWN then return end
+    if since_clear >= 0 then return end
+
     btn_lever.set_drawable(draw.get('nn_01'))
     T_last_lever = T
 
@@ -193,18 +198,20 @@ return function (puzzle_index)
       local sym = responders[i].update()
       if sym ~= nil then
         table.insert(responses[i], {symbol = sym, timestamp = T})
-        -- Update objective progression
-        -- KMP's `next` array
-        while objective_pos >= 0 do
-          if objective_seq[objective_pos + 1] == sym then
-            break
-          else
-            objective_pos = objective_next[objective_pos]
+        if since_clear == -1 then
+          -- Update objective progression
+          -- KMP's `next` array
+          while objective_pos >= 0 do
+            if objective_seq[objective_pos + 1] == sym then
+              break
+            else
+              objective_pos = objective_next[objective_pos]
+            end
           end
-        end
-        objective_pos = objective_pos + 1
-        if objective_pos == #objective_seq then
-          print('Clear!')
+          objective_pos = objective_pos + 1
+          if objective_pos == #objective_seq then
+            since_clear = 0
+          end
         end
       end
       -- Remove expired ones
@@ -214,6 +221,13 @@ return function (puzzle_index)
       -- And also transmissions
       while #transmits[i] > 0 and transmits[i][1].timestamp < T - RESP_DISP_DUR do
         table.remove(transmits[i], 1)
+      end
+    end
+
+    if since_clear >= 0 then
+      since_clear = since_clear + 1
+      if since_clear == 600 then
+        replaceScene(scene_gameplay(puzzle_index + 1), transitions['fade'](0.1, 0.1, 0.1))
       end
     end
   end

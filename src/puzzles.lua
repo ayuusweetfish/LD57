@@ -47,7 +47,7 @@ end
 
 return {
   [1] = {
-    seq = {1, 2, 3, 2, 1},
+    seq = {1, 2},
     resp = {
       echo, echo, echo, echo,
       echo, echo, echo, echo,

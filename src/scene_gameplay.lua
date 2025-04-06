@@ -61,6 +61,9 @@ return function ()
   local LEVER_COOLDOWN = 240
   local T_last_lever = -LEVER_COOLDOWN
 
+  local objective_seq = {1, 2, 1, 3, 2}
+  local objective_pos = 0
+
   -- Deep space entities!
   local responders = {}
   local responses = {}  -- responses[i] = list of {symbol = number, timestamp = number}
@@ -248,6 +251,14 @@ return function ()
         draw.img('icon_sym_' .. rs[j].symbol,
           x + (j - 1 - offs_x_prev) * 80, y, 80 * s, 80 * s)
       end
+    end
+
+    -- Objective sequence
+    for i = 1, #objective_seq do
+      local x = W * 0.1 + 60 * (i - 1)
+      local y = H * 0.12
+      love.graphics.setColor(1, 1, 1, i <= objective_pos and 1 or 0.3)
+      draw.img('icon_sym_' .. objective_seq[i], x, y, 60, 60)
     end
 
     love.graphics.setColor(1, 1, 1)

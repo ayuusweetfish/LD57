@@ -1,13 +1,26 @@
 local draw = require 'draw_utils'
 local button = require 'button'
 
+local ease_quad = function (x)
+  if x < 0.5 then return x * x * 2
+  else return 1 - (1 - x) * (1 - x) * 2 end
+end
+local ease_quad_out = function (x)
+  return 1 - (1 - x) * (1 - x)
+end
+local ease_quad_in = function (x)
+  return x * x
+end
+
 local space_responder = function ()
   local o = {}
 
   local q = {}
 
   o.send = function (sym)
-    q[#q + 1] = {sym, 360}
+    q[#q + 1] = {sym, 80}
+    q[#q + 1] = {sym == 2 and 2 or 4 - sym, 360}
+    table.sort(q, function (a, b) return a[2] < b[2] end)
   end
 
   -- Returns responded symbol, if any
@@ -41,6 +54,7 @@ return function ()
   local ant_sector = 0
   local ant_sector_last, ant_sector_anim = ant_sector, 0
   local SECTOR_ANIM_DUR = 40
+  local RESP_DISP_DUR = 480
 
   local sel_sym = 1
 
@@ -169,7 +183,7 @@ return function ()
         table.insert(responses[i], {symbol = sym, timestamp = T})
       end
       -- Remove expired ones
-      while #responses[i] > 0 and responses[i][1].timestamp < T - 480 do
+      while #responses[i] > 0 and responses[i][1].timestamp < T - RESP_DISP_DUR do
         table.remove(responses[i], 1)
       end
     end
@@ -224,10 +238,12 @@ return function ()
         local offs_x_prev = offs_x
         local s = 1
         if t < 30 then
-          s = t / 30
-        elseif t > 480 - 30 then
-          s = (480 - t) / 30
-          offs_x = offs_x + (t - 450) / 30
+          local x = t / 30
+          s = ease_quad_out(x)
+        elseif t > RESP_DISP_DUR - 60 then
+          local x = 1 - (RESP_DISP_DUR - t) / 60
+          s = ease_quad_in(1 - x)
+          offs_x = offs_x + ease_quad(x)
         end
         draw.img('icon_sym_' .. rs[j].symbol,
           x + (j - 1 - offs_x_prev) * 80, y, 80 * s, 80 * s)

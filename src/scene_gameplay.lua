@@ -14,6 +14,9 @@ return function ()
 
   local ant_ori = 0
   local ori_step = math.pi * 2 / 8 / 240
+  local ant_sector = 0
+  local ant_sector_last, ant_sector_anim = ant_sector, 0
+  local SECTOR_ANIM_DUR = 40
 
   local sel_sym = 1
 
@@ -96,19 +99,32 @@ return function ()
     T = T + 1
     for i = 1, #buttons do buttons[i].update() end
 
+    -- `ant_sector_last` is for animation,
+    -- here we do a backup to check whether sector changed
+    local ant_sector_backup = ant_sector
     if love.keyboard.isDown('left') then
       ant_ori = ant_ori - ori_step
       if ant_ori < 0 then ant_ori = ant_ori + math.pi * 2 end
+      ant_sector = math.floor(ant_ori / (math.pi * 2 / 8) + 0.5) % 8
     end
     if love.keyboard.isDown('right') then
       ant_ori = ant_ori + ori_step
       if ant_ori >= math.pi * 2 then ant_ori = ant_ori - math.pi * 2 end
+      ant_sector = math.floor(ant_ori / (math.pi * 2 / 8) + 0.5) % 8
+    end
+    if ant_sector_backup ~= ant_sector then
+      ant_sector_last = ant_sector_backup
+      ant_sector_anim = SECTOR_ANIM_DUR
     end
 
     if T <= T_last_lever + LEVER_COOLDOWN then
       if T == T_last_lever + LEVER_COOLDOWN then
         btn_lever.set_drawable(draw.get('intro_bg'))
       end
+    end
+
+    if ant_sector_anim > 0 then
+      ant_sector_anim = ant_sector_anim - 1
     end
   end
 
@@ -119,6 +135,23 @@ return function ()
     love.graphics.setColor(0, 0, 0)
     love.graphics.setLineWidth(2)
     love.graphics.circle('line', radar_x, radar_y, radar_r)
+
+    local sector = function (n)
+      love.graphics.arc('fill', radar_x, radar_y, radar_r,
+        (n - 0.5) * math.pi * 2 / 8,
+        (n + 0.5) * math.pi * 2 / 8
+      )
+    end
+    local sector_alpha = 1
+    if ant_sector_anim > 0 then
+      local x = ant_sector_anim / SECTOR_ANIM_DUR
+      local last_alpha = x ^ 0.8
+      sector_alpha = (1 - x) ^ 0.8
+      love.graphics.setColor(0.5, 0.5, 0.5, last_alpha * 0.3)
+      sector(ant_sector_last)
+    end
+    love.graphics.setColor(0.5, 0.5, 0.5, sector_alpha * 0.3)
+    sector(ant_sector)
 
     love.graphics.setColor(0, 0, 0)
     love.graphics.line(radar_x, radar_y,

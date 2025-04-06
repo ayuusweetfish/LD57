@@ -311,13 +311,13 @@ return function ()
       for j = 1, #rs do
         local s = scales[j]
         draw.img('icon_sym_' .. rs[j].symbol,
-          x + (offs[j] + global_offs) * 80 * orth_x,
-          y + (offs[j] + global_offs) * 80 * orth_y,
-          80 * s, 80 * s)
+          x + (offs[j] + global_offs) * 40 * orth_x,
+          y + (offs[j] + global_offs) * 40 * orth_y,
+          40 * s, 40 * s)
       end
     end
     for i = 0, N_ORI - 1 do
-      symbol_list(responses[i], i, radar_r, false)
+      symbol_list(responses[i], i, radar_r * 0.9, false)
       symbol_list(transmits[i], i, radar_r * 0.5, true)
     end
 

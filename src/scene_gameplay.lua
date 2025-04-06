@@ -218,13 +218,19 @@ return function ()
       local rs = responses[i]
       local x = radar_x + radar_r * math.cos(i * math.pi * 2 / N_ORI)
       local y = radar_y + radar_r * math.sin(i * math.pi * 2 / N_ORI)
+      local offs_x = 0
       for j = 1, #rs do
         local t = T - rs[j].timestamp
+        local offs_x_prev = offs_x
         local s = 1
-        if t < 30 then s = t / 30
-        elseif t > 480 - 30 then s = (480 - t) / 30 end
+        if t < 30 then
+          s = t / 30
+        elseif t > 480 - 30 then
+          s = (480 - t) / 30
+          offs_x = offs_x + (t - 450) / 30
+        end
         draw.img('icon_sym_' .. rs[j].symbol,
-          x + (j - 1) * 80, y, 80 * s, 80 * s)
+          x + (j - 1 - offs_x_prev) * 80, y, 80 * s, 80 * s)
       end
     end
 

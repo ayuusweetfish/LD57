@@ -205,9 +205,9 @@ return function (puzzle_index)
   local since_clear = -1
 
   local STEER_N_FRAMES = 6
-  local last_rotate = 0
-  local last_rotate_nonzero = 1
-  local rotate_cont_dur = 0
+  local last_steer = 0          -- Last acceleration
+  local last_steer_nonzero = 1  -- For animation
+  local steer_cont_dur = 0
 
   gallery_overlay.reset()
 
@@ -354,23 +354,23 @@ return function (puzzle_index)
       ant_sector_anim = SECTOR_ANIM_DUR
     end
 
-    if last_rotate == 0 and accel ~= 0 then
-      audio.sfx('rotate', 0, true)
-      rotate_cont_dur = 0
-    elseif last_rotate ~= 0 and accel == 0 then
-      audio.sfx_stop('rotate')
+    if last_steer == 0 and accel ~= 0 then
+      audio.sfx('steer', 0, true)
+      steer_cont_dur = 0
+    elseif last_steer ~= 0 and accel == 0 then
+      audio.sfx_stop('steer')
     end
     if accel ~= 0 then
-      if rotate_cont_dur < STEER_N_FRAMES * 20 then
-        rotate_cont_dur = rotate_cont_dur + 1
+      if steer_cont_dur < STEER_N_FRAMES * 20 then
+        steer_cont_dur = steer_cont_dur + 1
       end
-      local vol = math.min(1, rotate_cont_dur / 120)
-      audio.sfx_vol('rotate', vol)
-    elseif rotate_cont_dur > 0 then
-      rotate_cont_dur = rotate_cont_dur - 1
+      local vol = math.min(1, steer_cont_dur / 120)
+      audio.sfx_vol('steer', vol)
+    elseif steer_cont_dur > 0 then
+      steer_cont_dur = steer_cont_dur - 1
     end
-    last_rotate = accel
-    if accel ~= 0 then last_rotate_nonzero = accel end
+    last_steer = accel
+    if accel ~= 0 then last_steer_nonzero = accel end
 
     if T <= T_last_lever + LEVER_COOLDOWN then
       if T == T_last_lever + LEVER_COOLDOWN then
@@ -554,8 +554,8 @@ return function (puzzle_index)
     end
 
     -- Steering wheel
-    local steer_frame = math.min(STEER_N_FRAMES, 1 + math.floor(rotate_cont_dur / 20))
-    local steer_flip_x = (last_rotate_nonzero < 0)
+    local steer_frame = math.min(STEER_N_FRAMES, 1 + math.floor(steer_cont_dur / 20))
+    local steer_flip_x = (last_steer_nonzero < 0)
     draw.img('steer/' .. tostring(steer_frame), W / 2, H / 2,
       steer_flip_x and -W or W, H)
 

@@ -10,21 +10,23 @@ for i = 1, #files do
   end
 end
 
-local draw = function (drawable, x, y, w, h, ax, ay, r)
+local draw = function (drawable, x, y, w, h, ax, ay, r, kx, ky)
   ax = ax or 0.5
   ay = ay or 0.5
   r = r or 0
   local iw, ih = drawable:getDimensions()
   local sx = w and w / iw or 1
   local sy = h and h / ih or sx
-  love.graphics.draw(drawable,
+  local fn = drawable.draw or love.graphics.draw
+  fn(drawable,
     x, y, r,
     sx, sy,
-    ax * iw, ay * ih)
+    ax * iw, ay * ih,
+    kx, ky)
 end
 
-local img = function (name, x, y, w, h, ax, ay, r)
-  draw(imgs[name], x, y, w, h, ax, ay, r)
+local img = function (name, x, y, w, h, ax, ay, r, kx, ky)
+  draw(imgs[name], x, y, w, h, ax, ay, r, kx, ky)
 end
 
 local shadow = function (R, G, B, A, drawable, x, y, w, h, ax, ay, r)

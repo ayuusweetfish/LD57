@@ -57,41 +57,28 @@ local create_gallery_overlay = function ()
     anim_t, anim_dir = 0, -1
   end
 
-  -- Always intercept all events when active
-  -- Events drained (ignored) during animations
-
   o.press = function (x, y)
     if not is_active then return false end
-    if anim_dir ~= 0 then return true end
+    if anim_dir ~= 0 then return true end   -- Events drained (collected and ignored) during animations
     for i = 1, #buttons do if buttons[i].press(x, y) then return true end end
-
-    return true
   end
 
   o.move = function (x, y)
     if not is_active then return false end
     if anim_dir ~= 0 then return true end
     for i = 1, #buttons do if buttons[i].move(x, y) then return true end end
-
-    return true
   end
 
   o.release = function (x, y)
     if not is_active then return false end
     if anim_dir ~= 0 then return true end
     for i = 1, #buttons do if buttons[i].release(x, y) then return true end end
-
-    if x >= W * 0.3 then o.close() end
-
-    return true
   end
 
   o.key = function (key)
     if not is_active then return false end
     if anim_dir ~= 0 then return true end
-    if key == 'tab' then o.close() end
-
-    return true
+    if key == 'tab' then o.close() return true end
   end
 
   o.update = function ()
@@ -119,7 +106,11 @@ local create_gallery_overlay = function ()
       scale = 1 - ease_quad(x)
     end
     love.graphics.setColor(1, 1, 1)
-    draw.img('card', W * 0.27, H * 0.46, W * 0.3 * scale)
+    draw.img('card1',
+      W * 0.17, H * 0.6,
+      W * 0.22 * scale, nil,
+      0.5, 0.5, 0,
+      0.07, -0.05)
   end
 
   return o

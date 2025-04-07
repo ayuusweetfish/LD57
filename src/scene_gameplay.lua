@@ -224,8 +224,10 @@ local create_gallery_overlay = function ()
 
     love.graphics.setColor(1, 1, 1, alpha)
     draw.img('card', 0, 0, W * 0.22)
+    love.graphics.setColor(0.2, 0.1, 0.1, alpha)
     draw.img('stars/' .. tostring(cur_page), 0, H * -0.1, W * 0.2)
 
+    love.graphics.setColor(1, 1, 1, alpha)
     for i = 1, #buttons do buttons[i].draw() end
 
     love.graphics.pop()
@@ -559,26 +561,19 @@ return function (puzzle_index)
     end
     draw.img('bg_1', W / 2, H / 2, W, H)
 
-    love.graphics.setColor(0, 0, 0)
-    love.graphics.setLineWidth(2)
-    -- love.graphics.circle('line', radar_x, radar_y, radar_r)
-
     -- Sector highlight
     local sector = function (n)
-      love.graphics.arc('fill', radar_x, radar_y, radar_r,
-        (n - 0.5) * math.pi * 2 / N_ORI,
-        (n + 0.5) * math.pi * 2 / N_ORI
-      )
+      draw.img('sector', radar_x, radar_y, nil, nil, 9/240, 307/312, (n + 1.5) * math.pi * 2 / N_ORI)
     end
     local sector_alpha = 1
     if ant_sector_anim > 0 then
       local x = ant_sector_anim / SECTOR_ANIM_DUR
       local last_alpha = x ^ 0.8
       sector_alpha = (1 - x) ^ 0.8
-      love.graphics.setColor(0.5, 0.5, 0.5, last_alpha * 0.3)
+      love.graphics.setColor(0.5, 0.5, 0.5, last_alpha * 0.7)
       sector(ant_sector_last)
     end
-    love.graphics.setColor(0.5, 0.5, 0.5, sector_alpha * 0.3)
+    love.graphics.setColor(0.5, 0.5, 0.5, sector_alpha * 0.7)
     sector(ant_sector)
 
     -- Radar line
@@ -603,7 +598,7 @@ return function (puzzle_index)
     else
       disp_ori = disp_ori - ease_stuck(ant_ori_stuck, 0.1)
     end
-    love.graphics.setColor(1, 1, 1)
+    love.graphics.setColor(0.25, 0.27, 0.15)
     draw.img('radar_trail/' .. radar_trail_frame, radar_x, radar_y,
       108 * radar_trail_flip, 216, 6.5/162, 317/324, disp_ori + math.pi / 2)
 
@@ -637,7 +632,7 @@ return function (puzzle_index)
       local global_offs = -offs_x / 2
       local orth_x = math.sin(-i * math.pi * 2 / N_ORI)
       local orth_y = math.cos(-i * math.pi * 2 / N_ORI)
-      if is_transmit then love.graphics.setColor(0, 0, 1)
+      if is_transmit then love.graphics.setColor(0.5, 1, 1)
       else love.graphics.setColor(1, 1, 1) end
       for j = 1, #rs do
         local s = scales[j]

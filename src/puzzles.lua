@@ -38,27 +38,20 @@ end end
 
 local block = murmur(4, 40, 2)
 
-local double_mur = function (n) return function ()
+local double_mur = function (n, t1, t2) return function ()
+  t1 = t1 or 60
+  t2 = t2 or 300
   local o = {}
   local q = decay_priority_queue()
   o.send = function (sym)
-    q.insert({n, 60})
-    q.insert({n, 300})
+    q.insert({n, t1})
+    q.insert({n, t2})
   end
   o.update = q.pop
   return o
 end end
 
-local double_mur_slow = function (n) return function ()
-  local o = {}
-  local q = decay_priority_queue()
-  o.send = function (sym)
-    q.insert({n, 120})
-    q.insert({n, 600})
-  end
-  o.update = q.pop
-  return o
-end end
+local double_mur_slow = function (n) return double_mur(n, 120, 600) end
 
 local filter = function (pass_sym) return function ()
   local o = {}
@@ -70,15 +63,23 @@ local filter = function (pass_sym) return function ()
   return o
 end end
 
-local echo = function ()
-  local o = {}
-  local q = decay_priority_queue()
-  o.send = function (sym)
-    q.insert({sym, 180})
+local echo = function (...)
+  local t = {...}
+  if #t == 0 then t[1] = 180 end
+  return function ()
+    local o = {}
+    local q = decay_priority_queue()
+    o.send = function (sym)
+      for i = 1, #t do
+        q.insert({sym, t[i]})
+      end
+    end
+    o.update = q.pop
+    return o
   end
-  o.update = q.pop
-  return o
 end
+
+local long_rep2 = echo(960, 1680)
 
 local mirror = function ()
   local o = {}
@@ -96,6 +97,34 @@ local symmetry = function ()
   o.send = function (sym)
     q.insert({sym, 60})
     q.insert({4 - sym, 600})
+  end
+  o.update = q.pop
+  return o
+end
+
+local condense = function ()
+  local o = {}
+  local q = decay_priority_queue()
+  local last = 0
+  o.send = function (sym)
+    if last == 0 then
+      last = sym
+    else
+      local out_sym = (last == sym) and last or (6 - last - sym)
+      q.insert({out_sym, 60})
+    end
+  end
+  o.update = q.pop
+  return o
+end
+
+local alternate = function ()
+  local o = {}
+  local q = decay_priority_queue()
+  local last = 0
+  o.send = function (sym)
+    last = last % 3 + 1
+    q.insert({last, 60})
   end
   o.update = q.pop
   return o
@@ -137,7 +166,7 @@ return {
   -- Select symbols
   {
     seq = {1, 2, 3, 2, 1},
-    resp = {block, echo, block, block, block},
+    resp = {block, echo(180), block, block, block},
   },
   {
     seq = {1, 1, 2, 3, 2},
@@ -157,4 +186,30 @@ return {
   },
 
   ------ Chapter 2 ------
+  {
+    seq = {1, 2, 3, 2, 1},
+    resp = {block, murmur(2), block, murmur(1), block, murmur(2), block, murmur(3)},
+  },
+  {
+    seq = {1, 2, 3, 2, 1},
+    resp = {condense, block, condense, block, condense, block, condense, block},
+  },
+  {
+    seq = {1, 2, 3, 2, 1},
+    resp = {block, block, alternate, block, block, block, alternate, block},
+  },
+
+  ------ Chapter 4 ------
+  {
+    seq = {2, 2, 1, 3, 1, 3},
+    resp = {long_rep2, long_rep2, long_rep2, long_rep2, long_rep2, long_rep2, long_rep2, long_rep2},
+  },
+  {
+    seq = {1, 2, 3, 2, 1},
+    resp = {long_rep2, long_rep2, long_rep2, long_rep2, long_rep2, long_rep2, long_rep2, long_rep2},
+  },
+  {
+    seq = {1, 2, 3, 2, 1, 2, 3},
+    resp = {long_rep2, long_rep2, long_rep2, long_rep2, long_rep2, long_rep2, long_rep2, long_rep2},
+  },
 }

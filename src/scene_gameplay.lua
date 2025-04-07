@@ -176,7 +176,7 @@ return function (puzzle_index)
 
   local sel_sym = 2
 
-  local LEVER_COOLDOWN = 360
+  local LEVER_COOLDOWN = 240
   local T_last_lever = -LEVER_COOLDOWN
 
   local objective_seq = puzzle.seq

@@ -179,10 +179,12 @@ return {
   {
     seq = {3, 2, 1, 2, 3},
     resp = {block, symmetry, block, block, block},
+    msg = 'How far? Very far.\nCivilizations in the universe exercise restraint in communication. Your messages in one direction never reach another.',
   },
   {
     seq = {1, 2, 1, 3, 2},
     resp = {symmetry, symmetry, symmetry, symmetry, symmetry},
+    msg = 'To Chapter 2',
   },
 
   ------ Chapter 2 ------

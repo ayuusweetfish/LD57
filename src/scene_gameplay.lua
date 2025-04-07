@@ -54,6 +54,9 @@ local create_gallery_overlay = function ()
   -- Local shearing
   local s_x, s_y = 0.1, -0.07
 
+  -- Global offset
+  local offs_x = 0
+
   local anim_t, anim_dir  -- anim_dir = +1: in, 0: none, -1: out
   local is_active
 
@@ -102,6 +105,11 @@ local create_gallery_overlay = function ()
 
   o.state = function ()
     return (anim_dir == -1 and 120 - anim_t or anim_t), anim_dir
+  end
+
+  o.pull = function (target_offs_x)
+    local rate = (target_offs_x * (target_offs_x - offs_x) < 0) and 0.09 or 0.02
+    offs_x = offs_x + (target_offs_x - offs_x) * rate
   end
 
   local world_to_local = function (x, y)
@@ -187,6 +195,7 @@ local create_gallery_overlay = function ()
     local o0_x, o0_y = W * 0.12, H * 0.7
     local oo_x = o0_x + (o_x - o0_x) * move_progress_x
     local oo_y = o0_y + (o_y - o0_y) * move_progress_y
+    oo_x = oo_x + offs_x * W * 0.005
 
     love.graphics.translate(oo_x, oo_y)
     love.graphics.shear(s_x, s_y)
@@ -486,6 +495,7 @@ return function (puzzle_index)
       end
     end
 
+    gallery_overlay.pull(-last_steer)
     gallery_overlay.update()
   end
 

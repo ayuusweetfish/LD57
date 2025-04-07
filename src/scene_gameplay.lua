@@ -34,6 +34,99 @@ local calc_kmp_next = function (a)
   return next
 end
 
+local create_gallery_overlay = function ()
+  local o = {}
+
+  local buttons = {}
+
+  local anim_t, anim_dir  -- anim_dir = +1: in, 0: none, -1: out
+  local is_active
+
+  o.reset = function ()
+    anim_t, anim_dir = 0, 0
+    is_active = false
+  end
+  o.reset()
+
+  o.open = function ()
+    anim_t, anim_dir = 0, 1
+    is_active = true
+  end
+
+  o.close = function ()
+    anim_t, anim_dir = 0, -1
+  end
+
+  -- Always intercept all events when active
+  -- Events drained (ignored) during animations
+
+  o.press = function (x, y)
+    if not is_active then return false end
+    if anim_dir ~= 0 then return true end
+    for i = 1, #buttons do if buttons[i].press(x, y) then return true end end
+
+    return true
+  end
+
+  o.move = function (x, y)
+    if not is_active then return false end
+    if anim_dir ~= 0 then return true end
+    for i = 1, #buttons do if buttons[i].move(x, y) then return true end end
+
+    return true
+  end
+
+  o.release = function (x, y)
+    if not is_active then return false end
+    if anim_dir ~= 0 then return true end
+    for i = 1, #buttons do if buttons[i].release(x, y) then return true end end
+
+    if x >= W * 0.3 then o.close() end
+
+    return true
+  end
+
+  o.key = function (key)
+    if not is_active then return false end
+    if anim_dir ~= 0 then return true end
+    if key == 'tab' then o.close() end
+
+    return true
+  end
+
+  o.update = function ()
+    if not is_active then return end
+    for i = 1, #buttons do buttons[i].update() end
+
+    if anim_dir ~= 0 then
+      anim_t = anim_t + 1
+      if anim_t == 120 then
+        if anim_dir == -1 then is_active = false end
+        anim_t, anim_dir = 0, 0
+      end
+    end
+  end
+
+  o.draw = function ()
+    if not is_active then return end
+
+    local scale = 1
+    if anim_dir == 1 then
+      local x = anim_t / 120
+      scale = ease_quad(x)
+    elseif anim_dir == -1 then
+      local x = anim_t / 120
+      scale = 1 - ease_quad(x)
+    end
+    love.graphics.setColor(1, 1, 1)
+    draw.img('icon_sym_1', W * 0.1, H * 0.46, W * 0.1 * scale)
+  end
+
+  return o
+end
+
+local gallery_overlay = create_gallery_overlay()
+
 return function (puzzle_index)
   local s = {}
   local W, H = W, H
@@ -80,8 +173,10 @@ return function (puzzle_index)
     transmits[i] = {}
   end
 
-  ------ State animations ------
+  ------ State animations and scene elements ------
   local since_clear = -1
+
+  gallery_overlay.reset()
 
   ------ Buttons ------
   local buttons = { }
@@ -138,9 +233,25 @@ return function (puzzle_index)
     table.insert(transmits[ant_sector], {symbol = sel_sym, timestamp = T})
   end
 
+  -- Gallery button
+  local open_gallery
+  local btn_gallery = button(
+    draw.get('icon_sym_2_sel'),
+    function () open_gallery() end,
+    W * 0.1
+  )
+  btn_gallery.x = W * 0.1
+  btn_gallery.y = H * 0.6
+  buttons[#buttons + 1] = btn_gallery
+
+  open_gallery = function ()
+    gallery_overlay.open()
+  end
+
   ------ Scene methods ------
 
   s.press = function (x, y)
+    if gallery_overlay.press(x, y) then return true end
     for i = 1, #buttons do if buttons[i].press(x, y) then return true end end
   end
 
@@ -148,18 +259,23 @@ return function (puzzle_index)
   end
 
   s.move = function (x, y)
+    if gallery_overlay.move(x, y) then return true end
     for i = 1, #buttons do if buttons[i].move(x, y) then return true end end
   end
 
   s.release = function (x, y)
+    if gallery_overlay.release(x, y) then return true end
     for i = 1, #buttons do if buttons[i].release(x, y) then return true end end
   end
 
   s.key = function (key)
+    if gallery_overlay.key(key) then return true end
+
     if key == '1' then select_sym(1)
     elseif key == '2' then select_sym(2)
     elseif key == '3' then select_sym(3)
     elseif key == 'return' then pull_lever()
+    elseif key == 'tab' then open_gallery()
     elseif key == 'n' then
       if puzzles[puzzle_index + 1] then
         replaceScene(scene_gameplay(puzzle_index + 1), transitions['fade'](0.1, 0.1, 0.1))
@@ -246,6 +362,8 @@ return function (puzzle_index)
         replaceScene(scene_gameplay(puzzle_index + 1), transitions['fade'](0.1, 0.1, 0.1))
       end
     end
+
+    gallery_overlay.update()
   end
 
   s.draw = function ()
@@ -349,6 +467,9 @@ return function (puzzle_index)
 
     love.graphics.setColor(1, 1, 1)
     for i = 1, #buttons do buttons[i].draw() end
+
+    -- Gallery
+    gallery_overlay.draw()
   end
 
   s.destroy = function ()

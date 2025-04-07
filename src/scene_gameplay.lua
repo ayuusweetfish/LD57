@@ -469,7 +469,7 @@ return function (puzzle_index)
       radar_x + radar_r * math.cos(ant_ori),
       radar_y + radar_r * math.sin(ant_ori))
     love.graphics.setColor(1, 1, 1)
-    draw.img('nn_01',
+    draw.img('card1',
       radar_x + radar_r * math.cos(ant_ori),
       radar_y + radar_r * math.sin(ant_ori),
       H * 0.1, nil, 1, 0.5, ant_ori

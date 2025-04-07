@@ -207,7 +207,7 @@ return function (puzzle_index)
   local STEER_N_FRAMES = 6
   local last_rotate = 0
   local last_rotate_nonzero = 1
-  local rotate_cont_dur = STEER_N_FRAMES * 20
+  local rotate_cont_dur = 0
 
   gallery_overlay.reset()
 
@@ -359,14 +359,15 @@ return function (puzzle_index)
       rotate_cont_dur = 0
     elseif last_rotate ~= 0 and accel == 0 then
       audio.sfx_stop('rotate')
-      rotate_cont_dur = 0
     end
     if accel ~= 0 then
-      rotate_cont_dur = rotate_cont_dur + 1
+      if rotate_cont_dur < STEER_N_FRAMES * 20 then
+        rotate_cont_dur = rotate_cont_dur + 1
+      end
       local vol = math.min(1, rotate_cont_dur / 120)
       audio.sfx_vol('rotate', vol)
-    elseif rotate_cont_dur < STEER_N_FRAMES * 20 then
-      rotate_cont_dur = rotate_cont_dur + 1
+    elseif rotate_cont_dur > 0 then
+      rotate_cont_dur = rotate_cont_dur - 1
     end
     last_rotate = accel
     if accel ~= 0 then last_rotate_nonzero = accel end
@@ -553,13 +554,8 @@ return function (puzzle_index)
     end
 
     -- Steering wheel
-    local steer_frame = 1
+    local steer_frame = math.min(STEER_N_FRAMES, 1 + math.floor(rotate_cont_dur / 20))
     local steer_flip_x = (last_rotate_nonzero < 0)
-    if last_rotate ~= 0 then
-      steer_frame = math.min(STEER_N_FRAMES, 1 + math.floor(rotate_cont_dur / 20))
-    else
-      steer_frame = math.max(1, STEER_N_FRAMES - math.floor(rotate_cont_dur / 20))
-    end
     draw.img('steer/' .. tostring(steer_frame), W / 2, H / 2,
       steer_flip_x and -W or W, H)
 

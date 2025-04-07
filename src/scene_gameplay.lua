@@ -119,7 +119,7 @@ local create_gallery_overlay = function ()
       scale = 1 - ease_quad(x)
     end
     love.graphics.setColor(1, 1, 1)
-    draw.img('icon_sym_1', W * 0.1, H * 0.46, W * 0.1 * scale)
+    draw.img('card', W * 0.27, H * 0.46, W * 0.3 * scale)
   end
 
   return o

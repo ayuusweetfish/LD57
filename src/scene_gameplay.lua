@@ -240,6 +240,7 @@ return function (puzzle_index)
     if since_clear >= 0 then return end
 
     btn_lever.set_drawable(draw.get('nn_01'))
+    btn_lever.enabled = false
     T_last_lever = T
 
     -- Send to responder
@@ -334,6 +335,7 @@ return function (puzzle_index)
     if T <= T_last_lever + LEVER_COOLDOWN then
       if T == T_last_lever + LEVER_COOLDOWN then
         btn_lever.set_drawable(draw.get('intro_bg'))
+        btn_lever.enabled = true
       end
     end
 

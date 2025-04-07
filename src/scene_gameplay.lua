@@ -435,9 +435,10 @@ return function (puzzle_index)
   s.draw = function ()
     love.graphics.clear(0.99, 0.99, 0.98)
     love.graphics.setColor(1, 1, 1)
-    local bg_w, _ = draw.get('out_1'):getDimensions()
+    local out_bg_name = 'out_3'
+    local bg_w, _ = draw.get(out_bg_name):getDimensions()
     for i = 0, 1 do
-      draw.img('out_1', (i + -ant_ori / (math.pi * 2)) * bg_w, 0, nil, nil, 0, 0)
+      draw.img(out_bg_name, (i + -ant_ori / (math.pi * 2)) * bg_w, 0, nil, nil, 0, 0)
     end
     draw.img('bg_1', W / 2, H / 2, W, H)
 
@@ -468,7 +469,7 @@ return function (puzzle_index)
     love.graphics.line(radar_x, radar_y,
       radar_x + radar_r * math.cos(ant_ori),
       radar_y + radar_r * math.sin(ant_ori))
-    love.graphics.setColor(1, 1, 1)
+    love.graphics.setColor(1, 1, 1, 0)
     draw.img('card1',
       radar_x + radar_r * math.cos(ant_ori),
       radar_y + radar_r * math.sin(ant_ori),

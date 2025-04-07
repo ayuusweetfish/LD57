@@ -37,7 +37,28 @@ local murmur = function (n, dur, count) return function ()
 end end
 
 local block = murmur(4, 40, 2)
-local double_mur = function (n) return murmur(n, nil, 2) end
+
+local double_mur = function (n) return function ()
+  local o = {}
+  local q = decay_priority_queue()
+  o.send = function (sym)
+    q.insert({n, 60})
+    q.insert({n, 300})
+  end
+  o.update = q.pop
+  return o
+end end
+
+local double_mur_slow = function (n) return function ()
+  local o = {}
+  local q = decay_priority_queue()
+  o.send = function (sym)
+    q.insert({n, 120})
+    q.insert({n, 600})
+  end
+  o.update = q.pop
+  return o
+end end
 
 local filter = function (pass_sym) return function ()
   local o = {}
@@ -101,8 +122,15 @@ return {
   },
   -- Sometimes you get more than one
   {
-    seq = {2, 1, 1, 3, 3},
-    resp = {double_mur(3), double_mur(2), double_mur(1), double_mur(2), double_mur(3)},
+    seq = {2, 3, 1, 3, 2},
+    resp = {murmur(3), double_mur(1), double_mur(2), double_mur(3), murmur(1)},
+    unisymbol = true,
+  },
+  -- Interleave responses
+  -- Strange fail rules?
+  {
+    seq = {1, 3, 1, 3, 1},
+    resp = {block, double_mur_slow(3), double_mur_slow(1), double_mur_slow(3), block},
     unisymbol = true,
   },
   -- The other antenna has been fixed!

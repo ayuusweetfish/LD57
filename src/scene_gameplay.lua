@@ -251,9 +251,10 @@ return function (puzzle_index)
   s.draw = function ()
     love.graphics.clear(0.99, 0.99, 0.98)
     love.graphics.setColor(1, 1, 1)
-    local s = 2/3
-    draw.img('out_1', -ant_ori / (math.pi * 2) * 8294 * s, 0, 8294 * s, 600 * s, 0, 0)
-    draw.img('out_1', (1 + -ant_ori / (math.pi * 2)) * 8294 * s, 0, 8294 * s, 600 * s, 0, 0)
+    local bg_w, _ = draw.get('out_1'):getDimensions()
+    for i = 0, 1 do
+      draw.img('out_1', (i + -ant_ori / (math.pi * 2)) * bg_w, 0, nil, nil, 0, 0)
+    end
     draw.img('bg_1', W / 2, H / 2, W, H)
 
     love.graphics.setColor(0, 0, 0)

@@ -226,6 +226,11 @@ return function (puzzle_index)
   local puzzle = puzzles[puzzle_index]
   local earthbound = (#puzzle.resp <= 5)
   local unisymbol = puzzle.unisymbol
+  local out_bg_index
+  if puzzle_index <= 10 then out_bg_index = 1
+  elseif puzzle_index <= 15 then out_bg_index = 2
+  elseif puzzle_index <= 17 then out_bg_index = 3
+  else out_bg_index = 4 end
 
   ------ Display ------
   local radar_x, radar_y = W * 0.498, H * 0.367
@@ -342,12 +347,11 @@ return function (puzzle_index)
   -- Gallery button
   local open_gallery
   local btn_gallery = button(
-    draw.get('icon_sym_2_sel'),
-    function () open_gallery() end,
-    W * 0.1
+    draw.get('gallery_book/1'),
+    function () open_gallery() end
   )
-  btn_gallery.x = W * 0.1
-  btn_gallery.y = H * 0.6
+  btn_gallery.x = 124
+  btn_gallery.y = 484
   buttons[#buttons + 1] = btn_gallery
 
   open_gallery = function ()
@@ -505,7 +509,7 @@ return function (puzzle_index)
   s.draw = function ()
     love.graphics.clear(0.99, 0.99, 0.98)
     love.graphics.setColor(1, 1, 1)
-    local out_bg_name = 'out_3'
+    local out_bg_name = 'bg_out/' .. out_bg_index
     local bg_w, _ = draw.get(out_bg_name):getDimensions()
     for i = 0, 1 do
       draw.img(out_bg_name, (i + -ant_ori / (math.pi * 2)) * bg_w, 0, nil, nil, 0, 0)
@@ -625,8 +629,13 @@ return function (puzzle_index)
       -- Opening
       book_frame = math.min(6, 1 + math.floor(book_anim / 20))
     end
-    love.graphics.setColor(1, 1, 1)
-    draw.img('gallery_book/' .. tostring(book_frame), W / 2, H / 2)
+    if book_frame ~= 1 then
+      love.graphics.setColor(1, 1, 1)
+      draw.img('gallery_book/' .. tostring(book_frame), 124, 484)
+      btn_gallery.hidden = true
+    else
+      btn_gallery.hidden = false
+    end
 
     love.graphics.setColor(1, 1, 1)
     for i = 1, #buttons do buttons[i].draw() end

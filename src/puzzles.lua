@@ -102,6 +102,7 @@ local symmetry = function ()
 end
 
 return {
+  ------ Chapter 1 ------
   -- Just play
   {
     seq = {1, 1, 1, 1, 1, 1, 1},
@@ -131,8 +132,9 @@ return {
     seq = {1, 3, 1, 3, 1},
     resp = {block, double_mur_slow(3), double_mur_slow(1), double_mur_slow(3), block},
     unisymbol = true,
+    msg = 'The other antenna has been fixed!',
   },
-  -- The other antenna has been fixed!
+  -- Select symbols
   {
     seq = {1, 2, 3, 2, 1},
     resp = {block, echo, block, block, block},
@@ -153,4 +155,6 @@ return {
     seq = {1, 2, 1, 3, 2},
     resp = {symmetry, symmetry, symmetry, symmetry, symmetry},
   },
+
+  ------ Chapter 2 ------
 }

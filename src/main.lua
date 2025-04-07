@@ -54,6 +54,15 @@ _G['scene_intro'] = require 'scene_intro'
 _G['scene_gameplay'] = require 'scene_gameplay'
 _G['scene_interlude'] = require 'scene_interlude'
 
+local audio = require 'audio'
+local bgm, bgm_update = audio.loop(
+  nil, 0,
+  'aud/background_1.ogg', 96,
+  1600 * 4
+)
+bgm:setVolume(1)
+bgm:play()
+
 local curScene = scene_gameplay(1) -- scene_intro()
 local lastScene = nil
 local transitionTimer = 0
@@ -93,6 +102,7 @@ local timeStep = 1 / 240
 function love.update(dt)
   T = T + dt
   local count = 0
+  bgm_update()
   while T > timeStep and count < 4 do
     T = T - timeStep
     count = count + 1

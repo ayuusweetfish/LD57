@@ -1,13 +1,15 @@
 local draw = require 'draw_utils'
 local button = require 'button'
 
+local puzzles = require 'puzzles'
+
 return function (puzzle_index)
   local s = {}
   local W, H = W, H
   local font = _G['global_font']
 
   local t1 = love.graphics.newText(font(40),
-    puzzle_index == 5 and 'The other antenna has been fixed!' or 'Gallery +1')
+    puzzles[puzzle_index].msg or 'Gallery +1')
 
   local t_cont = love.graphics.newText(font(32), 'Press screen / <Enter> key')
 

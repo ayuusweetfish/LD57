@@ -321,6 +321,9 @@ return function (puzzle_index)
     end
   end
 
+  local last_rotate = false
+  local rotate_cont_dur = 0
+
   s.update = function ()
     T = T + 1
     for i = 1, #buttons do buttons[i].update() end
@@ -348,6 +351,20 @@ return function (puzzle_index)
       ant_sector_last = ant_sector_backup
       ant_sector_anim = SECTOR_ANIM_DUR
     end
+
+    local cur_rotate = (accel ~= 0)
+    if not last_rotate and cur_rotate then
+      audio.sfx('rotate', 0, true)
+      rotate_cont_dur = 0
+    elseif last_rotate and not cur_rotate then
+      audio.sfx_stop('rotate')
+    end
+    if cur_rotate then
+      rotate_cont_dur = rotate_cont_dur + 1
+      local vol = math.min(1, rotate_cont_dur / 120)
+      audio.sfx_vol('rotate', vol)
+    end
+    last_rotate = cur_rotate
 
     if T <= T_last_lever + LEVER_COOLDOWN then
       if T == T_last_lever + LEVER_COOLDOWN then

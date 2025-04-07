@@ -1,5 +1,6 @@
 local draw = require 'draw_utils'
 local button = require 'button'
+local audio = require 'audio'
 
 local puzzles = require 'puzzles'
 
@@ -176,7 +177,7 @@ return function (puzzle_index)
 
   local sel_sym = 2
 
-  local LEVER_COOLDOWN = 240
+  local LEVER_COOLDOWN = 360
   local T_last_lever = -LEVER_COOLDOWN
 
   local objective_seq = puzzle.seq
@@ -240,19 +241,18 @@ return function (puzzle_index)
   -- Lever button
   local pull_lever
   local btn_lever = button(
-    draw.get('intro_bg'),
-    function () pull_lever() end,
-    W * 0.1
+    draw.get('lever/0'),
+    function () pull_lever() end
   )
-  btn_lever.x = W * 0.78
-  btn_lever.y = H * 0.5
+  btn_lever.x = 1000
+  btn_lever.y = 300
   buttons[#buttons + 1] = btn_lever
 
   pull_lever = function ()
     if T < T_last_lever + LEVER_COOLDOWN then return end
     if since_clear >= 0 then return end
 
-    btn_lever.set_drawable(draw.get('nn_01'))
+    btn_lever.hidden = true
     btn_lever.enabled = false
     T_last_lever = T
 
@@ -261,6 +261,8 @@ return function (puzzle_index)
 
     -- Record transmission
     table.insert(transmits[ant_sector], {symbol = sel_sym, timestamp = T})
+
+    audio.sfx('lever')
   end
 
   -- Gallery button
@@ -331,8 +333,8 @@ return function (puzzle_index)
     if love.keyboard.isDown('right') then accel = accel + 1 end
     ant_speed = clamp(ant_speed + accel / 20, -1, 1)
     if accel == 0 then
-      if ant_speed > 0 then ant_speed = math.max(0, ant_speed - 1 / 90)
-      else ant_speed = math.min(0, ant_speed + 1 / 90) end
+      if ant_speed > 0 then ant_speed = math.max(0, ant_speed - 1 / 120)
+      else ant_speed = math.min(0, ant_speed + 1 / 120) end
     end
     ant_ori = ant_ori + ori_step * ant_speed
     if earthbound then
@@ -349,7 +351,7 @@ return function (puzzle_index)
 
     if T <= T_last_lever + LEVER_COOLDOWN then
       if T == T_last_lever + LEVER_COOLDOWN then
-        btn_lever.set_drawable(draw.get('intro_bg'))
+        btn_lever.hidden = false
         btn_lever.enabled = true
       end
     end
@@ -521,6 +523,11 @@ return function (puzzle_index)
 
     love.graphics.setColor(1, 1, 1)
     for i = 1, #buttons do buttons[i].draw() end
+
+    if T < T_last_lever + LEVER_COOLDOWN then
+      local frame = 1 + math.floor((T - T_last_lever) / 30)
+      draw.img('lever/' .. tostring(frame), W / 2, H / 2)
+    end
 
     -- Gallery
     gallery_overlay.draw()

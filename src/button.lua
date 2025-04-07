@@ -68,6 +68,7 @@ return function (drawable, fn, drawable_scale)
   end
 
   s.draw = function ()
+    if s.hidden then return end
     local sc = scale * s.s
     local x, y, sc = s.x - w/2 * sc, s.y - h/2 * sc, sc
     if drawable.draw then

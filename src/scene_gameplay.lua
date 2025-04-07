@@ -27,6 +27,17 @@ end
 local ease_elastic = function (x, k)
   return (1 - x) * (1 - x) * math.sin(k * x)
 end
+local ease_stuck_0 = function (x, t)
+  -- f(0) = 0, f(1) = 1, f'(0) = 1, f'(1) = 0
+  return 1 - (1 - x) * (1 - x) * math.exp(-t * x)
+end
+local ease_stuck = function (x, t)
+  -- f(0) = 0, f(inf) = t, f'(0) = 1, f'(inf) = 0
+  return t * (1 - math.exp(-x / t))
+end
+local ease_stuck_inverse = function (y, t)
+  return -t * math.log(1 - y / t)
+end
 
 -- Knuth-Morris-Pratt's partial match table (failure/next function)
 local calc_kmp_next = function (a)
@@ -254,6 +265,7 @@ return function (puzzle_index)
   local ant_sector_last, ant_sector_anim = ant_sector, 0
   local SECTOR_ANIM_DUR = 40
   local RESP_DISP_DUR = 720
+  local ant_ori_stuck, ant_ori_stuck_dir = 0, 0
 
   local sel_sym = 2
 
@@ -427,6 +439,19 @@ return function (puzzle_index)
     end
     ant_ori = ant_ori + ori_step * ant_speed
     if earthbound then
+      if accel == 0 then
+        local value = ease_stuck(ant_ori_stuck, 0.1)
+        value = value * 0.94
+        ant_ori_stuck = ease_stuck_inverse(value, 0.1)
+      else
+        if ant_ori < math.pi then
+          ant_ori_stuck = ant_ori_stuck + ori_step * math.abs(ant_speed)
+          ant_ori_stuck_dir = 1
+        elseif ant_ori > math.pi * 2 then
+          ant_ori_stuck = ant_ori_stuck + ori_step * math.abs(ant_speed)
+          ant_ori_stuck_dir = -1
+        end
+      end
       ant_ori = clamp(ant_ori, math.pi, math.pi * 2)
     else
       if ant_ori < 0 then ant_ori = ant_ori + math.pi * 2
@@ -572,9 +597,15 @@ return function (puzzle_index)
         radar_trail_flip = 1
       end
     end
+    local disp_ori = ant_ori
+    if ant_ori_stuck_dir < 0 then
+      disp_ori = disp_ori + ease_stuck(ant_ori_stuck, 0.1)
+    else
+      disp_ori = disp_ori - ease_stuck(ant_ori_stuck, 0.1)
+    end
     love.graphics.setColor(1, 1, 1)
     draw.img('radar_trail/' .. radar_trail_frame, radar_x, radar_y,
-      108 * radar_trail_flip, 216, 6.5/162, 317/324, ant_ori + math.pi / 2)
+      108 * radar_trail_flip, 216, 6.5/162, 317/324, disp_ori + math.pi / 2)
 
     -- Sector responses
     local symbol_list = function (rs, i, radius, is_transmit)

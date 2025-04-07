@@ -18,6 +18,9 @@ end
 local ease_quad_in = function (x)
   return x * x
 end
+local ease_sine = function (x)
+  return (1 - math.cos(x * math.pi)) * 0.5
+end
 local ease_pow_out = function (x, n)
   return 1 - (1 - x) ^ n
 end
@@ -49,7 +52,7 @@ local create_gallery_overlay = function ()
   -- Local coordinate origin in world coordinates
   local o_x, o_y = W * 0.17, H * 0.6
   -- Local shearing
-  local s_x, s_y = 0.07, -0.05
+  local s_x, s_y = 0.1, -0.07
 
   local anim_t, anim_dir  -- anim_dir = +1: in, 0: none, -1: out
   local is_active
@@ -159,20 +162,38 @@ local create_gallery_overlay = function ()
 
     love.graphics.push('transform')
 
-    local scale = 1
+    local scale_x, scale_y = 1, 1
+    local move_progress_x, move_progress_y, rotation = 1, 1, 0
+    local alpha = 1
     if anim_dir == 1 then
       local x = anim_t / 120
-      scale = ease_quad(x)
+      scale_x = ease_quad(x)
+      scale_y = scale_x * ease_pow_out(x, 4)
+      move_progress_x = ease_quad(x)
+      move_progress_y = ease_quad(x)
+      rotation = -1.6 * (1 - ease_pow_out(x, 3))
+      alpha = ease_quad_out(math.max(0, (x - 0.7) / 0.3))
     elseif anim_dir == -1 then
       local x = anim_t / 120
-      scale = 1 - ease_quad(x)
+      scale_x = 1 - ease_quad(x)
+      scale_y = scale_x * ease_pow_out(1 - x, 4)
+      move_progress_x = 1 - ease_quad(x)
+      move_progress_y = 1 - ease_quad(x)
+      rotation = -1.6 * (1 - ease_pow_out(1 - x, 3))
+      alpha = ease_quad_out(math.max(0, (1 - x - 0.7)) / 0.3)
     end
 
-    love.graphics.translate(o_x, o_y)
-    love.graphics.shear(s_x, s_y)
-    love.graphics.scale(scale)
+    -- >-<
+    local o0_x, o0_y = W * 0.12, H * 0.7
+    local oo_x = o0_x + (o_x - o0_x) * move_progress_x
+    local oo_y = o0_y + (o_y - o0_y) * move_progress_y
 
-    love.graphics.setColor(1, 1, 1)
+    love.graphics.translate(oo_x, oo_y)
+    love.graphics.shear(s_x, s_y)
+    love.graphics.scale(scale_x, scale_y)
+    love.graphics.rotate(rotation)
+
+    love.graphics.setColor(1, 1, 1, alpha)
     draw.img('card', 0, 0, W * 0.22)
     draw.img('stars/' .. tostring(cur_page), 0, H * -0.1, W * 0.2)
 

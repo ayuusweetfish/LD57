@@ -336,7 +336,7 @@ return function (puzzle_index)
       H * 0.1
     )
     btn.x = W * (0.5 + (i - 2) * 0.15)
-    btn.y = H * 0.8
+    btn.y = H * 0.75
     sym_btns[i] = btn
     buttons[#buttons + 1] = btn
   end
@@ -669,7 +669,7 @@ return function (puzzle_index)
       end
 
       love.graphics.setColor(1, 1, 1, alpha)
-      draw.img('symbols/' .. objective_seq[i] .. '_tv', x, y, 54 * scale, 54 * scale)
+      draw.img('symbols/' .. objective_seq[i] .. '', x, y, 54 * scale, 54 * scale)
     end
 
     love.graphics.setColor(0.1, 0.1, 0.1)

@@ -1,4 +1,4 @@
-return function (drawable, fn, drawable_scale)
+return function (drawable, fn, drawable_scale, drawable_scale_is_absolute)
   local s = {}
   local W, H = W, H
 
@@ -9,7 +9,9 @@ return function (drawable, fn, drawable_scale)
 
   local w, h = drawable:getDimensions()
   if drawable_scale then
-    drawable_scale = drawable_scale / w
+    if not drawable_scale_is_absolute then
+      drawable_scale = drawable_scale / w
+    end
     w = w * drawable_scale
     h = h * drawable_scale
   else

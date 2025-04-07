@@ -62,11 +62,24 @@ local enclose = function (drawable, w, h, extraOffsX, extraOffsY)
   return s
 end
 
+local extend = function (drawable, dx, dy)
+  local iw, ih = drawable:getDimensions()
+  local s = {}
+  s.getDimensions = function (self)
+    return iw + dx, ih + dy
+  end
+  s.draw = function (self, x, y, sc)
+    love.graphics.draw(drawable, x + iw / 4 * sc, y + ih / 4 * sc, 0, sc)
+  end
+  return s
+end
+
 local draw_ = {
   get = function (name) return imgs[name] end,
   img = img,
   shadow = shadow,
   enclose = enclose,
+  extend = extend,
 }
 setmetatable(draw_, { __call = function (self, ...) draw(...) end })
 return draw_

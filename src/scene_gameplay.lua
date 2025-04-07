@@ -69,20 +69,23 @@ local create_gallery_overlay = function ()
     elseif cur_page > n_pages then cur_page = 1 end
   end
 
+  local button_scale = W * 0.22 / draw.get('card'):getWidth()
+
   local close_button = button(
-    draw.get('symbols/2'),
-    function () o.close() end
-  )
-  close_button.x = W * -0.08
-  close_button.y = H * -0.24
+    draw.get('gallery_book/btn_close'), function () o.close() end, button_scale, true)
+  close_button.x, close_button.y = 2, 186
   buttons[#buttons + 1] = close_button
 
-  local last_button = button(draw.get('symbols/1'), function () flip_page(-1) end)
-  last_button.x, last_button.y = W * -0.1, 0
+  local last_button = button(
+    draw.extend(draw.get('gallery_book/btn_prev'), 30, 30),
+    function () flip_page(-1) end, button_scale, true)
+  last_button.x, last_button.y = -120, 6
   buttons[#buttons + 1] = last_button
 
-  local next_button = button(draw.get('symbols/3'), function () flip_page(1) end)
-  next_button.x, next_button.y = W * 0.1, 0
+  local next_button = button(
+    draw.extend(draw.get('gallery_book/btn_next'), 30, 30),
+    function () flip_page(1) end, button_scale, true)
+  next_button.x, next_button.y = 120, 7
   buttons[#buttons + 1] = next_button
 
   o.reset = function ()

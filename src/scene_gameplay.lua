@@ -380,14 +380,16 @@ return function (puzzle_index)
           end
         end
       end
+
       -- Remove expired ones
-      while #responses[i] > 0 and responses[i][1].timestamp < T - RESP_DISP_DUR do
-        table.remove(responses[i], 1)
+      local prune_expired_symbols = function (l)
+        while #l > 0 and (#l > 4 or l[1].timestamp < T - RESP_DISP_DUR) do
+          table.remove(l, 1)
+        end
       end
+      prune_expired_symbols(responses[i])
       -- And also transmissions
-      while #transmits[i] > 0 and transmits[i][1].timestamp < T - RESP_DISP_DUR do
-        table.remove(transmits[i], 1)
-      end
+      prune_expired_symbols(transmits[i])
     end end
 
     for i = math.min(last_seq_pos, objective_pos) + 1,
@@ -460,12 +462,12 @@ return function (puzzle_index)
         local t = T - rs[j].timestamp
         local dx
         local s = 1
-        if t < 30 then
-          local x = t / 30
+        if t < 20 then
+          local x = t / 20
           s = ease_quad_out(x)
           dx = ease_quad(x)
-        elseif t > RESP_DISP_DUR - 60 then
-          local x = 1 - (RESP_DISP_DUR - t) / 60
+        elseif t > RESP_DISP_DUR - 40 then
+          local x = 1 - (RESP_DISP_DUR - t) / 40
           s = ease_quad_in(1 - x)
           dx = 1 - ease_quad(x)
         else

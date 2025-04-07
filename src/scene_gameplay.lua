@@ -649,8 +649,7 @@ return function (puzzle_index)
     -- Steering wheel
     local steer_frame = math.min(STEER_N_FRAMES, 1 + math.floor(steer_cont_dur / 20))
     local steer_flip_x = (last_steer_nonzero < 0)
-    draw.img('steer/' .. tostring(steer_frame), W / 2, H / 2,
-      steer_flip_x and -W or W, H)
+    draw.img('steer/' .. tostring(steer_frame), 640, 664, steer_flip_x and -516 or 516, 112)
 
     -- Gallery
     gallery_overlay.draw()

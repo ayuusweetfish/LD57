@@ -149,6 +149,7 @@ return function (puzzle_index)
 
   local puzzle = puzzles[puzzle_index]
   local earthbound = (#puzzle.resp <= 5)
+  local unisymbol = puzzle.unisymbol
 
   ------ Display ------
   local radar_x, radar_y = W * 0.498, H * 0.367
@@ -167,7 +168,7 @@ return function (puzzle_index)
   local SECTOR_ANIM_DUR = 40
   local RESP_DISP_DUR = 720
 
-  local sel_sym = 1
+  local sel_sym = 2
 
   local LEVER_COOLDOWN = 360
   local T_last_lever = -LEVER_COOLDOWN
@@ -202,16 +203,18 @@ return function (puzzle_index)
   local refresh_sym_btns
 
   local select_sym = function (i)
-    sel_sym = i
-    refresh_sym_btns()
+    if sym_btns[i] then   -- Hide 1/3 symbols in `unisymbol` mode
+      sel_sym = i
+      refresh_sym_btns()
+    end
   end
   refresh_sym_btns = function ()
-    for i = 1, #sym_btns do
+    for i, _ in pairs(sym_btns) do
       sym_btns[i].set_drawable(
         draw.get('icon_sym_' .. tostring(i) .. (sel_sym == i and '_sel' or '')))
     end
   end
-  for i = 1, 3 do
+  for i = (unisymbol and 2 or 1), (unisymbol and 2 or 3) do
     local btn = button(
       draw.get('icon_sym_' .. tostring(i)),
       function () select_sym(i) end,

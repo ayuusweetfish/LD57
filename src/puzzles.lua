@@ -36,6 +36,9 @@ local murmur = function (n, dur, count) return function ()
   return o
 end end
 
+local block = murmur(4, 40, 2)
+local double_mur = function (n) return murmur(n, nil, 2) end
+
 local filter = function (pass_sym) return function ()
   local o = {}
   local q = decay_priority_queue()
@@ -78,21 +81,34 @@ local symmetry = function ()
 end
 
 return {
+  -- Just play
   {
-    seq = {4, 4, 4, 4, 4, 4, 4},
-    resp = {murmur(4), murmur(4), murmur(4), murmur(4), murmur(4), murmur(4), murmur(4), murmur(4)},
+    seq = {1, 1, 1, 1, 1, 1, 1},
+    resp = {murmur(1), murmur(1), murmur(1), murmur(1), murmur(1)},
+    unisymbol = true,
   },
+  -- Find one inside many obstacles
   {
-    seq = {4, 4, 4, 4, 4, 4, 4},
-    resp = {murmur(4), murmur(4), murmur(4), murmur(4), murmur(4)},
+    seq = {1, 1, 1, 1, 1},
+    resp = {block, block, block, murmur(1), block},
+    unisymbol = true,
   },
+  -- Construct sequence
   {
     seq = {1, 2, 3, 2, 1},
-    resp = {murmur(4, 60, 2), murmur(4, 60, 2), murmur(4, 60, 2), echo, murmur(4, 60, 2)},
+    resp = {murmur(1), murmur(2), murmur(3), murmur(2), murmur(1)},
+    unisymbol = true,
   },
+  -- Sometimes you get more than one
+  {
+    seq = {2, 1, 1, 3, 3},
+    resp = {double_mur(3), double_mur(2), double_mur(1), double_mur(2), double_mur(3)},
+    unisymbol = true,
+  },
+  -- The other antenna has been fixed!
   {
     seq = {1, 2, 3, 2, 1},
-    resp = {murmur(3), murmur(2), murmur(1), murmur(2), murmur(3)},
+    resp = {block, echo, block, block, block},
   },
   {
     seq = {1, 1, 2, 3, 2},
@@ -100,7 +116,11 @@ return {
   },
   {
     seq = {3, 1, 2, 2, 1, 3},
-    resp = {murmur(4, 60, 2), symmetry, murmur(4, 60, 2), murmur(4, 60, 2), murmur(4, 60, 2)},
+    resp = {block, symmetry, block, block, block},
+  },
+  {
+    seq = {3, 2, 1, 2, 3},
+    resp = {block, symmetry, block, block, block},
   },
   {
     seq = {2, 1, 3, 2},

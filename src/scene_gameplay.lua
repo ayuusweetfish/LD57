@@ -70,18 +70,18 @@ local create_gallery_overlay = function ()
   end
 
   local close_button = button(
-    draw.get('icon_sym_2'),
+    draw.get('symbols/2'),
     function () o.close() end
   )
   close_button.x = W * -0.08
   close_button.y = H * -0.24
   buttons[#buttons + 1] = close_button
 
-  local last_button = button(draw.get('icon_sym_1'), function () flip_page(-1) end)
+  local last_button = button(draw.get('symbols/1'), function () flip_page(-1) end)
   last_button.x, last_button.y = W * -0.1, 0
   buttons[#buttons + 1] = last_button
 
-  local next_button = button(draw.get('icon_sym_3'), function () flip_page(1) end)
+  local next_button = button(draw.get('symbols/3'), function () flip_page(1) end)
   next_button.x, next_button.y = W * 0.1, 0
   buttons[#buttons + 1] = next_button
 
@@ -301,12 +301,12 @@ return function (puzzle_index)
   refresh_sym_btns = function ()
     for i, _ in pairs(sym_btns) do
       sym_btns[i].set_drawable(
-        draw.get('icon_sym_' .. tostring(i) .. (sel_sym == i and '_sel' or '')))
+        draw.get('symbols/' .. tostring(i) .. (sel_sym == i and '_sel' or '')))
     end
   end
   for i = (unisymbol and 2 or 1), (unisymbol and 2 or 3) do
     local btn = button(
-      draw.get('icon_sym_' .. tostring(i)),
+      draw.get('symbols/' .. tostring(i)),
       function () select_sym(i) end,
       H * 0.1
     )
@@ -584,7 +584,7 @@ return function (puzzle_index)
       else love.graphics.setColor(1, 1, 1) end
       for j = 1, #rs do
         local s = scales[j]
-        draw.img('icon_sym_' .. rs[j].symbol,
+        draw.img('symbols/' .. rs[j].symbol,
           x + (offs[j] + global_offs) * 40 * orth_x,
           y + (offs[j] + global_offs) * 40 * orth_y,
           40 * s, 40 * s)
@@ -613,7 +613,7 @@ return function (puzzle_index)
       end
 
       love.graphics.setColor(1, 1, 1, alpha)
-      draw.img('icon_sym_' .. objective_seq[i], x, y, 60 * scale, 60 * scale)
+      draw.img('symbols/' .. objective_seq[i], x, y, 60 * scale, 60 * scale)
     end
 
     love.graphics.setColor(0.1, 0.1, 0.1)

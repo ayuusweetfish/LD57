@@ -79,6 +79,10 @@ local create_gallery_overlay = function ()
     anim_t, anim_dir = 0, -1
   end
 
+  o.state = function ()
+    return (anim_dir == -1 and 120 - anim_t or anim_t), anim_dir
+  end
+
   o.press = function (x, y)
     if not is_active then return false end
     if anim_dir ~= 0 then return false end
@@ -110,8 +114,11 @@ local create_gallery_overlay = function ()
     if anim_dir ~= 0 then
       anim_t = anim_t + 1
       if anim_t == 120 then
-        if anim_dir == -1 then is_active = false end
-        anim_t, anim_dir = 0, 0
+        if anim_dir == -1 then
+          anim_t = 0
+          is_active = false
+        end
+        anim_dir = 0
       end
     end
   end
@@ -544,6 +551,19 @@ return function (puzzle_index)
 
     love.graphics.setColor(0.1, 0.1, 0.1)
     love.graphics.print(tostring(puzzle_index), W * 0.04, H * 0.88)
+
+    -- Gallery book
+    local book_frame = 1
+    local book_anim, book_anim_dir = gallery_overlay.state()
+    if book_anim_dir == -1 then
+      -- Closing
+      book_frame = math.max(6, 8 - math.floor(book_anim / 20))
+    else
+      -- Opening
+      book_frame = math.min(6, 1 + math.floor(book_anim / 20))
+    end
+    love.graphics.setColor(1, 1, 1)
+    draw.img('gallery_book/' .. tostring(book_frame), W / 2, H / 2)
 
     love.graphics.setColor(1, 1, 1)
     for i = 1, #buttons do buttons[i].draw() end

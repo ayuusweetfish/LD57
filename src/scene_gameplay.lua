@@ -52,6 +52,14 @@ local create_gallery_overlay = function ()
   local anim_t, anim_dir  -- anim_dir = +1: in, 0: none, -1: out
   local is_active
 
+  local n_pages = 18
+  local cur_page = 7
+  local flip_page = function (delta)
+    cur_page = cur_page + delta
+    if cur_page < 1 then cur_page = n_pages
+    elseif cur_page > n_pages then cur_page = 1 end
+  end
+
   local close_button = button(
     draw.get('icon_sym_2'),
     function () o.close() end
@@ -59,6 +67,14 @@ local create_gallery_overlay = function ()
   close_button.x = W * -0.1
   close_button.y = H * -0.24
   buttons[#buttons + 1] = close_button
+
+  local last_button = button(draw.get('icon_sym_1'), function () flip_page(-1) end)
+  last_button.x, last_button.y = W * -0.08, 0
+  buttons[#buttons + 1] = last_button
+
+  local next_button = button(draw.get('icon_sym_3'), function () flip_page(1) end)
+  next_button.x, next_button.y = W * 0.08, 0
+  buttons[#buttons + 1] = next_button
 
   o.reset = function ()
     anim_t, anim_dir = 0, 0
@@ -138,14 +154,17 @@ local create_gallery_overlay = function ()
     end
 
     love.graphics.translate(o_x, o_y)
+    love.graphics.shear(0.07, -0.05)
     love.graphics.scale(scale)
 
     love.graphics.setColor(1, 1, 1)
-    draw.img('card1',
-      0, 0,
-      W * 0.22, nil,
-      0.5, 0.5, 0,
-      0.07, -0.05)
+    draw.img('card', 0, 0, W * 0.22)
+    draw.img('stars/' .. tostring(cur_page), 0, H * -0.1, W * 0.2)
+    love.graphics.pop()
+
+    love.graphics.push('transform')
+    love.graphics.translate(o_x, o_y)
+    love.graphics.scale(scale)
 
     for i = 1, #buttons do buttons[i].draw() end
 
@@ -477,7 +496,7 @@ return function (puzzle_index)
       radar_x + radar_r * math.cos(ant_ori),
       radar_y + radar_r * math.sin(ant_ori))
     love.graphics.setColor(1, 1, 1, 0)
-    draw.img('card1',
+    draw.img('card',
       radar_x + radar_r * math.cos(ant_ori),
       radar_y + radar_r * math.sin(ant_ori),
       H * 0.1, nil, 1, 0.5, ant_ori

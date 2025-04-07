@@ -127,7 +127,6 @@ return {
     unisymbol = true,
   },
   -- Interleave responses
-  -- Strange fail rules?
   {
     seq = {1, 3, 1, 3, 1},
     resp = {block, double_mur_slow(3), double_mur_slow(1), double_mur_slow(3), block},
@@ -149,10 +148,6 @@ return {
   {
     seq = {3, 2, 1, 2, 3},
     resp = {block, symmetry, block, block, block},
-  },
-  {
-    seq = {2, 1, 3, 2},
-    resp = {symmetry, symmetry, symmetry, symmetry, symmetry},
   },
   {
     seq = {1, 2, 1, 3, 2},

@@ -17,6 +17,12 @@ end
 local ease_quad_in = function (x)
   return x * x
 end
+local ease_pow_out = function (x, n)
+  return 1 - (1 - x) ^ n
+end
+local ease_elastic = function (x, k)
+  return (1 - x) * (1 - x) * math.sin(k * x)
+end
 
 -- Knuth-Morris-Pratt's partial match table (failure/next function)
 local calc_kmp_next = function (a)
@@ -176,6 +182,10 @@ return function (puzzle_index)
   local objective_seq = puzzle.seq
   local objective_pos = 0
   local objective_next = calc_kmp_next(objective_seq)
+  local OBJECTIVE_ANIM_DUR_IN = 120
+  local OBJECTIVE_ANIM_DUR_OUT = 90
+  local objective_seq_change = {}
+  for i = 1, #objective_seq do objective_seq_change[i] = -OBJECTIVE_ANIM_DUR_OUT - 1 end
 
   -- Deep space entities!
   local responders = {}
@@ -349,6 +359,7 @@ return function (puzzle_index)
     end
 
     -- Update all responders and collect responses
+    local last_seq_pos = objective_pos
     for i = 0, N_ORI - 1 do if responders[i] then
       local sym = responders[i].update()
       if sym ~= nil then
@@ -378,6 +389,11 @@ return function (puzzle_index)
         table.remove(transmits[i], 1)
       end
     end end
+
+    for i = math.min(last_seq_pos, objective_pos) + 1,
+            math.max(last_seq_pos, objective_pos) do
+      objective_seq_change[i] = T
+    end
 
     if since_clear >= 0 then
       since_clear = since_clear + 1
@@ -481,12 +497,25 @@ return function (puzzle_index)
     for i = 1, #objective_seq do
       local x = W * 0.1 + 60 * (i - 1)
       local y = H * 0.12
-      love.graphics.setColor(1, 1, 1, i <= objective_pos and 1 or 0.3)
-      draw.img('icon_sym_' .. objective_seq[i], x, y, 60, 60)
+      local scale = 1
+      local alpha = i <= objective_pos and 1 or 0.3
+
+      local anim_t = T - objective_seq_change[i]
+      if i <= objective_pos and anim_t <= OBJECTIVE_ANIM_DUR_IN then
+        local x = anim_t / OBJECTIVE_ANIM_DUR_IN
+        scale = 1 + ease_elastic(x, 10) * 0.1
+      elseif i > objective_pos and anim_t <= OBJECTIVE_ANIM_DUR_OUT then
+        local x = anim_t / OBJECTIVE_ANIM_DUR_OUT
+        alpha = 1 - 0.7 * ease_pow_out(x, 4)
+        scale = 1 - ease_elastic(x, 4) * 0.08
+      end
+
+      love.graphics.setColor(1, 1, 1, alpha)
+      draw.img('icon_sym_' .. objective_seq[i], x, y, 60 * scale, 60 * scale)
     end
 
     love.graphics.setColor(0.1, 0.1, 0.1)
-    love.graphics.print(tostring(puzzle_index), W * 0.07, H * 0.8)
+    love.graphics.print(tostring(puzzle_index), W * 0.04, H * 0.88)
 
     love.graphics.setColor(1, 1, 1)
     for i = 1, #buttons do buttons[i].draw() end

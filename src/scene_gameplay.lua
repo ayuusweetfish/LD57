@@ -48,6 +48,8 @@ local create_gallery_overlay = function ()
 
   -- Local coordinate origin in world coordinates
   local o_x, o_y = W * 0.17, H * 0.6
+  -- Local shearing
+  local s_x, s_y = 0.07, -0.05
 
   local anim_t, anim_dir  -- anim_dir = +1: in, 0: none, -1: out
   local is_active
@@ -64,16 +66,16 @@ local create_gallery_overlay = function ()
     draw.get('icon_sym_2'),
     function () o.close() end
   )
-  close_button.x = W * -0.1
+  close_button.x = W * -0.08
   close_button.y = H * -0.24
   buttons[#buttons + 1] = close_button
 
   local last_button = button(draw.get('icon_sym_1'), function () flip_page(-1) end)
-  last_button.x, last_button.y = W * -0.08, 0
+  last_button.x, last_button.y = W * -0.1, 0
   buttons[#buttons + 1] = last_button
 
   local next_button = button(draw.get('icon_sym_3'), function () flip_page(1) end)
-  next_button.x, next_button.y = W * 0.08, 0
+  next_button.x, next_button.y = W * 0.1, 0
   buttons[#buttons + 1] = next_button
 
   o.reset = function ()
@@ -99,22 +101,35 @@ local create_gallery_overlay = function ()
     return (anim_dir == -1 and 120 - anim_t or anim_t), anim_dir
   end
 
+  local world_to_local = function (x, y)
+    x = x - o_x
+    y = y - o_y
+    local det = 1 - s_x * s_y
+    x, y =
+      (x - s_x * y) / det,
+      (y - s_y * x) / det
+    return x, y
+  end
+
   o.press = function (x, y)
     if not is_active then return false end
     if anim_dir ~= 0 then return false end
-    for i = 1, #buttons do if buttons[i].press(x - o_x, y - o_y) then return true end end
+    x, y = world_to_local(x, y)
+    for i = 1, #buttons do if buttons[i].press(x, y) then return true end end
   end
 
   o.move = function (x, y)
     if not is_active then return false end
     if anim_dir ~= 0 then return false end
-    for i = 1, #buttons do if buttons[i].move(x - o_x, y - o_y) then return true end end
+    x, y = world_to_local(x, y)
+    for i = 1, #buttons do if buttons[i].move(x, y) then return true end end
   end
 
   o.release = function (x, y)
     if not is_active then return false end
     if anim_dir ~= 0 then return false end
-    for i = 1, #buttons do if buttons[i].release(x - o_x, y - o_y) then return true end end
+    x, y = world_to_local(x, y)
+    for i = 1, #buttons do if buttons[i].release(x, y) then return true end end
   end
 
   o.key = function (key)
@@ -154,17 +169,12 @@ local create_gallery_overlay = function ()
     end
 
     love.graphics.translate(o_x, o_y)
-    love.graphics.shear(0.07, -0.05)
+    love.graphics.shear(s_x, s_y)
     love.graphics.scale(scale)
 
     love.graphics.setColor(1, 1, 1)
     draw.img('card', 0, 0, W * 0.22)
     draw.img('stars/' .. tostring(cur_page), 0, H * -0.1, W * 0.2)
-    love.graphics.pop()
-
-    love.graphics.push('transform')
-    love.graphics.translate(o_x, o_y)
-    love.graphics.scale(scale)
 
     for i = 1, #buttons do buttons[i].draw() end
 

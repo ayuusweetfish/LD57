@@ -285,6 +285,11 @@ return function (puzzle_index)
 
   gallery_overlay.reset()
 
+  local trail_start_speed = 1
+  local trail_start_ramp = 0
+  local radar_trail_frame = 1   -- These are persistant to avoid tail-popping
+  local radar_trail_flip = 1
+
   ------ Buttons ------
   local buttons = { }
 
@@ -495,6 +500,13 @@ return function (puzzle_index)
       objective_seq_change[i] = T
     end
 
+    if ant_speed * trail_start_speed <= 0 then
+      trail_start_ramp = 0
+      if ant_speed ~= 0 then trail_start_speed = ant_speed end
+    else
+      trail_start_ramp = trail_start_ramp + 1
+    end
+
     if since_clear >= 0 then
       since_clear = since_clear + 1
       if since_clear == 600 then
@@ -539,16 +551,24 @@ return function (puzzle_index)
     sector(ant_sector)
 
     -- Radar line
-    love.graphics.setColor(0, 0, 0)
-    love.graphics.line(radar_x, radar_y,
-      radar_x + radar_r * math.cos(ant_ori),
-      radar_y + radar_r * math.sin(ant_ori))
-    love.graphics.setColor(1, 1, 1, 0)
-    draw.img('card',
-      radar_x + radar_r * math.cos(ant_ori),
-      radar_y + radar_r * math.sin(ant_ori),
-      H * 0.1, nil, 1, 0.5, ant_ori
-    )
+    if T % 20 == 0 then
+      if ant_speed ~= 0 then
+        radar_trail_flip = (ant_speed > 0 and -1 or 1)
+        if math.abs(ant_speed) >= 3/4 and trail_start_ramp >= 80 then
+          radar_trail_frame = 6 + math.floor(T / 20) % 4
+        elseif math.abs(ant_speed) >= 1/2 and trail_start_ramp >= 40 then
+          radar_trail_frame = 4 + math.floor(T / 20) % 2
+        else
+          radar_trail_frame = 2 + math.floor(T / 20) % 2
+        end
+      else
+        radar_trail_frame = 1
+        radar_trail_flip = 1
+      end
+    end
+    love.graphics.setColor(1, 1, 1)
+    draw.img('radar_trail/' .. radar_trail_frame, radar_x, radar_y,
+      108 * radar_trail_flip, 216, 6.5/162, 317/324, ant_ori + math.pi / 2)
 
     -- Sector responses
     local symbol_list = function (rs, i, radius, is_transmit)

@@ -200,6 +200,15 @@ return {
     seq = {1, 2, 3, 2, 1},
     resp = {block, block, alternate, block, block, block, alternate, block},
   },
+  {
+    seq = {1, 2, 2, 3, 2, 2, 1},
+    resp = {block, alternate, alternate, block, block, symmetry, symmetry, block},
+  },
+  {
+    seq = {1, 2, 2, 2, 2, 1},
+    resp = {block, alternate, alternate, block, block, condense, condense, block},
+    msg = 'The depths call for patience. Sometimes the wait is long, like, really long.',
+  },
 
   ------ Chapter 4 ------
   {

@@ -1,0 +1,10 @@
+murmur(n)
+block
+double_mur(n)
+  double_mur_slow(n)
+echo
+filter(n)
+symmetry
+condense
+alternate
+long_rep2

@@ -647,10 +647,14 @@ return function (puzzle_index)
       symbol_list(transmits[i], i, radar_r * 0.5, true)
     end
 
+    -- Television screen
+    love.graphics.setColor(1, 1, 1)
+    draw.img('tv', W / 2, H / 2, W, H)
+
     -- Objective sequence
     for i = 1, #objective_seq do
-      local x = W * 0.1 + 60 * (i - 1)
-      local y = H * 0.12
+      local x = W * 0.12 + 53 * ((i - 1) % 5)
+      local y = H * 0.12 + 53 * math.floor((i - 1) / 5)
       local scale = 1
       local alpha = i <= objective_pos and 1 or 0.3
 
@@ -665,7 +669,7 @@ return function (puzzle_index)
       end
 
       love.graphics.setColor(1, 1, 1, alpha)
-      draw.img('symbols/' .. objective_seq[i], x, y, 60 * scale, 60 * scale)
+      draw.img('symbols/' .. objective_seq[i] .. '_tv', x, y, 54 * scale, 54 * scale)
     end
 
     love.graphics.setColor(0.1, 0.1, 0.1)

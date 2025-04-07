@@ -56,6 +56,7 @@ local create_gallery_overlay = function ()
 
   -- Global offset
   local offs_x = 0
+  local offs_y_t = 0
 
   local anim_t, anim_dir  -- anim_dir = +1: in, 0: none, -1: out
   local is_active
@@ -110,6 +111,7 @@ local create_gallery_overlay = function ()
   o.pull = function (target_offs_x)
     local rate = (target_offs_x * (target_offs_x - offs_x) < 0) and 0.09 or 0.02
     offs_x = offs_x + (target_offs_x - offs_x) * rate
+    offs_y_t = offs_y_t + 1
   end
 
   local world_to_local = function (x, y)
@@ -196,6 +198,7 @@ local create_gallery_overlay = function ()
     local oo_x = o0_x + (o_x - o0_x) * move_progress_x
     local oo_y = o0_y + (o_y - o0_y) * move_progress_y
     oo_x = oo_x + offs_x * W * 0.005
+    oo_y = oo_y + offs_x * math.sin(offs_y_t / 20) * H * 0.0005
 
     love.graphics.translate(oo_x, oo_y)
     love.graphics.shear(s_x, s_y)

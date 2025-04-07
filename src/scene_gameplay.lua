@@ -204,6 +204,11 @@ return function (puzzle_index)
   ------ State animations and scene elements ------
   local since_clear = -1
 
+  local STEER_N_FRAMES = 6
+  local last_rotate = 0
+  local last_rotate_nonzero = 1
+  local rotate_cont_dur = STEER_N_FRAMES * 20
+
   gallery_overlay.reset()
 
   ------ Buttons ------
@@ -321,9 +326,6 @@ return function (puzzle_index)
     end
   end
 
-  local last_rotate = false
-  local rotate_cont_dur = 0
-
   s.update = function ()
     T = T + 1
     for i = 1, #buttons do buttons[i].update() end
@@ -352,19 +354,22 @@ return function (puzzle_index)
       ant_sector_anim = SECTOR_ANIM_DUR
     end
 
-    local cur_rotate = (accel ~= 0)
-    if not last_rotate and cur_rotate then
+    if last_rotate == 0 and accel ~= 0 then
       audio.sfx('rotate', 0, true)
       rotate_cont_dur = 0
-    elseif last_rotate and not cur_rotate then
+    elseif last_rotate ~= 0 and accel == 0 then
       audio.sfx_stop('rotate')
+      rotate_cont_dur = 0
     end
-    if cur_rotate then
+    if accel ~= 0 then
       rotate_cont_dur = rotate_cont_dur + 1
       local vol = math.min(1, rotate_cont_dur / 120)
       audio.sfx_vol('rotate', vol)
+    elseif rotate_cont_dur < STEER_N_FRAMES * 20 then
+      rotate_cont_dur = rotate_cont_dur + 1
     end
-    last_rotate = cur_rotate
+    last_rotate = accel
+    if accel ~= 0 then last_rotate_nonzero = accel end
 
     if T <= T_last_lever + LEVER_COOLDOWN then
       if T == T_last_lever + LEVER_COOLDOWN then
@@ -541,10 +546,22 @@ return function (puzzle_index)
     love.graphics.setColor(1, 1, 1)
     for i = 1, #buttons do buttons[i].draw() end
 
+    -- Lever
     if T < T_last_lever + LEVER_COOLDOWN then
       local frame = 1 + math.floor((T - T_last_lever) / 30)
       draw.img('lever/' .. tostring(frame), W / 2, H / 2)
     end
+
+    -- Steering wheel
+    local steer_frame = 1
+    local steer_flip_x = (last_rotate_nonzero < 0)
+    if last_rotate ~= 0 then
+      steer_frame = math.min(STEER_N_FRAMES, 1 + math.floor(rotate_cont_dur / 20))
+    else
+      steer_frame = math.max(1, STEER_N_FRAMES - math.floor(rotate_cont_dur / 20))
+    end
+    draw.img('steer/' .. tostring(steer_frame), W / 2, H / 2,
+      steer_flip_x and -W or W, H)
 
     -- Gallery
     gallery_overlay.draw()

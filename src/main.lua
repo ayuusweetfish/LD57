@@ -52,6 +52,7 @@ love.graphics.setFont(_G['global_font'](40))
 
 _G['scene_intro'] = require 'scene_intro'
 _G['scene_gameplay'] = require 'scene_gameplay'
+_G['scene_interlude'] = require 'scene_interlude'
 
 local curScene = scene_gameplay(1) -- scene_intro()
 local lastScene = nil

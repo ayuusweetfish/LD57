@@ -296,6 +296,8 @@ return function (puzzle_index)
     elseif key == '3' then select_sym(3)
     elseif key == 'return' then pull_lever()
     elseif key == 'tab' then open_gallery()
+    elseif key == 'space' then
+      replaceScene(scene_interlude(puzzle_index), transitions['fade'](0.1, 0.1, 0.1))
     elseif key == 'n' then
       if puzzles[puzzle_index + 1] then
         replaceScene(scene_gameplay(puzzle_index + 1), transitions['fade'](0.1, 0.1, 0.1))
@@ -380,7 +382,7 @@ return function (puzzle_index)
     if since_clear >= 0 then
       since_clear = since_clear + 1
       if since_clear == 600 then
-        replaceScene(scene_gameplay(puzzle_index + 1), transitions['fade'](0.1, 0.1, 0.1))
+        replaceScene(scene_interlude(puzzle_index), transitions['fade'](0.1, 0.1, 0.1))
       end
     end
 

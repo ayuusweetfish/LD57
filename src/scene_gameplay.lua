@@ -39,8 +39,19 @@ local create_gallery_overlay = function ()
 
   local buttons = {}
 
+  -- Local coordinate origin in world coordinates
+  local o_x, o_y = W * 0.17, H * 0.6
+
   local anim_t, anim_dir  -- anim_dir = +1: in, 0: none, -1: out
   local is_active
+
+  local close_button = button(
+    draw.get('icon_sym_2'),
+    function () o.close() end
+  )
+  close_button.x = W * -0.1
+  close_button.y = H * -0.24
+  buttons[#buttons + 1] = close_button
 
   o.reset = function ()
     anim_t, anim_dir = 0, 0
@@ -48,7 +59,11 @@ local create_gallery_overlay = function ()
   end
   o.reset()
 
-  o.open = function ()
+  o.toggle_open = function ()
+    if is_active then
+      if anim_dir == 0 then o.close() end
+      return
+    end
     anim_t, anim_dir = 0, 1
     is_active = true
   end
@@ -59,25 +74,25 @@ local create_gallery_overlay = function ()
 
   o.press = function (x, y)
     if not is_active then return false end
-    if anim_dir ~= 0 then return true end   -- Events drained (collected and ignored) during animations
-    for i = 1, #buttons do if buttons[i].press(x, y) then return true end end
+    if anim_dir ~= 0 then return false end
+    for i = 1, #buttons do if buttons[i].press(x - o_x, y - o_y) then return true end end
   end
 
   o.move = function (x, y)
     if not is_active then return false end
-    if anim_dir ~= 0 then return true end
-    for i = 1, #buttons do if buttons[i].move(x, y) then return true end end
+    if anim_dir ~= 0 then return false end
+    for i = 1, #buttons do if buttons[i].move(x - o_x, y - o_y) then return true end end
   end
 
   o.release = function (x, y)
     if not is_active then return false end
-    if anim_dir ~= 0 then return true end
-    for i = 1, #buttons do if buttons[i].release(x, y) then return true end end
+    if anim_dir ~= 0 then return false end
+    for i = 1, #buttons do if buttons[i].release(x - o_x, y - o_y) then return true end end
   end
 
   o.key = function (key)
     if not is_active then return false end
-    if anim_dir ~= 0 then return true end
+    if anim_dir ~= 0 then return false end
     if key == 'tab' then o.close() return true end
   end
 
@@ -97,6 +112,8 @@ local create_gallery_overlay = function ()
   o.draw = function ()
     if not is_active then return end
 
+    love.graphics.push('transform')
+
     local scale = 1
     if anim_dir == 1 then
       local x = anim_t / 120
@@ -105,12 +122,20 @@ local create_gallery_overlay = function ()
       local x = anim_t / 120
       scale = 1 - ease_quad(x)
     end
+
+    love.graphics.translate(o_x, o_y)
+    love.graphics.scale(scale)
+
     love.graphics.setColor(1, 1, 1)
     draw.img('card1',
-      W * 0.17, H * 0.6,
-      W * 0.22 * scale, nil,
+      0, 0,
+      W * 0.22, nil,
       0.5, 0.5, 0,
       0.07, -0.05)
+
+    for i = 1, #buttons do buttons[i].draw() end
+
+    love.graphics.pop()
   end
 
   return o
@@ -236,7 +261,7 @@ return function (puzzle_index)
   buttons[#buttons + 1] = btn_gallery
 
   open_gallery = function ()
-    gallery_overlay.open()
+    gallery_overlay.toggle_open()
   end
 
   ------ Scene methods ------

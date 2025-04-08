@@ -669,9 +669,11 @@ return function (puzzle_index)
     draw.img('tv', W / 2, H / 2, W, H)
 
     -- Objective sequence
+    local symbols_per_line = (#objective_seq >= 6 and #objective_seq <= 8 and 4 or 5)
+    local n_lines = math.ceil(#objective_seq / symbols_per_line)
     for i = 1, #objective_seq do
-      local x = W * 0.12 + 53 * ((i - 1) % 5)
-      local y = H * 0.12 + 53 * math.floor((i - 1) / 5)
+      local x = W * 0.124 + 53 * ((i - 1) % symbols_per_line)
+      local y = H * 0.175 + 53 * (-n_lines + 1 + math.floor((i - 1) / symbols_per_line))
       local scale = 1
       local alpha = i <= objective_pos and 1 or 0.3
 
@@ -686,7 +688,7 @@ return function (puzzle_index)
       end
 
       love.graphics.setColor(1, 1, 1, alpha)
-      draw.img('symbols/' .. objective_seq[i] .. '', x, y, 54 * scale, 54 * scale)
+      draw.img('symbols/' .. objective_seq[i] .. '_tv', x, y, 54 * scale, 54 * scale, 0.5, 0.5, 0.03)
     end
 
     love.graphics.setColor(0.1, 0.1, 0.1)

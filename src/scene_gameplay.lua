@@ -280,32 +280,32 @@ return function (puzzle_index)
   local puzzle = puzzles[puzzle_index]
   local earthbound = (#puzzle.resp <= 5)
   local unisymbol = puzzle.unisymbol
-  local out_bg_index
-  if puzzle_index <= 10 then out_bg_index = 1
-  elseif puzzle_index <= 15 then out_bg_index = 2
-  elseif puzzle_index <= 17 then out_bg_index = 3
-  else out_bg_index = 4 end
+  local chapter_index
+  if puzzle_index <= 10 then chapter_index = 1
+  elseif puzzle_index <= 15 then chapter_index = 2
+  elseif puzzle_index <= 17 then chapter_index = 3
+  else chapter_index = 4 end
 
   ------ Canvas for global effect overlay ------
   local canvas = love.graphics.newCanvas(W, H)
 
   local global_shader = global_filter_shader[
-    out_bg_index == 3 and 'soft_light' or 'overlay']
-  global_shader:send('filter_tex', draw.get('filters/' .. out_bg_index))
+    chapter_index == 3 and 'soft_light' or 'overlay']
+  global_shader:send('filter_tex', draw.get('filters/' .. chapter_index))
 
   ------ Display ------
   local radar_x, radar_y = W * 0.498, H * 0.367
   local radar_r = H * 0.3
 
-  local bg_int = 'bg_int/' .. (out_bg_index == 1 and 1 or 2)
+  local bg_int = 'bg_int/' .. (chapter_index == 1 and 1 or 2)
 
-  local out_bg_slices = {}
-  local out_bg_w_total = 0
+  local bg_ext_slices = {}
+  local bg_ext_w_total = 0
   for i = 0, 2 do
-    local out_bg_name = 'bg_out/' .. out_bg_index .. '-' .. i
-    local w, _ = draw.get(out_bg_name):getDimensions()
-    out_bg_slices[i + 1] = { name = out_bg_name, width = w }
-    out_bg_w_total = out_bg_w_total + w
+    local bg_ext_name = 'bg_ext/' .. chapter_index .. '-' .. i
+    local w, _ = draw.get(bg_ext_name):getDimensions()
+    bg_ext_slices[i + 1] = { name = bg_ext_name, width = w }
+    bg_ext_w_total = bg_ext_w_total + w
   end
 
   ------ Game state ------
@@ -669,16 +669,16 @@ return function (puzzle_index)
 
     -- Outer background
     love.graphics.setColor(1, 1, 1)
-    local out_bg_pos = -ant_ori / (math.pi * 2) * out_bg_w_total  -- Logical position
-    for i = 1, #out_bg_slices do
-      local start_pos = out_bg_pos
+    local bg_ext_pos = -ant_ori / (math.pi * 2) * bg_ext_w_total  -- Logical position
+    for i = 1, #bg_ext_slices do
+      local start_pos = bg_ext_pos
       -- Physical position: fold around
-      if start_pos < -out_bg_w_total + W then start_pos = start_pos + out_bg_w_total end
-      local end_pos = start_pos + out_bg_slices[i].width
+      if start_pos < -bg_ext_w_total + W then start_pos = start_pos + bg_ext_w_total end
+      local end_pos = start_pos + bg_ext_slices[i].width
       if math.max(0, start_pos) < math.min(W, end_pos) then
-        draw.img(out_bg_slices[i].name, start_pos, 0, out_bg_slices[i].width, nil, 0, 0)
+        draw.img(bg_ext_slices[i].name, start_pos, 0, bg_ext_slices[i].width, nil, 0, 0)
       end
-      out_bg_pos = out_bg_pos + out_bg_slices[i].width  -- Still logical
+      bg_ext_pos = bg_ext_pos + bg_ext_slices[i].width  -- Still logical
     end
     draw.img(bg_int, W / 2, H / 2, W, H)
 

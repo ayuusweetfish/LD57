@@ -297,6 +297,8 @@ return function (puzzle_index)
   local radar_x, radar_y = W * 0.498, H * 0.367
   local radar_r = H * 0.3
 
+  local bg_int = 'bg_int/' .. (out_bg_index == 1 and 1 or 2)
+
   local out_bg_slices = {}
   local out_bg_w_total = 0
   for i = 0, 2 do
@@ -678,7 +680,7 @@ return function (puzzle_index)
       end
       out_bg_pos = out_bg_pos + out_bg_slices[i].width  -- Still logical
     end
-    draw.img('bg_1', W / 2, H / 2, W, H)
+    draw.img(bg_int, W / 2, H / 2, W, H)
 
     -- Sector highlight
     local sector = function (n)

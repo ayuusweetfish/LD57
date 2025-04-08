@@ -701,6 +701,11 @@ return function (puzzle_index)
       symbol_list(transmits[i], i, radar_r * 0.4, radar_r * 0.15, 0.3, 0.7, 0.4)
     end
 
+    -- Screen noise
+    love.graphics.setColor(0.25, 0.27, 0.15)
+    local noise_frame = 1 + math.floor(T / 20) % 10
+    draw.img('noise/' .. noise_frame, W / 2, (111 + 630/2) * (2/3))
+
     -- Television screen
     love.graphics.setColor(1, 1, 1)
     draw.img('tv', W / 2, H / 2, W, H)
@@ -756,7 +761,7 @@ return function (puzzle_index)
     local btn_light_frame = math.min(6, 1 + math.floor(sel_sym_since / 10))
     local btn_light_alpha = {0.26, 0.21, 0.65, 0.26, 0.84, 1}
     love.graphics.setColor(1, 1, 1, btn_light_alpha[btn_light_frame])
-    draw.img('btn_light/1', sym_btns[sel_sym].x, (591 + 270/2) * (2/3))
+    draw.img('btn_light', sym_btns[sel_sym].x, (591 + 270/2) * (2/3))
 
     -- Lever
     love.graphics.setColor(1, 1, 1)

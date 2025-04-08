@@ -641,20 +641,25 @@ return function (puzzle_index)
       108 * radar_trail_flip, 216, 6.5/162, 317/324, disp_ori + math.pi / 2)
 
     -- Sector responses
-    local symbol_list = function (rs, i, radius, is_transmit)
+    local symbol_list = function (rs, i, radius, slide, tint_r, tint_g, tint_b)
       if #rs == 0 then return end
       local x = radar_x + radius * math.cos(i * math.pi * 2 / N_ORI)
       local y = radar_y + radius * math.sin(i * math.pi * 2 / N_ORI)
       local offs_x = 0
       local offs = {}
       local scales = {}
+      local slides = {}
+      local slide_x = slide * math.cos(i * math.pi * 2 / N_ORI)
+      local slide_y = slide * math.sin(i * math.pi * 2 / N_ORI)
       for j = 1, #rs do
         local t = T - rs[j].timestamp
         local dx
         local s = 1
+        local l = 0
         if t < 20 then
           local x = t / 20
           s = ease_quad_out(x)
+          l = 1 - ease_pow_out(x, 3)
           dx = ease_quad(x)
         elseif t > RESP_DISP_DUR - 40 then
           local x = 1 - (RESP_DISP_DUR - t) / 40
@@ -666,23 +671,24 @@ return function (puzzle_index)
         offs[j] = offs_x + dx / 2
         offs_x = offs_x + dx
         scales[j] = s
+        slides[j] = l
       end
       local global_offs = -offs_x / 2
       local orth_x = math.sin(-i * math.pi * 2 / N_ORI)
       local orth_y = math.cos(-i * math.pi * 2 / N_ORI)
-      if is_transmit then love.graphics.setColor(0.3, 0.7, 0.4)
-      else love.graphics.setColor(0.9, 0.9, 0.9) end
+      love.graphics.setColor(tint_r, tint_g, tint_b)
       for j = 1, #rs do
         local s = scales[j]
+        local l = slides[j]
         draw.img('symbols/' .. rs[j].symbol,
-          x + (offs[j] + global_offs) * 40 * orth_x,
-          y + (offs[j] + global_offs) * 40 * orth_y,
+          x + (offs[j] + global_offs) * 40 * orth_x - l * slide_x,
+          y + (offs[j] + global_offs) * 40 * orth_y - l * slide_y,
           40 * s, 40 * s)
       end
     end
     for i = 0, N_ORI - 1 do
-      symbol_list(responses[i], i, radar_r * 0.8, false)
-      symbol_list(transmits[i], i, radar_r * 0.4, true)
+      symbol_list(responses[i], i, radar_r * 0.825, radar_r * -0.15, 0.9, 0.9, 0.85)
+      symbol_list(transmits[i], i, radar_r * 0.4, radar_r * 0.15, 0.3, 0.7, 0.4)
     end
 
     -- Television screen

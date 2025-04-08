@@ -5,8 +5,7 @@ local isMobile = (love.system.getOS() == 'Android' or love.system.getOS() == 'iO
 local isWeb = (love.system.getOS() == 'Web')
 
 love.window.setMode(
-  isWeb and (W / 3 * 2) or W,
-  isWeb and (H / 3 * 2) or H,
+  W, H,
   { fullscreen = false, highdpi = true }
 )
 

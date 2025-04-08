@@ -254,6 +254,9 @@ return function (puzzle_index)
   elseif puzzle_index <= 17 then out_bg_index = 3
   else out_bg_index = 4 end
 
+  ------ Canvas for global effect overlay ------
+  local canvas = love.graphics.newCanvas(W, H)
+
   ------ Display ------
   local radar_x, radar_y = W * 0.498, H * 0.367
   local radar_r = H * 0.3
@@ -621,7 +624,10 @@ return function (puzzle_index)
   end
 
   s.draw = function ()
-    love.graphics.clear(0.99, 0.99, 0.98)
+    love.graphics.setCanvas(canvas)
+    love.graphics.push()
+    love.graphics.replaceTransform(love.math.newTransform())
+    love.graphics.clear(0, 0, 0, 0)
 
     -- Outer background
     love.graphics.setColor(1, 1, 1)
@@ -818,6 +824,13 @@ return function (puzzle_index)
 
     -- Gallery
     gallery_overlay.draw()
+
+    -- Back to global canvas
+    love.graphics.pop()
+    love.graphics.setCanvas()
+    love.graphics.clear(0.99, 0.99, 0.98)
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.draw(canvas, 0, 0)
   end
 
   s.destroy = function ()

@@ -256,6 +256,15 @@ return function (puzzle_index)
 
   ------ Canvas for global effect overlay ------
   local canvas = love.graphics.newCanvas(W, H)
+  local global_shader = love.graphics.newShader([[
+    uniform vec3 filter_tint;
+    vec4 effect(vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords) {
+      vec4 pix = Texel(tex, texture_coords);
+      vec3 rgb = pix.rgb * filter_tint;
+      return vec4(rgb, pix.a);
+    }
+  ]])
+  global_shader:send('filter_tint', {0.5, 1, 1})
 
   ------ Display ------
   local radar_x, radar_y = W * 0.498, H * 0.367
@@ -829,8 +838,10 @@ return function (puzzle_index)
     love.graphics.pop()
     love.graphics.setCanvas()
     love.graphics.clear(0.99, 0.99, 0.98)
+    love.graphics.setShader(global_shader)
     love.graphics.setColor(1, 1, 1)
     love.graphics.draw(canvas, 0, 0)
+    love.graphics.setShader()
   end
 
   s.destroy = function ()

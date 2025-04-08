@@ -83,19 +83,22 @@ local create_gallery_overlay = function ()
   local button_scale = W * 0.22 / draw.get('card'):getWidth()
 
   local close_button = button(
-    draw.get('gallery_book/btn_close'), function () o.close() end, button_scale, true)
+    draw.get('gallery_book/btn_close'), function () o.close() end, button_scale,
+    { drawable_scale_is_absolute = true })
   close_button.x, close_button.y = 2, 186
   buttons[#buttons + 1] = close_button
 
   local last_button = button(
     draw.extend(draw.get('gallery_book/btn_prev'), 30, 30),
-    function () flip_page(-1) end, button_scale, true)
+    function () flip_page(-1) end, button_scale,
+    { drawable_scale_is_absolute = true })
   last_button.x, last_button.y = -120, 6
   buttons[#buttons + 1] = last_button
 
   local next_button = button(
     draw.extend(draw.get('gallery_book/btn_next'), 30, 30),
-    function () flip_page(1) end, button_scale, true)
+    function () flip_page(1) end, button_scale,
+    { drawable_scale_is_absolute = true })
   next_button.x, next_button.y = 120, 7
   buttons[#buttons + 1] = next_button
 
@@ -341,7 +344,8 @@ return function (puzzle_index)
   for i = (unisymbol and 2 or 1), (unisymbol and 2 or 3) do
     local btn = button(
       draw.get('symbols/' .. tostring(i) .. '_btn_ord'),
-      function () select_sym(i) end
+      function () select_sym(i) end,
+      nil, { use_tint = true }
     )
     btn.x = (715 + (i - 1) * 246) * (2/3)
     btn.y = 786 * (2/3)
@@ -354,7 +358,8 @@ return function (puzzle_index)
   local pull_lever
   local btn_lever = button(
     draw.get('lever/0'),
-    function () pull_lever() end
+    function () pull_lever() end,
+    nil, { use_tint = true }
   )
   btn_lever.x = 1000
   btn_lever.y = 300
@@ -381,7 +386,8 @@ return function (puzzle_index)
   local open_gallery
   local btn_gallery = button(
     draw.get('gallery_book/1'),
-    function () open_gallery() end
+    function () open_gallery() end,
+    nil, { use_tint = true }
   )
   btn_gallery.x = 124
   btn_gallery.y = 484

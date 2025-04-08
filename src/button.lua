@@ -1,4 +1,4 @@
-return function (drawable, fn, drawable_scale, drawable_scale_is_absolute)
+return function (drawable, fn, drawable_scale, options)
   local s = {}
   local W, H = W, H
 
@@ -7,9 +7,11 @@ return function (drawable, fn, drawable_scale, drawable_scale_is_absolute)
   s.s = 1
   s.enabled = true
 
+  options = options or {}
+
   local w, h = drawable:getDimensions()
   if drawable_scale then
-    if not drawable_scale_is_absolute then
+    if not options.drawable_scale_is_absolute then
       drawable_scale = drawable_scale / w
     end
     w = w * drawable_scale
@@ -17,6 +19,8 @@ return function (drawable, fn, drawable_scale, drawable_scale_is_absolute)
   else
     drawable_scale = 1
   end
+
+  local use_tint = options.use_tint
 
   local scale = 1
 
@@ -57,7 +61,7 @@ return function (drawable, fn, drawable_scale, drawable_scale_is_absolute)
   end
 
   s.update = function ()
-    local target = ((s.enabled and inside) and 1.12 or 1)
+    local target = ((s.enabled and inside and not use_tint) and 1.12 or 1)
     if math.abs(target - scale) <= 0.005 then
       scale = target
     else
@@ -73,10 +77,18 @@ return function (drawable, fn, drawable_scale, drawable_scale_is_absolute)
     if s.hidden then return end
     local sc = scale * s.s
     local x, y, sc = s.x - w/2 * sc, s.y - h/2 * sc, sc
+    if use_tint then
+      love.graphics.push('all')
+      local tint = inside and 0.75 or 1
+      love.graphics.setColor(tint, tint, tint)
+    end
     if drawable.draw then
       drawable:draw(x, y, sc * drawable_scale)
     else
       love.graphics.draw(drawable, x, y, 0, sc * drawable_scale)
+    end
+    if use_tint then
+      love.graphics.pop()
     end
   end
 

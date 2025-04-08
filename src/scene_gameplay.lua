@@ -323,6 +323,8 @@ return function (puzzle_index)
   local radar_trail_frame = 1   -- These are persistent to avoid tail-popping
   local radar_trail_flip = 1
 
+  local sel_sym_since = 0
+
   ------ Buttons ------
   local buttons = { }
 
@@ -331,8 +333,10 @@ return function (puzzle_index)
   local refresh_sym_btns
 
   local select_sym = function (i)
+    if sel_sym == i then return end
     if sym_btns[i] then   -- Hide 1/3 symbols in `unisymbol` mode
       sel_sym = i
+      sel_sym_since = 0
       refresh_sym_btns()
     end
   end
@@ -358,12 +362,12 @@ return function (puzzle_index)
   -- Lever button
   local pull_lever
   local btn_lever = button(
-    draw.get('lever/0'),
+    draw.get('lever/1'),
     function () pull_lever() end,
     nil, { use_tint = true }
   )
-  btn_lever.x = 1000
-  btn_lever.y = 300
+  btn_lever.x = (1344 + 420/2) * (2/3)
+  btn_lever.y = (288 + 720/2) * (2/3)
   buttons[#buttons + 1] = btn_lever
 
   pull_lever = function ()
@@ -587,6 +591,9 @@ return function (puzzle_index)
       end
     end
 
+    -- Button highlight animation
+    sel_sym_since = sel_sym_since + 1
+
     -- Puzzle-clear transition out
     if since_clear >= 0 then
       since_clear = since_clear + 1
@@ -745,10 +752,17 @@ return function (puzzle_index)
     love.graphics.setColor(1, 1, 1)
     for i = 1, #buttons do buttons[i].draw() end
 
+    -- Button highlight
+    local btn_light_frame = math.min(6, 1 + math.floor(sel_sym_since / 10))
+    local btn_light_alpha = {0.26, 0.21, 0.65, 0.26, 0.84, 1}
+    love.graphics.setColor(1, 1, 1, btn_light_alpha[btn_light_frame])
+    draw.img('btn_light/1', sym_btns[sel_sym].x, (591 + 270/2) * (2/3))
+
     -- Lever
+    love.graphics.setColor(1, 1, 1)
     if T < T_last_lever + LEVER_COOLDOWN then
       local frame = 1 + math.floor((T - T_last_lever) / 30)
-      draw.img('lever/' .. tostring(frame), W / 2, H / 2)
+      draw.img('lever/' .. tostring(frame), (1344 + 420/2) * (2/3), (288 + 720/2) * (2/3))
     end
 
     -- Steering wheel

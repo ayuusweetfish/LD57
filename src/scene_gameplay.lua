@@ -366,6 +366,9 @@ return function (puzzle_index)
 
   local sel_sym_since = 0
 
+  local rx_intensity = 0    -- Order 2
+  local rx_intensity_accum = 0
+
   ------ Buttons ------
   local buttons = { }
 
@@ -575,6 +578,7 @@ return function (puzzle_index)
       local sym = responders[i].update()
       if sym ~= nil then
         table.insert(responses[i], {symbol = sym, timestamp = T})
+        rx_intensity_accum = rx_intensity_accum + 60
         if since_clear == -1 then
           -- Update objective progression
           -- KMP's `next` array
@@ -635,6 +639,13 @@ return function (puzzle_index)
     -- Button highlight animation
     sel_sym_since = sel_sym_since + 1
 
+    -- RX intensity animation bar
+    rx_intensity = rx_intensity * 0.98
+    if rx_intensity_accum > 0 then
+      rx_intensity = rx_intensity + rx_intensity_accum
+      rx_intensity_accum = rx_intensity_accum - 1
+    end
+
     -- Puzzle-clear transition out
     if since_clear >= 0 then
       since_clear = since_clear + 1
@@ -653,8 +664,8 @@ return function (puzzle_index)
     local tex = draw.get('meter/' .. i)
     local quads = {}
     local w, h = tex:getDimensions()
-    for j = 1, 20 do
-      local y = (20 - j) / 20 * h
+    for j = 1, 25 do
+      local y = (25 - j) / 25 * h
       quads[j] = love.graphics.newQuad(0, y, w, h - y, tex)
     end
     meter_texs[i] = tex
@@ -667,16 +678,29 @@ return function (puzzle_index)
     love.graphics.replaceTransform(love.math.newTransform())
     love.graphics.clear(0, 0, 0, 0)
 
+    -- Ease on stuck directions
+    local disp_ori = ant_ori
+    if ant_ori_stuck_dir < 0 then
+      disp_ori = disp_ori + ease_stuck(ant_ori_stuck, 0.1)
+    else
+      disp_ori = disp_ori - ease_stuck(ant_ori_stuck, 0.1)
+    end
+
     -- Outer background
     love.graphics.setColor(1, 1, 1)
-    local bg_ext_pos = -ant_ori / (math.pi * 2) * bg_ext_w_total  -- Logical position
+    local bg_ext_pos = -disp_ori / (math.pi * 2) * bg_ext_w_total   -- Logical position
+    local bg_ext_y = 4
+    -- Vibration on land
+    if chapter_index == 1 or chapter_index == 3 then
+      bg_ext_y = 4 * (1 + 2 * (love.math.noise(T / 180) - 0.5) * ant_speed)
+    end
     for i = 1, #bg_ext_slices do
       local start_pos = bg_ext_pos
       -- Physical position: fold around
       if start_pos < -bg_ext_w_total + W then start_pos = start_pos + bg_ext_w_total end
       local end_pos = start_pos + bg_ext_slices[i].width
       if math.max(0, start_pos) < math.min(W, end_pos) then
-        draw.img(bg_ext_slices[i].name, start_pos, 0, bg_ext_slices[i].width, nil, 0, 0)
+        draw.img(bg_ext_slices[i].name, start_pos, -bg_ext_y, bg_ext_slices[i].width, nil, 0, 0)
       end
       bg_ext_pos = bg_ext_pos + bg_ext_slices[i].width  -- Still logical
     end
@@ -698,12 +722,6 @@ return function (puzzle_index)
     sector(ant_sector)
 
     -- Radar line
-    local disp_ori = ant_ori
-    if ant_ori_stuck_dir < 0 then
-      disp_ori = disp_ori + ease_stuck(ant_ori_stuck, 0.1)
-    else
-      disp_ori = disp_ori - ease_stuck(ant_ori_stuck, 0.1)
-    end
     love.graphics.setColor(0.25, 0.27, 0.15)
     draw.img('radar_trail/' .. radar_trail_frame, radar_x, radar_y,
       108 * radar_trail_flip, 216, 6.5/162, 317/324, disp_ori + math.pi / 2)
@@ -786,9 +804,21 @@ return function (puzzle_index)
       local x0 = (1374 + 42 * (i - 1)) * (2/3)
       local y0 = 144 * (2/3)
       local h0 = 276 * (2/3)
-      local n = math.floor(love.math.noise(i * 0.8, T - T % (2000^0.5)) * 21)
+      local n = 0
+      if i == 1 then n = math.abs(ant_speed)
+      elseif i == 2 then
+        local t = T - T_last_lever
+        if t < 480 then
+          local x = (t - 60) / 30
+          if x > 0 then x = x / 3 end
+          n = 2 / (math.exp(x) + math.exp(-x))
+        end
+      else
+        n = math.max(0, math.log(rx_intensity) - 4) / 6
+      end
+      n = math.min(25, math.floor(2 + love.math.noise(i * 0.8, T - T % (2000^0.5)) * 4 + 21 * n))
       if n > 0 then
-        love.graphics.draw(meter_texs[i], meter_quads[i][n], x0, y0 + h0 * (20 - n) / 20, 0, 2/3)
+        love.graphics.draw(meter_texs[i], meter_quads[i][n], x0, y0 + h0 * (25 - n) / 25, 0, 2/3)
       end
     end
 

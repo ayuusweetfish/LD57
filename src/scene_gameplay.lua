@@ -335,17 +335,16 @@ return function (puzzle_index)
   refresh_sym_btns = function ()
     for i, _ in pairs(sym_btns) do
       sym_btns[i].set_drawable(
-        draw.get('symbols/' .. tostring(i) .. (sel_sym == i and '_sel' or '')))
+        draw.get('symbols/' .. tostring(i) .. (sel_sym == i and '_btn_sel' or '_btn_ord')))
     end
   end
   for i = (unisymbol and 2 or 1), (unisymbol and 2 or 3) do
     local btn = button(
-      draw.get('symbols/' .. tostring(i)),
-      function () select_sym(i) end,
-      H * 0.1
+      draw.get('symbols/' .. tostring(i) .. '_btn_ord'),
+      function () select_sym(i) end
     )
-    btn.x = W * (0.5 + (i - 2) * 0.15)
-    btn.y = H * 0.75
+    btn.x = (715 + (i - 1) * 246) * (2/3)
+    btn.y = 786 * (2/3)
     sym_btns[i] = btn
     buttons[#buttons + 1] = btn
   end

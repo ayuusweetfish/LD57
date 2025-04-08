@@ -255,6 +255,15 @@ return function (puzzle_index)
   local radar_x, radar_y = W * 0.498, H * 0.367
   local radar_r = H * 0.3
 
+  local out_bg_slices = {}
+  local out_bg_w_total = 0
+  for i = 0, 2 do
+    local out_bg_name = 'bg_out/' .. out_bg_index .. '-' .. i
+    local w, _ = draw.get(out_bg_name):getDimensions()
+    out_bg_slices[i + 1] = { name = out_bg_name, width = w }
+    out_bg_w_total = out_bg_w_total + w
+  end
+
   ------ Game state ------
   local T = 0
 
@@ -553,11 +562,19 @@ return function (puzzle_index)
 
   s.draw = function ()
     love.graphics.clear(0.99, 0.99, 0.98)
+
+    -- Outer background
     love.graphics.setColor(1, 1, 1)
-    local out_bg_name = 'bg_out/' .. out_bg_index
-    local bg_w, _ = draw.get(out_bg_name):getDimensions()
-    for i = 0, 1 do
-      draw.img(out_bg_name, (i + -ant_ori / (math.pi * 2)) * bg_w, 0, nil, nil, 0, 0)
+    local out_bg_pos = -ant_ori / (math.pi * 2) * out_bg_w_total  -- Logical position
+    for i = 1, #out_bg_slices do
+      local start_pos = out_bg_pos
+      -- Physical position: fold around
+      if start_pos < -out_bg_w_total + W then start_pos = start_pos + out_bg_w_total end
+      local end_pos = start_pos + out_bg_slices[i].width
+      if math.max(0, start_pos) < math.min(W, end_pos) then
+        draw.img(out_bg_slices[i].name, start_pos, 0, out_bg_slices[i].width, nil, 0, 0)
+      end
+      out_bg_pos = out_bg_pos + out_bg_slices[i].width  -- Still logical
     end
     draw.img('bg_1', W / 2, H / 2, W, H)
 

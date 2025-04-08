@@ -241,6 +241,38 @@ end
 
 local gallery_overlay = create_gallery_overlay()
 
+local blend_shader = function (blend_fn)
+  return love.graphics.newShader([[
+    uniform Image filter_tex;
+
+    float blend(float a, float b) {
+]] .. blend_fn .. [[
+    }
+
+    vec4 effect(vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords) {
+      vec4 A = Texel(tex, texture_coords);
+      vec4 B = Texel(filter_tex, texture_coords);
+      vec3 C = vec3(
+        blend(A.r, B.r),
+        blend(A.g, B.g),
+        blend(A.b, B.b)
+      );
+      return vec4(A.rgb + (C - A.rgb) * B.a, A.a);
+    }
+  ]])
+end
+
+local global_filter_shader = {
+  overlay = blend_shader([[
+    if (a < 0.5) return 2. * a * b;
+    else return 1. - 2. * (1. - a) * (1. - b);
+  ]]),
+  soft_light = blend_shader([[
+    if (b < 0.5) return 2. * a * b + a * a * (1. - b - b);
+    else return 2. * a * (1. - b) + sqrt(a) * (b + b - 1.);
+  ]]),
+}
+
 return function (puzzle_index)
   local s = {}
   local W, H = W, H
@@ -256,15 +288,10 @@ return function (puzzle_index)
 
   ------ Canvas for global effect overlay ------
   local canvas = love.graphics.newCanvas(W, H)
-  local global_shader = love.graphics.newShader([[
-    uniform vec3 filter_tint;
-    vec4 effect(vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords) {
-      vec4 pix = Texel(tex, texture_coords);
-      vec3 rgb = pix.rgb * filter_tint;
-      return vec4(rgb, pix.a);
-    }
-  ]])
-  global_shader:send('filter_tint', {0.5, 1, 1})
+
+  local global_shader = global_filter_shader[
+    out_bg_index == 3 and 'soft_light' or 'overlay']
+  global_shader:send('filter_tex', draw.get('filters/' .. out_bg_index))
 
   ------ Display ------
   local radar_x, radar_y = W * 0.498, H * 0.367

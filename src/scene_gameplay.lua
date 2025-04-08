@@ -314,6 +314,7 @@ return function (puzzle_index)
   local last_steer = 0          -- Last acceleration
   local last_steer_nonzero = 1  -- For animation
   local steer_cont_dur = 0
+  local screen_steer = 0        -- Screen-pressed steer value
 
   gallery_overlay.reset()
 
@@ -402,6 +403,11 @@ return function (puzzle_index)
   s.press = function (x, y)
     if gallery_overlay.press(x, y) then return true end
     for i = 1, #buttons do if buttons[i].press(x, y) then return true end end
+
+    if y >= H * 0.7 and math.abs(x - W * 0.5) < W * 0.25 then
+      screen_steer = (x < W * 0.5 and -1 or 1)
+      return true
+    end
   end
 
   s.hover = function (x, y)
@@ -410,11 +416,20 @@ return function (puzzle_index)
   s.move = function (x, y)
     if gallery_overlay.move(x, y) then return true end
     for i = 1, #buttons do if buttons[i].move(x, y) then return true end end
+
+    if screen_steer ~= 0 then
+      screen_steer = (x < W * 0.5 and -1 or 1)
+    end
   end
 
   s.release = function (x, y)
     if gallery_overlay.release(x, y) then return true end
     for i = 1, #buttons do if buttons[i].release(x, y) then return true end end
+
+    if screen_steer ~= 0 then
+      screen_steer = 0
+      return true
+    end
   end
 
   s.key = function (key)
@@ -445,9 +460,10 @@ return function (puzzle_index)
     -- `ant_sector_last` is for animation,
     -- here we do a backup to check whether sector changed
     local ant_sector_backup = ant_sector
-    local accel = 0
+    local accel = screen_steer
     if love.keyboard.isDown('left') then accel = accel - 1 end
     if love.keyboard.isDown('right') then accel = accel + 1 end
+    accel = clamp(accel, -1, 1)
     ant_speed = clamp(ant_speed + accel / 20, -1, 1)
     if accel == 0 then
       if ant_speed > 0 then ant_speed = math.max(0, ant_speed - 1 / 120)
@@ -479,7 +495,7 @@ return function (puzzle_index)
       ant_sector_anim = SECTOR_ANIM_DUR
     end
 
-    if last_steer == 0 and accel ~= 0 then
+    if accel ~= 0 and last_steer ~= accel then
       audio.sfx('steer', 0, true)
       steer_cont_dur = 0
     elseif last_steer ~= 0 and accel == 0 then

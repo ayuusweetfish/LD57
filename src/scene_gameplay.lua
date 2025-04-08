@@ -778,6 +778,7 @@ return function (puzzle_index)
     if numerals_frame >= 1 and numerals_frame <= 13 then
       draw.img('numerals/' .. numerals_frame, (1218 + 108/2) * (2/3), (56 + 108/2) * (2/3))
     end
+    draw.img('numerals/highlight', (1209 + 120/2) * (2/3), (51 + 81/2) * (2/3))
 
     -- Meter
     love.graphics.setColor(1, 1, 1)

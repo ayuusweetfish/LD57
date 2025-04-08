@@ -606,6 +606,20 @@ return function (puzzle_index)
     gallery_overlay.update()
   end
 
+  local meter_texs = {}
+  local meter_quads = {}
+  for i = 1, 3 do
+    local tex = draw.get('meter/' .. i)
+    local quads = {}
+    local w, h = tex:getDimensions()
+    for j = 1, 20 do
+      local y = (20 - j) / 20 * h
+      quads[j] = love.graphics.newQuad(0, y, w, h - y, tex)
+    end
+    meter_texs[i] = tex
+    meter_quads[i] = quads
+  end
+
   s.draw = function ()
     love.graphics.clear(0.99, 0.99, 0.98)
 
@@ -708,6 +722,18 @@ return function (puzzle_index)
     love.graphics.setColor(0.25, 0.27, 0.15)
     local noise_frame = 1 + math.floor(T / 20) % 10
     draw.img('noise/' .. noise_frame, W / 2, (111 + 630/2) * (2/3))
+
+    -- Meter
+    love.graphics.setColor(1, 1, 1)
+    for i = 1, 3 do
+      local x0 = (1374 + 42 * (i - 1)) * (2/3)
+      local y0 = 144 * (2/3)
+      local h0 = 276 * (2/3)
+      local n = math.floor(love.math.noise(i * 0.8, T - T % (2000^0.5)) * 21)
+      if n > 0 then
+        love.graphics.draw(meter_texs[i], meter_quads[i][n], x0, y0 + h0 * (20 - n) / 20, 0, 2/3)
+      end
+    end
 
     -- Television screen
     love.graphics.setColor(1, 1, 1)

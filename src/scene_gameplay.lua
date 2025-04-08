@@ -320,7 +320,7 @@ return function (puzzle_index)
 
   local trail_start_speed = 1
   local trail_start_ramp = 0
-  local radar_trail_frame = 1   -- These are persistant to avoid tail-popping
+  local radar_trail_frame = 1   -- These are persistent to avoid tail-popping
   local radar_trail_flip = 1
 
   ------ Buttons ------
@@ -563,6 +563,7 @@ return function (puzzle_index)
       objective_seq_change[i] = T
     end
 
+    -- Radar trail
     if ant_speed * trail_start_speed <= 0 then
       trail_start_ramp = 0
       if ant_speed ~= 0 then trail_start_speed = ant_speed end
@@ -570,6 +571,23 @@ return function (puzzle_index)
       trail_start_ramp = trail_start_ramp + 1
     end
 
+    if T % 20 == 0 then
+      if ant_speed ~= 0 then
+        radar_trail_flip = (ant_speed > 0 and -1 or 1)
+        if math.abs(ant_speed) >= 3/4 and trail_start_ramp >= 80 then
+          radar_trail_frame = 6 + math.floor(T / 20) % 4
+        elseif math.abs(ant_speed) >= 1/2 and trail_start_ramp >= 40 then
+          radar_trail_frame = 4 + math.floor(T / 20) % 2
+        else
+          radar_trail_frame = 2 + math.floor(T / 20) % 2
+        end
+      else
+        radar_trail_frame = 1
+        radar_trail_flip = 1
+      end
+    end
+
+    -- Puzzle-clear transition out
     if since_clear >= 0 then
       since_clear = since_clear + 1
       if since_clear == 600 then
@@ -615,21 +633,6 @@ return function (puzzle_index)
     sector(ant_sector)
 
     -- Radar line
-    if T % 20 == 0 then
-      if ant_speed ~= 0 then
-        radar_trail_flip = (ant_speed > 0 and -1 or 1)
-        if math.abs(ant_speed) >= 3/4 and trail_start_ramp >= 80 then
-          radar_trail_frame = 6 + math.floor(T / 20) % 4
-        elseif math.abs(ant_speed) >= 1/2 and trail_start_ramp >= 40 then
-          radar_trail_frame = 4 + math.floor(T / 20) % 2
-        else
-          radar_trail_frame = 2 + math.floor(T / 20) % 2
-        end
-      else
-        radar_trail_frame = 1
-        radar_trail_flip = 1
-      end
-    end
     local disp_ori = ant_ori
     if ant_ori_stuck_dir < 0 then
       disp_ori = disp_ori + ease_stuck(ant_ori_stuck, 0.1)

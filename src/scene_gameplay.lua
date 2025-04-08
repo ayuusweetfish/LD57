@@ -891,9 +891,6 @@ return function (puzzle_index)
     local steer_flip_x = (last_steer_nonzero < 0)
     draw.img('steer/' .. tostring(steer_frame), 640, 664, steer_flip_x and -516 or 516, 112)
 
-    -- Gallery
-    gallery_overlay.draw()
-
     -- Back to global canvas
     love.graphics.pop()
     love.graphics.setCanvas()
@@ -902,6 +899,9 @@ return function (puzzle_index)
     love.graphics.setColor(1, 1, 1)
     love.graphics.draw(canvas, 0, 0)
     love.graphics.setShader()
+
+    -- Gallery
+    gallery_overlay.draw()
   end
 
   s.destroy = function ()

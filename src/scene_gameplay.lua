@@ -670,8 +670,8 @@ return function (puzzle_index)
       local global_offs = -offs_x / 2
       local orth_x = math.sin(-i * math.pi * 2 / N_ORI)
       local orth_y = math.cos(-i * math.pi * 2 / N_ORI)
-      if is_transmit then love.graphics.setColor(0.5, 1, 1)
-      else love.graphics.setColor(1, 1, 1) end
+      if is_transmit then love.graphics.setColor(0.3, 0.7, 0.4)
+      else love.graphics.setColor(0.9, 0.9, 0.9) end
       for j = 1, #rs do
         local s = scales[j]
         draw.img('symbols/' .. rs[j].symbol,
@@ -681,8 +681,8 @@ return function (puzzle_index)
       end
     end
     for i = 0, N_ORI - 1 do
-      symbol_list(responses[i], i, radar_r * 0.9, false)
-      symbol_list(transmits[i], i, radar_r * 0.5, true)
+      symbol_list(responses[i], i, radar_r * 0.8, false)
+      symbol_list(transmits[i], i, radar_r * 0.4, true)
     end
 
     -- Television screen

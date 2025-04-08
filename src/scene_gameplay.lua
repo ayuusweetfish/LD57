@@ -651,21 +651,20 @@ return function (puzzle_index)
       108 * radar_trail_flip, 216, 6.5/162, 317/324, disp_ori + math.pi / 2)
 
     -- Sector responses
-    local symbol_list = function (rs, i, radius, slide, tint_r, tint_g, tint_b)
+    local symbol_list = function (rs, i, radius, slide, angle_sep, tint_r, tint_g, tint_b)
       if #rs == 0 then return end
-      local x = radar_x + radius * math.cos(i * math.pi * 2 / N_ORI)
-      local y = radar_y + radius * math.sin(i * math.pi * 2 / N_ORI)
+      local base_angle = i * math.pi * 2 / N_ORI
       local offs_x = 0
       local offs = {}
       local scales = {}
       local slides = {}
-      local slide_x = slide * math.cos(i * math.pi * 2 / N_ORI)
-      local slide_y = slide * math.sin(i * math.pi * 2 / N_ORI)
+      local alphas = {}
       for j = 1, #rs do
         local t = T - rs[j].timestamp
         local dx
         local s = 1
         local l = 0
+        local a = 1
         if t < 20 then
           local x = t / 20
           s = ease_quad_out(x)
@@ -673,7 +672,7 @@ return function (puzzle_index)
           dx = ease_quad(x)
         elseif t > RESP_DISP_DUR - 40 then
           local x = 1 - (RESP_DISP_DUR - t) / 40
-          s = ease_quad_in(1 - x)
+          a = ease_quad_in(1 - x)
           dx = 1 - ease_quad(x)
         else
           dx = 1
@@ -682,23 +681,27 @@ return function (puzzle_index)
         offs_x = offs_x + dx
         scales[j] = s
         slides[j] = l
+        alphas[j] = a
       end
       local global_offs = -offs_x / 2
       local orth_x = math.sin(-i * math.pi * 2 / N_ORI)
       local orth_y = math.cos(-i * math.pi * 2 / N_ORI)
-      love.graphics.setColor(tint_r, tint_g, tint_b)
       for j = 1, #rs do
+        local angle = base_angle + (offs[j] + global_offs) * angle_sep
+        local x = radar_x + radius * math.cos(angle)
+        local y = radar_y + radius * math.sin(angle)
+        local slide_x = slide * math.cos(angle)
+        local slide_y = slide * math.sin(angle)
         local s = scales[j]
         local l = slides[j]
+        love.graphics.setColor(tint_r, tint_g, tint_b, alphas[j])
         draw.img('symbols/' .. rs[j].symbol,
-          x + (offs[j] + global_offs) * 40 * orth_x - l * slide_x,
-          y + (offs[j] + global_offs) * 40 * orth_y - l * slide_y,
-          40 * s, 40 * s)
+          x - l * slide_x, y - l * slide_y, 40 * s, 40 * s)
       end
     end
     for i = 0, N_ORI - 1 do
-      symbol_list(responses[i], i, radar_r * 0.825, radar_r * -0.15, 0.9, 0.9, 0.85)
-      symbol_list(transmits[i], i, radar_r * 0.4, radar_r * 0.15, 0.3, 0.7, 0.4)
+      symbol_list(responses[i], i, radar_r * 0.825, radar_r * -0.15, 0.225, 0.9, 0.9, 0.85)
+      symbol_list(transmits[i], i, radar_r * 0.4, radar_r * 0.15, 0.225 * 0.825 / 0.4, 0.3, 0.7, 0.4)
     end
 
     -- Screen noise

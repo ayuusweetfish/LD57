@@ -723,6 +723,18 @@ return function (puzzle_index)
     local noise_frame = 1 + math.floor(T / 20) % 10
     draw.img('noise/' .. noise_frame, W / 2, (111 + 630/2) * (2/3))
 
+    -- Numeral
+    love.graphics.setColor(1, 1, 1)
+    local numerals_frame = -1
+    if T >= 240 + 20 * 4 then
+      numerals_frame = (puzzle_index - 1) % 10 + 1
+    elseif T >= 240 then
+      numerals_frame = 11 + math.floor((T - 240) / 20)
+    end
+    if numerals_frame >= 1 and numerals_frame <= 13 then
+      draw.img('numerals/' .. numerals_frame, (1218 + 108/2) * (2/3), (56 + 108/2) * (2/3))
+    end
+
     -- Meter
     love.graphics.setColor(1, 1, 1)
     for i = 1, 3 do

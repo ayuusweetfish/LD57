@@ -81,6 +81,17 @@ end
 
 local long_rep2 = echo(960, 1680)
 
+local echo_block = function ()
+  local o = {}
+  local q = decay_priority_queue()
+  o.send = function (sym)
+    q.insert({sym, 60})
+    q.insert({4, 600})
+  end
+  o.update = q.pop
+  return o
+end
+
 local mirror = function ()
   local o = {}
   local q = decay_priority_queue()
@@ -112,6 +123,7 @@ local condense = function ()
     else
       local out_sym = (last == sym) and last or (6 - last - sym)
       q.insert({out_sym, 60})
+      last = 0
     end
   end
   o.update = q.pop
@@ -137,24 +149,28 @@ return {
     seq = {1, 1, 1, 1, 1, 1, 1},
     resp = {murmur(1), murmur(1), murmur(1), murmur(1), murmur(1)},
     unisymbol = true,
+    gallery = 'single fixed (symbol 1)',
   },
   -- Find one inside many obstacles
   {
     seq = {1, 1, 1, 1, 1},
     resp = {block, block, block, murmur(1), block},
     unisymbol = true,
+    gallery = 'block',
   },
   -- Construct sequence
   {
     seq = {1, 2, 3, 2, 1},
     resp = {murmur(1), murmur(2), murmur(3), murmur(2), murmur(1)},
     unisymbol = true,
+    gallery = 'single fixed (symbols 2/3)',
   },
   -- Sometimes you get more than one
   {
     seq = {2, 3, 1, 3, 2},
     resp = {murmur(3), double_mur(1), double_mur(2), double_mur(3), murmur(1)},
     unisymbol = true,
+    gallery = 'double fixed',
   },
   -- Interleave responses
   {
@@ -167,14 +183,17 @@ return {
   {
     seq = {1, 2, 3, 2, 1},
     resp = {block, echo(180), block, block, block},
+    gallery = 'single echo',
   },
   {
     seq = {1, 1, 2, 3, 2},
     resp = {filter(3), filter(2), filter(1), filter(2), filter(3)},
+    gallery = 'filter',
   },
   {
     seq = {3, 1, 2, 2, 1, 3},
     resp = {block, symmetry, block, block, block},
+    gallery = 'repeat + symmetry',
   },
   {
     seq = {3, 2, 1, 2, 3},
@@ -188,26 +207,37 @@ return {
   },
 
   ------ Chapter 2 ------
+  -- Introduce echo-block type
   {
-    seq = {1, 2, 3, 2, 1},
-    resp = {block, murmur(2), block, murmur(1), block, murmur(2), block, murmur(3)},
+    seq = {2, 2, 4, 4, 4},
+    resp = {echo_block, block, echo_block, block, echo_block, block, echo_block, block},
+    gallery = 'echo_block',
+  },
+  -- Challenge with time
+  {
+    seq = {4, 2, 4, 4, 2, 4},
+    resp = {double_mur_slow(2), block, echo_block, block, double_mur_slow(2), block, echo_block, block},
+    msg = 'So many obstacles in the space. I guess we might not be lonely at all.',
   },
   {
     seq = {1, 2, 3, 2, 1},
     resp = {condense, block, condense, block, condense, block, condense, block},
+    gallery = 'condense',
   },
   {
     seq = {1, 2, 3, 2, 1},
     resp = {block, block, alternate, block, block, block, alternate, block},
+    gallery = 'alternate',
   },
   {
     seq = {1, 2, 2, 3, 2, 2, 1},
     resp = {block, alternate, alternate, block, block, symmetry, symmetry, block},
+    msg = 'The depths call for patience. Sometimes the wait is long, like, really long.',
   },
   {
     seq = {1, 2, 2, 2, 2, 1},
     resp = {block, alternate, alternate, block, block, condense, condense, block},
-    msg = 'The depths call for patience. Sometimes the wait is long, like, really long.',
+    msg = 'Something...?'
   },
 
   ------ Chapter 4 ------

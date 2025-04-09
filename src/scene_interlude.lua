@@ -16,7 +16,12 @@ return function (puzzle_index)
   local W, H = W, H
   local font = _G['global_font']
 
-  local text = puzzles[puzzle_index].msg or 'Gallery +1'
+  local text = {}
+  text[#text + 1] = puzzles[puzzle_index].msg
+  if puzzles[puzzle_index].gallery then
+    text[#text + 1] = 'Gallery +1\n[' .. puzzles[puzzle_index].gallery .. ']'
+  end
+  text = table.concat(text, '\n')
   local t1 = wrap_lines(font(40), text, W * 0.8)
 
   local t_cont = love.graphics.newText(font(32), 'Press screen / <Enter> key')

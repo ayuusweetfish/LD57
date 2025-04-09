@@ -282,8 +282,8 @@ return function (puzzle_index)
   local unisymbol = puzzle.unisymbol
   local chapter_index
   if puzzle_index <= 10 then chapter_index = 1
-  elseif puzzle_index <= 15 then chapter_index = 2
-  elseif puzzle_index <= 17 then chapter_index = 3
+  elseif puzzle_index <= 18 then chapter_index = 2
+  elseif puzzle_index <= 20 then chapter_index = 3
   else chapter_index = 4 end
 
   ------ Canvas for global effect overlay ------
@@ -423,7 +423,7 @@ return function (puzzle_index)
     T_last_lever = T
 
     -- Send to responder
-    responders[ant_sector].send(sel_sym)
+    responders[ant_sector].send(sel_sym, T)
 
     -- Record transmission
     table.insert(transmits[ant_sector], {symbol = sel_sym, timestamp = T})

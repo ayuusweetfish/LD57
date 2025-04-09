@@ -92,7 +92,7 @@ local echo_block = function ()
   return o
 end
 
-local mirror = function ()
+local invert = function ()
   local o = {}
   local q = decay_priority_queue()
   o.send = function (sym)
@@ -142,6 +142,25 @@ local alternate = function ()
   return o
 end
 
+local palindrome = function ()
+  local o = {}
+  local q = decay_priority_queue()
+  local hist = {}
+  o.send = function (sym, t)
+    hist[#hist + 1] = {sym, t}
+    if #hist == 3 then
+      local T = hist[#hist][2]
+      local sep = T - hist[#hist - 1][2]
+      for i = #hist, 1, -1 do
+        q.insert({hist[i][1], sep + T - hist[i][2]})
+      end
+      hist = {}
+    end
+  end
+  o.update = q.pop
+  return o
+end
+
 return {
   ------ Chapter 1 ------
   -- Just play
@@ -153,7 +172,7 @@ return {
   },
   -- Find one inside many obstacles
   {
-    seq = {1, 1, 1, 1, 1},
+    seq = {1, 1, 1},
     resp = {block, block, block, murmur(1), block},
     unisymbol = true,
     gallery = 'block',
@@ -167,14 +186,14 @@ return {
   },
   -- Sometimes you get more than one
   {
-    seq = {2, 3, 1, 3, 2},
+    seq = {2, 3, 1, 2},
     resp = {murmur(3), double_mur(1), double_mur(2), double_mur(3), murmur(1)},
     unisymbol = true,
     gallery = 'double fixed',
   },
   -- Interleave responses
   {
-    seq = {1, 3, 1, 3, 1},
+    seq = {1, 3, 1, 1, 3, 1},
     resp = {block, double_mur_slow(3), double_mur_slow(1), double_mur_slow(3), block},
     unisymbol = true,
     msg = 'The other antenna has been fixed!',
@@ -198,7 +217,7 @@ return {
   {
     seq = {3, 2, 1, 2, 3},
     resp = {block, symmetry, block, block, block},
-    msg = 'How far? Very far.\nCivilizations in the universe exercise restraint in communication. Your messages in one direction never reach another.',
+    msg = 'How far? Very far.\nThe cosmos exercises restraint in communication. Your messages in one direction never reach another.',
   },
   {
     seq = {1, 2, 1, 3, 2},
@@ -219,11 +238,13 @@ return {
     resp = {double_mur_slow(2), block, echo_block, block, double_mur_slow(2), block, echo_block, block},
     msg = 'So many obstacles in the space. I guess we might not be lonely at all.',
   },
+  -- Sometimes you need to send more than one
   {
     seq = {1, 2, 3, 2, 1},
     resp = {condense, block, condense, block, condense, block, condense, block},
     gallery = 'condense',
   },
+  -- And sometimes the response changes
   {
     seq = {1, 2, 3, 2, 1},
     resp = {block, block, alternate, block, block, block, alternate, block},
@@ -232,22 +253,32 @@ return {
   {
     seq = {1, 2, 2, 3, 2, 2, 1},
     resp = {block, alternate, alternate, block, block, symmetry, symmetry, block},
-    msg = 'The depths call for patience. Sometimes the wait is long, like, really long.',
+    msg = 'It takes patience, and solitude, to face the depths.',
   },
   {
-    seq = {1, 2, 2, 2, 2, 1},
-    resp = {block, alternate, alternate, block, block, condense, condense, block},
-    msg = 'Something...?'
+    seq = {1, 4, 4, 2, 3},
+    resp = {block, block, palindrome, block, block, block, block, block},
+    gallery = 'palindrome',
+  },
+  {
+    seq = {1, 3, 4, 3, 1},
+    resp = {block, block, palindrome, block, block, echo_block, block, block},
+  },
+  {
+    seq = {1, 4, 2, 2, 2, 4, 3},
+    resp = {symmetry, block, palindrome, block, symmetry, block, filter(2), block},
   },
 
-  ------ Chapter 4 ------
+  ------ Chapter 3 ------
   {
     seq = {2, 2, 1, 3, 1, 3},
     resp = {long_rep2, long_rep2, long_rep2, long_rep2, long_rep2, long_rep2, long_rep2, long_rep2},
+    gallery = 'long_rep2',
   },
   {
     seq = {1, 2, 3, 2, 1},
     resp = {long_rep2, long_rep2, long_rep2, long_rep2, long_rep2, long_rep2, long_rep2, long_rep2},
+    msg = 'But in the end, you receive something. Emptiness only prevails on the surface.',
   },
   {
     seq = {1, 2, 3, 2, 1, 2, 3},

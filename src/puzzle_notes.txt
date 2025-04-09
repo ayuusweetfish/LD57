@@ -1,10 +1,11 @@
-murmur(n)
+single fixed (symbol 1, 2, 3)
 block
-double_mur(n)
-  double_mur_slow(n)
-echo
-filter(n)
-symmetry
+double fixed
+single echo
+filter
+repeat + symmetry
+echo_block
 condense
 alternate
+palindrome
 long_rep2

@@ -21,7 +21,7 @@ return function (puzzle_index)
   if puzzles[puzzle_index].gallery then
     text[#text + 1] = 'Gallery +1\n[' .. puzzles[puzzle_index].gallery .. ']'
   end
-  text = table.concat(text, '\n')
+  text = #text > 0 and table.concat(text, '\n') or '(Say something...)'
   local t1 = wrap_lines(font(40), text, W * 0.8)
 
   local t_cont = love.graphics.newText(font(32), 'Press screen / <Enter> key')

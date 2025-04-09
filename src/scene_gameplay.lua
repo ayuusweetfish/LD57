@@ -281,10 +281,14 @@ return function (puzzle_index)
   local earthbound = (#puzzle.resp <= 5)
   local unisymbol = puzzle.unisymbol
   local chapter_index
-  if puzzle_index <= 10 then chapter_index = 1
-  elseif puzzle_index <= 18 then chapter_index = 2
-  elseif puzzle_index <= 20 then chapter_index = 3
-  else chapter_index = 4 end
+
+  local chapter_start = {1, 11, 19, 22}
+  for i = #chapter_start, 1, -1 do
+    if puzzle_index >= chapter_start[i] then
+      chapter_index = i
+      break
+    end
+  end
 
   ------ Canvas for global effect overlay ------
   local canvas = love.graphics.newCanvas(W, H)
@@ -789,7 +793,7 @@ return function (puzzle_index)
     love.graphics.setColor(1, 1, 1)
     local numerals_frame = -1
     if T >= 240 + 20 * 4 then
-      numerals_frame = (puzzle_index - 1) % 10 + 1
+      numerals_frame = puzzle_index - chapter_start[chapter_index] + 1
     elseif T >= 240 then
       numerals_frame = 11 + math.floor((T - 240) / 20)
     end

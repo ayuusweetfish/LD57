@@ -36,7 +36,7 @@ return function (puzzle_index)
       local gallery_entry = gallery[gallery_id]
       steps[#steps + 1] = {
         gallery_id = gallery_id,
-        name_text = love.graphics.newText(font(48), gallery_entry.id),
+        name_text = love.graphics.newText(font(48), gallery_entry.name),
         desc_text = wrap_lines(font(36), gallery_entry.desc, W * 0.46)
       }
     end

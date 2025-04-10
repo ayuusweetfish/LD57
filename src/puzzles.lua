@@ -130,7 +130,7 @@ local condense = function ()
   return o
 end
 
-local alternate = function ()
+local traverse = function ()
   local o = {}
   local q = decay_priority_queue()
   local last = 0
@@ -182,7 +182,7 @@ return {
     seq = {1, 2, 3, 2, 1},
     resp = {murmur(1), murmur(2), murmur(3), murmur(2), murmur(1)},
     unisymbol = true,
-    gallery = {'beacon_2', 'beacon_3'},
+    gallery = {'beacon_3', 'beacon_2'},
   },
   -- Sometimes you get more than one
   {
@@ -247,12 +247,12 @@ return {
   -- And sometimes the response changes
   {
     seq = {1, 2, 3, 2, 1},
-    resp = {block, block, alternate, block, block, block, alternate, block},
-    gallery = 'alternate',
+    resp = {block, block, traverse, block, block, block, traverse, block},
+    gallery = 'traverse',
   },
   {
     seq = {1, 2, 2, 3, 2, 2, 1},
-    resp = {block, alternate, alternate, block, block, symmetry, symmetry, block},
+    resp = {block, traverse, traverse, block, block, symmetry, symmetry, block},
     msg = 'It takes patience, and solitude, to face the depths.',
   },
   {

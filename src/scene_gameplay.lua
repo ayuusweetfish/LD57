@@ -191,7 +191,7 @@ local create_gallery_overlay = function ()
   local font = _G['global_font']
   local gallery_text_name = {}
   for i = 1, #gallery do
-    gallery_text_name[i] = love.graphics.newText(font(20), gallery[i].id)
+    gallery_text_name[i] = love.graphics.newText(font(20), gallery[i].name)
   end
 
   o.draw = function ()

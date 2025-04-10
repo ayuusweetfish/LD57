@@ -1,42 +1,55 @@
 local gallery = {
   {
     id = 'beacon_1',
-    desc = 'Beacon of the light',
+    name = 'Beacon of Light',
+    desc = 'The common language of the universe.',
   }, {
     id = 'stardust',
-    desc = 'Stardust permeating the space',
-  }, {
-    id = 'beacon_2',
-    desc = 'Beacon of the worlds',
+    name = 'Stardust',
+    desc = 'Cosmic dust permeating the space.',
   }, {
     id = 'beacon_3',
-    desc = 'Beacon of the night',
+    name = 'Beacon of Night',
+    desc = 'Nec lux sine nocte.',
+  }, {
+    id = 'beacon_2',
+    name = 'Beacon of Worlds',
+    desc = 'Where Yggdrasil grows.',
   }, {
     id = 'double_beacon',
+    name = 'Double Beacon',
     desc = 'Repetition is the simplest way to counteract every type of interference',
   }, {
     id = 'echo',
+    name = 'echo',
     desc = 'A mirror',
   }, {
     id = 'filter',
-    desc = 'A large tree covers many parts so only some signals can pass through',
+    name = 'filter',
+    desc = 'A large tree covers most parts so only some signals can pass through',
   }, {
     id = 'symmetry_pair',
+    name = 'symmetry_pair',
     desc = 'The answer to the cosmos is symmetry',
   }, {
     id = 'echo_dust',
+    name = 'echo_dust',
     desc = 'Buried in the stardusts',
   }, {
     id = 'condense',
+    name = 'condense',
     desc = 'Maybe another definition of symmetry',
   }, {
-    id = 'alternate',
+    id = 'traverse',
+    name = 'traverse',
     desc = 'A rotating lighthouse',
   }, {
     id = 'palindrome',
+    name = 'palindrome',
     desc = 'Duplex Ouroboros',
   }, {
     id = 'long_double_echo',
+    name = 'long_double_echo',
     desc = 'A galaxy far, far away',
   },
 }

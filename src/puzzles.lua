@@ -182,7 +182,7 @@ return {
     seq = {1, 2, 3, 2, 1},
     resp = {murmur(1), murmur(2), murmur(3), murmur(2), murmur(1)},
     unisymbol = true,
-    gallery = 'beacon_2',
+    gallery = {'beacon_2', 'beacon_3'},
   },
   -- Sometimes you get more than one
   {

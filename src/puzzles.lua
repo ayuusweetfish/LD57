@@ -196,7 +196,7 @@ return {
     seq = {1, 3, 1, 1, 3, 1},
     resp = {block, double_mur_slow(3), double_mur_slow(1), double_mur_slow(3), block},
     unisymbol = true,
-    msg = 'The other antenna has been fixed!',
+    msg = 'I guess the antenna works now!',
   },
   -- Select symbols
   {
@@ -217,7 +217,7 @@ return {
   {
     seq = {3, 2, 1, 2, 3},
     resp = {block, symmetry, block, block, block},
-    msg = 'How far? Very far.\nThe cosmos exercises restraint in communication. Your messages in one direction never reach another.',
+    msg = 'The cosmos exercises restraint in communication. Messages in one direction never reach another.',
   },
   {
     seq = {1, 2, 1, 3, 2},
@@ -236,7 +236,7 @@ return {
   {
     seq = {4, 2, 4, 4, 2, 4},
     resp = {double_mur_slow(2), block, echo_block, block, double_mur_slow(2), block, echo_block, block},
-    msg = 'So many obstacles in the space. I guess we might not be lonely at all.',
+    msg = 'So much stuff floating in space. I guess we might not be lonely at all.',
   },
   -- Sometimes you need to send more than one
   {
@@ -263,10 +263,12 @@ return {
   {
     seq = {1, 3, 4, 3, 1},
     resp = {block, block, palindrome, block, block, echo_block, block, block},
+    msg = '... Do you think we will ever investigate every corner of the cosmos?',
   },
   {
     seq = {1, 4, 2, 2, 2, 4, 3},
     resp = {symmetry, block, palindrome, block, symmetry, block, filter(2), block},
+    msg = 'To Chapter 3',
   },
 
   ------ Chapter 3 ------
@@ -283,5 +285,6 @@ return {
   {
     seq = {1, 2, 3, 2, 1, 2, 3},
     resp = {long_rep2, long_rep2, long_rep2, long_rep2, long_rep2, long_rep2, long_rep2, long_rep2},
+    msg = 'That was a tough one',
   },
 }

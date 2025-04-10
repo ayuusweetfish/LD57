@@ -379,8 +379,8 @@ return function (puzzle_index)
   local rx_intensity = 0    -- Order 2
   local rx_intensity_accum = 0
 
-  local tv_planet_seq = 1
-  local tv_planet_t = 20 * (#PLANET_FRAMES[tv_planet_seq] + 1)
+  local tv_planet_seq = -love.math.random(240, 2400)
+  local tv_planet_t = 0
 
   ------ Buttons ------
   local buttons = { }

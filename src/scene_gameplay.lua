@@ -3,6 +3,7 @@ local button = require 'button'
 local audio = require 'audio'
 
 local puzzles = require 'puzzles'
+local gallery = require 'gallery'
 
 local clamp = function (x, a, b)
   if x < a then return a elseif x > b then return b else return x end
@@ -72,8 +73,8 @@ local create_gallery_overlay = function ()
   local anim_t, anim_dir  -- anim_dir = +1: in, 0: none, -1: out
   local is_active
 
-  local n_pages = 18
-  local cur_page = 7
+  local n_pages = #gallery
+  local cur_page = 1
   local flip_page = function (delta)
     cur_page = cur_page + delta
     if cur_page < 1 then cur_page = n_pages
@@ -187,6 +188,12 @@ local create_gallery_overlay = function ()
     end
   end
 
+  local font = _G['global_font']
+  local gallery_text_name = {}
+  for i = 1, #gallery do
+    gallery_text_name[i] = love.graphics.newText(font(20), gallery[i].id)
+  end
+
   o.draw = function ()
     if not is_active then return end
 
@@ -228,7 +235,8 @@ local create_gallery_overlay = function ()
     love.graphics.setColor(1, 1, 1, alpha)
     draw.img('card', 0, 0, W * 0.22)
     love.graphics.setColor(0.2, 0.1, 0.1, alpha)
-    draw.img('stars/' .. tostring(cur_page), 0, H * -0.1, W * 0.2)
+    draw.img('stars/' .. gallery[cur_page].id, 0, H * -0.06, W * 0.2)
+    draw(gallery_text_name[cur_page], 0, H * -0.225)
 
     love.graphics.setColor(1, 1, 1, alpha)
     for i = 1, #buttons do buttons[i].draw() end

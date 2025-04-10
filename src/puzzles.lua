@@ -168,28 +168,28 @@ return {
     seq = {1, 1, 1, 1, 1, 1, 1},
     resp = {murmur(1), murmur(1), murmur(1), murmur(1), murmur(1)},
     unisymbol = true,
-    gallery = 'single fixed (symbol 1)',
+    gallery = 'beacon_1',
   },
   -- Find one inside many obstacles
   {
     seq = {1, 1, 1},
     resp = {block, block, block, murmur(1), block},
     unisymbol = true,
-    gallery = 'block',
+    gallery = 'stardust',
   },
   -- Construct sequence
   {
     seq = {1, 2, 3, 2, 1},
     resp = {murmur(1), murmur(2), murmur(3), murmur(2), murmur(1)},
     unisymbol = true,
-    gallery = 'single fixed (symbols 2/3)',
+    gallery = 'beacon_2',
   },
   -- Sometimes you get more than one
   {
     seq = {2, 3, 1, 2},
     resp = {murmur(3), double_mur(1), double_mur(2), double_mur(3), murmur(1)},
     unisymbol = true,
-    gallery = 'double fixed',
+    gallery = 'double_beacon',
   },
   -- Interleave responses
   {
@@ -202,7 +202,7 @@ return {
   {
     seq = {1, 2, 3, 2, 1},
     resp = {block, echo(180), block, block, block},
-    gallery = 'single echo',
+    gallery = 'echo',
   },
   {
     seq = {1, 1, 2, 3, 2},
@@ -212,7 +212,7 @@ return {
   {
     seq = {3, 1, 2, 2, 1, 3},
     resp = {block, symmetry, block, block, block},
-    gallery = 'repeat + symmetry',
+    gallery = 'symmetry_pair',
   },
   {
     seq = {3, 2, 1, 2, 3},
@@ -230,7 +230,7 @@ return {
   {
     seq = {2, 2, 4, 4, 4},
     resp = {echo_block, block, echo_block, block, echo_block, block, echo_block, block},
-    gallery = 'echo_block',
+    gallery = 'echo_dust',
   },
   -- Challenge with time
   {
@@ -273,7 +273,7 @@ return {
   {
     seq = {2, 2, 1, 3, 1, 3},
     resp = {long_rep2, long_rep2, long_rep2, long_rep2, long_rep2, long_rep2, long_rep2, long_rep2},
-    gallery = 'long_rep2',
+    gallery = 'long_double_echo',
   },
   {
     seq = {1, 2, 3, 2, 1},

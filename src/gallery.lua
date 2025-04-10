@@ -55,6 +55,7 @@ local gallery = {
 }
 
 for i = 1, #gallery do
+  gallery[i].index = i
   gallery[gallery[i].id] = gallery[i]
 end
 

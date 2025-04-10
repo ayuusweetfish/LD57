@@ -73,7 +73,7 @@ local create_gallery_overlay = function ()
   local anim_t, anim_dir  -- anim_dir = +1: in, 0: none, -1: out
   local is_active
 
-  local n_pages = #gallery
+  local n_pages = 1
   local cur_page = 1
   local flip_page = function (delta)
     cur_page = cur_page + delta
@@ -108,6 +108,10 @@ local create_gallery_overlay = function ()
     is_active = false
   end
   o.reset()
+
+  o.set_n_pages = function (n)
+    n_pages = n
+  end
 
   o.toggle_open = function ()
     if is_active then
@@ -685,6 +689,11 @@ return function (puzzle_index)
     if since_clear >= 0 then
       since_clear = since_clear + 1
       if since_clear == 600 then
+        if puzzles[puzzle_index].gallery then
+          local id = puzzles[puzzle_index].gallery
+          if type(id) == 'table' then id = id[#id] end
+          gallery_overlay.set_n_pages(gallery[id].index)
+        end
         replaceScene(scene_interlude(puzzle_index), transitions['fade'](0.1, 0.1, 0.1))
       end
     end

@@ -327,18 +327,29 @@ return {
     msg = '...',
   },
   {
+    seq = {1, 3, 2, 1, 2, 3},
+    resp = {block, stickbug, block, palindrome, block, block, block, block},
+    msg = '...',
+  },
+  {
     seq = {4, 4, 1, 4, 4},
     resp = {block, pulsar(1, 0), block, block, block, pulsar(3, 120), block, block},
     gallery = 'pulsar',
   },
   {
-    seq = {1, 3, 1, 2, 2, 3, 1, 4},
-    resp = {pulsar(1, 0), block, echo_block, block, pulsar(3, 320), block, pulsar(2, 160), block},
+    seq = {1, 1, 1, 1, 2},
+    resp = {block, pulsar(1, 0), block, pulsar(3, 160), block, pulsar(3, 320), block, double_mur(2), block},
     msg = '...',
   },
   {
-    seq = {1},
-    resp = {block, block, block, block, block, block, block, block},
+    seq = {1, 2, 3, 3, 2},
+    resp = {block, pulsar(1, 0), block, pulsar(3, 240), block, symmetry, block, echo_block, block},
+    msg = '...',
+  },
+  {
+    seq = {1, 3, 1, 2, 2, 3, 1, 4},
+    resp = {pulsar(1, 0), block, echo_block, block, pulsar(3, 320), block, pulsar(2, 160), block},
+    msg = '...',
   },
   {
     seq = {1},

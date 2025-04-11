@@ -33,7 +33,7 @@ local gallery = {
     id = 'filter',
     name = 'filter',
     desc = 'A large tree covers most parts so only some signals can pass through',
-    annot = {{{2}, {2}}, {{1}, {4}}, {{3}, {4}}},
+    annot = {{{2}, {2}, 'typ. M'}, {{1}, {4}}, {{3}, {4}}},
   }, {
     id = 'symmetry_pair',
     name = 'symmetry_pair',
@@ -63,7 +63,7 @@ local gallery = {
     id = 'stickbug',
     name = 'stickbug',
     desc = 'Masquerader',
-    annot = {{{1}, {1}, nil, '< 5 s'}, {{1}, {3}, nil, '> 5 s'}},
+    annot = {{{2}, {1}, nil, '< 5 s'}, {{2}, {3}, nil, '> 5 s'}},
   }, {
     id = 'pulsar',
     name = 'Pulsar',

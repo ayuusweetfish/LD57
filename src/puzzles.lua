@@ -317,7 +317,7 @@ return {
 
   ------ Chapter 3 ------
   {
-    seq = {1, 3, 4},
+    seq = {1, 3, 3, 4},
     resp = {block, block, stickbug, block, block, block, block, block},
     gallery = 'stickbug',
   },
@@ -349,11 +349,12 @@ return {
   {
     seq = {1, 3, 1, 2, 2, 3, 1, 4},
     resp = {pulsar(1, 0), block, echo_block, block, pulsar(3, 320), block, pulsar(2, 160), block},
-    msg = '...',
+    msg = 'This place is too noisy.',
   },
   {
-    seq = {1},
-    resp = {block, block, block, block, block, block, block, block},
+    seq = {3, 1, 1, 1, 3, 2, 3},
+    resp = {murmur(2), block, palindrome, block, block, block, pulsar(1, 0), block},
+    msg = 'To Chapter 4',
   },
 
   ------ Chapter 4 ------

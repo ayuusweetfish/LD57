@@ -189,7 +189,7 @@ local create_gallery_overlay = function ()
   o.key = function (key)
     if not is_active then return false end
     if anim_dir ~= 0 then return false end
-    if key == 'tab' then o.close() return true
+    if key == 'tab' or key == 'escape' then o.close() return true
     elseif key == 'q' then flip_page(-1) return true
     elseif key == 'w' then flip_page(1) return true
     end

@@ -1085,7 +1085,7 @@ return function (puzzle_index)
     -- Back to global canvas
     love.graphics.pop()
     love.graphics.setCanvas(orig_canvas)
-    love.graphics.clear(0.99, 0.99, 0.98)
+    love.graphics.clear(0, 0, 0)
     love.graphics.setShader(global_shader)
     love.graphics.setColor(1, 1, 1)
     love.graphics.draw(canvas, 0, 0)

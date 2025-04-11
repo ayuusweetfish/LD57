@@ -123,6 +123,7 @@ transitions['fade'] = function (r, g, b)
   return {
     dur = 120,
     draw = function (x)
+      love.graphics.clear(0, 0, 0)
       local opacity = 0
       if x < 0.5 then
         lastScene:draw()
@@ -132,7 +133,7 @@ transitions['fade'] = function (r, g, b)
         opacity = 2 - x * 2
       end
       love.graphics.setColor(r, g, b, opacity)
-      love.graphics.rectangle('fill', -offsX, -offsY, Wx, Hx)
+      love.graphics.rectangle('fill', 0, 0, W, H)
     end
   }
 end
@@ -144,15 +145,21 @@ transitions['crossfade'] = function ()
     draw = function (x)
       local opacity = (x < 0.5 and x * x * 2 or 1 - (1 - x) * (1 - x) * 2)
 
+      love.graphics.push()
+      love.graphics.replaceTransform(love.math.newTransform())
       love.graphics.setCanvas(canvas)
       lastScene:draw()
       love.graphics.setCanvas()
+      love.graphics.pop()
       love.graphics.setColor(1, 1, 1)
       love.graphics.draw(canvas, 0, 0)
 
+      love.graphics.push()
+      love.graphics.replaceTransform(love.math.newTransform())
       love.graphics.setCanvas(canvas)
       curScene:draw()
       love.graphics.setCanvas()
+      love.graphics.pop()
       love.graphics.setColor(1, 1, 1, opacity)
       love.graphics.draw(canvas, 0, 0)
     end

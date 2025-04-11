@@ -158,7 +158,10 @@ return function (puzzle_index)
   end
 
   s.draw = function ()
-    love.graphics.clear(0.1, 0.1, 0.1)
+    love.graphics.clear(0, 0, 0)
+
+    love.graphics.setColor(0.1, 0.1, 0.1)
+    love.graphics.rectangle('fill', 0, 0, W, H)
 
     if T < 0 then
       draw_step(steps[cur_step - 1], last_step_T_offs + T,

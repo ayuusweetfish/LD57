@@ -33,6 +33,7 @@ local murmur = function (n, dur, count) return function ()
     for i = 1, count do q.insert({n, dur * i}) end
   end
   o.update = q.pop
+  o.id = (n == 4 and 'stardust' or 'beacon_' .. n)
   return o
 end end
 
@@ -48,6 +49,7 @@ local double_mur = function (n, t1, t2) return function ()
     q.insert({n, t2})
   end
   o.update = q.pop
+  o.id = 'double_beacon'
   return o
 end end
 
@@ -60,6 +62,7 @@ local filter = function (pass_sym) return function ()
     q.insert({sym == pass_sym and sym or 4, 180})
   end
   o.update = q.pop
+  o.id = 'filter'
   return o
 end end
 
@@ -75,6 +78,7 @@ local echo = function (...)
       end
     end
     o.update = q.pop
+    o.id = (t[#t] == 1680 and 'long_double_echo' or 'echo')
     return o
   end
 end
@@ -89,6 +93,7 @@ local echo_block = function ()
     q.insert({4, 600})
   end
   o.update = q.pop
+  o.id = 'echo_dust'
   return o
 end
 
@@ -99,6 +104,7 @@ local invert = function ()
     q.insert({4 - sym, 180})
   end
   o.update = q.pop
+  o.id = 'invert'
   return o
 end
 
@@ -110,6 +116,7 @@ local symmetry = function ()
     q.insert({4 - sym, 600})
   end
   o.update = q.pop
+  o.id = 'symmetry_pair'
   return o
 end
 
@@ -127,6 +134,7 @@ local condense = function ()
     end
   end
   o.update = q.pop
+  o.id = 'condense'
   return o
 end
 
@@ -139,6 +147,7 @@ local traverse = function ()
     q.insert({last, 60})
   end
   o.update = q.pop
+  o.id = 'traverse'
   return o
 end
 
@@ -154,10 +163,11 @@ local palindrome = function ()
       for i = #hist, 1, -1 do
         q.insert({hist[i][1], sep + T - hist[i][2]})
       end
-      hist = {}
+     hist = {}
     end
   end
   o.update = q.pop
+  o.id = 'palindrome'
   return o
 end
 

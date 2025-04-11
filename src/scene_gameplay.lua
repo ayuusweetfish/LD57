@@ -239,7 +239,7 @@ local create_gallery_overlay = function ()
     love.graphics.setColor(1, 1, 1, alpha)
     draw.img('card', 0, 0, W * 0.22)
     love.graphics.setColor(0.2, 0.1, 0.1, alpha)
-    draw.img('stars/' .. gallery[cur_page].id, 0, H * -0.06, W * 0.2)
+    draw.img('stars/ord/' .. gallery[cur_page].id, 0, H * -0.06, W * 0.2)
     draw(gallery_text_name[cur_page], 0, H * -0.225)
 
     love.graphics.setColor(1, 1, 1, alpha)
@@ -774,20 +774,23 @@ return function (puzzle_index)
     end
     draw.img(bg_int, W / 2, H / 2, W, H)
 
-    -- Sector highlight
-    local sector = function (n)
+    -- Sector highlight (incl. object identification)
+    local sector = function (n, alpha)
+      love.graphics.setColor(0.5, 0.5, 0.5, alpha * 0.7)
       draw.img('sector', radar_x, radar_y, nil, nil, 9/240, 307/312, (n + 1.5) * math.pi * 2 / N_ORI)
+      local x = radar_x + math.cos(n * math.pi * 2 / N_ORI) * radar_r * 0.61
+      local y = radar_y + math.sin(n * math.pi * 2 / N_ORI) * radar_r * 0.61
+      love.graphics.setColor(0.25, 0.27, 0.15, alpha * 0.7)
+      draw.img('stars/dilate/' .. responders[n].id, x, y, W * 0.15)
     end
     local sector_alpha = 1
     if ant_sector_anim > 0 then
       local x = ant_sector_anim / SECTOR_ANIM_DUR
       local last_alpha = x ^ 0.8
       sector_alpha = (1 - x) ^ 0.8
-      love.graphics.setColor(0.5, 0.5, 0.5, last_alpha * 0.7)
-      sector(ant_sector_last)
+      sector(ant_sector_last, last_alpha)
     end
-    love.graphics.setColor(0.5, 0.5, 0.5, sector_alpha * 0.7)
-    sector(ant_sector)
+    sector(ant_sector, sector_alpha)
 
     -- Radar line
     love.graphics.setColor(0.25, 0.27, 0.15)

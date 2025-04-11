@@ -91,7 +91,7 @@ return function (puzzle_index)
     if step.gallery_id then
       local img_alpha = ease_quad(clamp(T / 120, 0, 1))
       love.graphics.setColor(0.97, 0.97, 0.97, img_alpha * base_alpha)
-      draw.img('stars/' .. step.gallery_id, W * 0.27, H * 0.48, W * 0.5)
+      draw.img('stars/ord/' .. step.gallery_id, W * 0.27, H * 0.48, W * 0.5)
 
       local x = clamp((T - 60) / 120, 0, 1)
       love.graphics.setColor(0.97, 0.97, 0.97, ease_quad(x) * base_alpha)

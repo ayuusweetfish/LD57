@@ -37,14 +37,16 @@ return function (puzzle_index)
       steps[#steps + 1] = {
         gallery_id = gallery_id,
         name_text = love.graphics.newText(font(48), gallery_entry.name),
-        desc_text = wrap_lines(font(36), gallery_entry.desc, W * 0.46)
+        desc_text = wrap_lines(font(36), gallery_entry.desc, W * 0.46),
+        fade_out = 480,
       }
     end
   end
 
   if puzzles[puzzle_index].msg then
     steps[#steps + 1] = {
-      cutscene_text = wrap_lines(font(36), puzzles[puzzle_index].msg, W * 0.75)
+      cutscene_text = wrap_lines(font(36), puzzles[puzzle_index].msg, W * 0.75),
+      fade_out = 120,
     }
   end
 
@@ -56,14 +58,9 @@ return function (puzzle_index)
 
   local move_on = function ()
     if T < 240 then return end
+    last_step_T_offs = T + steps[cur_step].fade_out
+    T = -steps[cur_step].fade_out
     cur_step = cur_step + 1
-    last_step_T_offs = T + 120
-    T = -120
-    if cur_step > #steps then
-      local next_index = puzzle_index + 1
-      if not puzzles[next_index] then next_index = 1 end
-      replaceScene(scene_gameplay(next_index), transitions['fade'](0.1, 0.1, 0.1))
-    end
   end
 
   s.press = function (x, y)
@@ -85,9 +82,14 @@ return function (puzzle_index)
 
   s.update = function ()
     T = T + 1
+    if cur_step > #steps and T == 0 then
+      local next_index = puzzle_index + 1
+      if not puzzles[next_index] then next_index = 1 end
+      replaceScene(scene_gameplay(next_index), transitions['fade'](0.1, 0.1, 0.1))
+    end
   end
 
-  local draw_step = function (step, T, base_alpha)
+  local draw_step = function (step, T, base_alpha, fade_out_T)
     if step.gallery_id then
       local img_alpha = ease_quad(clamp(T / 120, 0, 1))
       love.graphics.setColor(0.97, 0.97, 0.97, img_alpha * base_alpha)
@@ -111,15 +113,22 @@ return function (puzzle_index)
     end
 
     local x = clamp((T - 480) / 120, 0, 1)
-    love.graphics.setColor(0.97, 0.97, 0.97, 0.4 * ease_quad(x) * base_alpha)
+    local y = clamp(1 - fade_out_T / 40, 0, 1)
+    love.graphics.setColor(0.97, 0.97, 0.97, 0.4 * ease_quad(x) * ease_quad(y) * base_alpha)
     draw(t_cont, W * 0.95, H * (0.9 + ease_exp_out_inv(x) * 0.01), nil, nil, 1, 1)
   end
 
   s.draw = function ()
     love.graphics.clear(0.1, 0.1, 0.1)
 
-    if T < 0 then draw_step(steps[cur_step - 1], last_step_T_offs + T, ease_quad(-T / 120))
-    else draw_step(steps[cur_step], T, 1) end
+    if T < 0 then
+      draw_step(steps[cur_step - 1], last_step_T_offs + T,
+        ease_quad(clamp(-T / 120, 0, 1)),
+        steps[cur_step - 1].fade_out + T
+      )
+    elseif cur_step <= #steps then
+      draw_step(steps[cur_step], T, 1, 0)
+    end
   end
 
   s.destroy = function ()

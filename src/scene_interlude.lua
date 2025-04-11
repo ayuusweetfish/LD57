@@ -110,8 +110,8 @@ return function (puzzle_index)
         img_scale = 1 - 0.4 * ease_quad(x)
         img_alpha = img_alpha * (1 - qx) * (1 - qx)
         img_x = img_x + (W * 0.1 - img_x) * qx
-        img_y = img_y + (H * 0.62 - img_y) * qx
-        img_rota = -0.2 * qx
+        img_y = img_y + (H * 0.6 - img_y) * qx
+        img_rota = -0.25 * qx
       end
       love.graphics.setColor(0.97, 0.97, 0.97, img_alpha * base_alpha)
       draw.img('stars/ord/' .. step.gallery_id, img_x, img_y,
@@ -141,7 +141,7 @@ return function (puzzle_index)
           if step == steps[#steps] then book_alpha = 1 end
         end
         love.graphics.setColor(0.97, 0.97, 0.97, book_alpha)
-        draw.img('gallery_book/' .. tostring(book_frame), 124, 484)
+        draw.img('gallery_book/outline_' .. tostring(book_frame), 124, 484)
       end
     else
       for i, t in ipairs(step.cutscene_text) do

@@ -81,7 +81,7 @@ local create_gallery_overlay = function ()
   local anim_t, anim_dir  -- anim_dir = +1: in, 0: none, -1: out
   local is_active
 
-  local n_pages = 0
+  local n_pages = #gallery -- 0
   local cur_page = 0
   local flip_page = function (delta)
     cur_page = cur_page + delta
@@ -219,9 +219,11 @@ local create_gallery_overlay = function ()
   local text_annot = {}
   for i = 1, #gallery do
     for j = 1, #gallery[i].annot do
-      local s = gallery[i].annot[j][3]
-      if s and not text_annot[s] then
-        text_annot[s] = love.graphics.newText(font(20), s)
+      for k = 3, 4 do
+        local s = gallery[i].annot[j][k]
+        if s and not text_annot[s] then
+          text_annot[s] = love.graphics.newText(font(20), s)
+        end
       end
     end
   end
@@ -294,16 +296,25 @@ local create_gallery_overlay = function ()
         end
       end
       for i = 1, #entry.annot do
-        local l, r, text = unpack(entry.annot[i])
+        local l, r, text_mid, text_lead = unpack(entry.annot[i])
         local y = 0.075 + 0.055 * (i - 1)
-        draw_symbols(l, -0.06, y)
-        draw_symbols(r, 0.06, y)
+        local l_cen, r_cen = -0.06, 0.06
+        local lr_offs = 0.02  -- Distance to the start of the line
+        if text_lead then l_cen, lr_offs = -0.005, 0.012 end
+        draw_symbols(l, l_cen, y)
+        draw_symbols(r, r_cen, y)
         love.graphics.setLineWidth(2)
         love.graphics.line(
-          W * (-0.04 + math.max(#l, 1) / 2 * 0.02), H * y,
-          W * ( 0.04 - math.max(#r, 1) / 2 * 0.02), H * y)
-        if text then
-          draw(text_annot[text], 0, H * (y - 0.002), nil, nil, 0.5, 1)
+          W * (l_cen + lr_offs + math.max(#l, 1) / 2 * 0.02), H * y,
+          W * (r_cen - lr_offs - math.max(#r, 1) / 2 * 0.02), H * y)
+        if text_mid then
+          draw(text_annot[text_mid], 0, H * (y - 0.002), nil, nil, 0.5, 1)
+        end
+        if text_lead then
+          love.graphics.line(
+            W * -0.07, H * y,
+            W * (l_cen - lr_offs - math.max(#l, 1) / 2 * 0.02), H * y)
+          draw(text_annot[text_lead], W * -0.05, H * (y - 0.002), nil, nil, 0.5, 1)
         end
       end
     end
@@ -368,7 +379,7 @@ return function (puzzle_index)
   local unisymbol = puzzle.unisymbol
   local chapter_index
 
-  local chapter_start = {1, 11, 19, 22}
+  local chapter_start = {1, 11, 19, 25}
   for i = #chapter_start, 1, -1 do
     if puzzle_index >= chapter_start[i] then
       chapter_index = i
@@ -1002,7 +1013,7 @@ return function (puzzle_index)
     end
 
     love.graphics.setColor(0.1, 0.1, 0.1)
-    love.graphics.print(tostring(puzzle_index), W * 0.04, H * 0.88)
+    love.graphics.print(chapter_index .. '-' .. (puzzle_index - chapter_start[chapter_index] + 1), W * 0.04, H * 0.88)
 
     -- Gallery book
     local book_frame = 1

@@ -171,6 +171,21 @@ local palindrome = function ()
   return o
 end
 
+local stickbug = function ()
+  local o = {}
+  local q = decay_priority_queue()
+  local last_T = -9999
+  o.send = function (sym, T)
+    local delta = T - last_T
+    local resp = (delta < 1200 and 1 or delta < 2400 and 3 or 2)
+    q.insert({resp, 180})
+    last_T = T
+  end
+  o.update = q.pop
+  o.id = 'stickbug'
+  return o
+end
+
 return {
   ------ Chapter 1 ------
   -- Just play
@@ -282,6 +297,33 @@ return {
   },
 
   ------ Chapter 3 ------
+  {
+    seq = {1, 3, 2, 4},
+    resp = {block, block, stickbug, block, block, block, block, block},
+    gallery = 'stickbug',
+  },
+  {
+    seq = {1},
+    resp = {block, block, block, block, block, block, block, block},
+  },
+  {
+    seq = {1},
+    resp = {block, block, block, block, block, block, block, block},
+  },
+  {
+    seq = {1},
+    resp = {block, block, block, block, block, block, block, block},
+  },
+  {
+    seq = {1},
+    resp = {block, block, block, block, block, block, block, block},
+  },
+  {
+    seq = {1},
+    resp = {block, block, block, block, block, block, block, block},
+  },
+
+  ------ Chapter 4 ------
   {
     seq = {2, 2, 1, 3, 1, 3},
     resp = {long_rep2, long_rep2, long_rep2, long_rep2, long_rep2, long_rep2, long_rep2, long_rep2},

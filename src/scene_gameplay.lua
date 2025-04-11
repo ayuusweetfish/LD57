@@ -409,6 +409,8 @@ return function (puzzle_index)
     bg_ext_w_total = bg_ext_w_total + w
   end
 
+  local bg_ext_offs = {0.75, 0, 0.5, 0}
+
   ------ Game state ------
   local T = 0
 
@@ -840,11 +842,11 @@ return function (puzzle_index)
 
     -- Outer background
     love.graphics.setColor(1, 1, 1)
-    local bg_ext_pos = -disp_ori / (math.pi * 2) * bg_ext_w_total   -- Logical position
-    if earthbound then
-      bg_ext_pos = bg_ext_pos - 0.2 * puzzle_index * bg_ext_w_total
-      if bg_ext_pos < -bg_ext_w_total then bg_ext_pos = bg_ext_pos + bg_ext_w_total end
-    end
+    local bg_ext_pos = -disp_ori / (math.pi * 2)  -- Logical position
+    bg_ext_pos = bg_ext_pos - bg_ext_offs[chapter_index] -
+      0.185 * (puzzle_index - chapter_start[chapter_index])
+    bg_ext_pos = bg_ext_pos % 1 - 1
+    bg_ext_pos = bg_ext_pos * bg_ext_w_total
     local bg_ext_y = 4
     -- Vibration on land
     if chapter_index == 1 or chapter_index == 3 then

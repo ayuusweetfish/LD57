@@ -774,7 +774,9 @@ return function (puzzle_index)
     meter_quads[i] = quads
   end
 
-  s.draw = function ()
+  -- Get around the 60-upvalue limit > <
+
+  local draw_1 = function ()
     local orig_canvas = love.graphics.getCanvas()
     love.graphics.setCanvas(canvas)
     love.graphics.push()
@@ -792,6 +794,10 @@ return function (puzzle_index)
     -- Outer background
     love.graphics.setColor(1, 1, 1)
     local bg_ext_pos = -disp_ori / (math.pi * 2) * bg_ext_w_total   -- Logical position
+    if earthbound then
+      bg_ext_pos = bg_ext_pos - 0.2 * puzzle_index * bg_ext_w_total
+      if bg_ext_pos < -bg_ext_w_total then bg_ext_pos = bg_ext_pos + bg_ext_w_total end
+    end
     local bg_ext_y = 4
     -- Vibration on land
     if chapter_index == 1 or chapter_index == 3 then
@@ -885,7 +891,9 @@ return function (puzzle_index)
       symbol_list(responses[i], i, radar_r * 0.825, radar_r * -0.15, 0.225, 0.9, 0.9, 0.85)
       symbol_list(transmits[i], i, radar_r * 0.4, radar_r * 0.15, 0.225 * 0.825 / 0.4, 0.3, 0.7, 0.4)
     end
+  end
 
+  local draw_2 = function ()
     -- Screen noise
     love.graphics.setColor(0.25, 0.27, 0.15)
     local noise_frame = 1 + math.floor(T / 20) % 10
@@ -1025,6 +1033,11 @@ return function (puzzle_index)
 
     -- Gallery
     gallery_overlay.draw()
+  end
+
+  s.draw = function ()
+    draw_1()
+    draw_2()
   end
 
   s.destroy = function ()

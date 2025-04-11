@@ -110,6 +110,7 @@ local create_gallery_overlay = function ()
   o.reset()
 
   o.set_n_pages = function (n)
+    n = #gallery
     n_pages = n
     last_button.enabled = (n > 1)
     next_button.enabled = (n > 1)
@@ -198,7 +199,16 @@ local create_gallery_overlay = function ()
   local font = _G['global_font']
   local gallery_text_name = {}
   for i = 1, #gallery do
-    gallery_text_name[i] = love.graphics.newText(font(20), gallery[i].name)
+    gallery_text_name[i] = love.graphics.newText(font(25), gallery[i].name)
+  end
+  local text_annot = {}
+  for i = 1, #gallery do
+    for j = 1, #gallery[i].annot do
+      local s = gallery[i].annot[j][3]
+      if s and not text_annot[s] then
+        text_annot[s] = love.graphics.newText(font(20), s)
+      end
+    end
   end
 
   o.draw = function ()
@@ -239,11 +249,32 @@ local create_gallery_overlay = function ()
     love.graphics.scale(scale_x, scale_y)
     love.graphics.rotate(rotation)
 
+    local entry = gallery[cur_page]
+
     love.graphics.setColor(1, 1, 1, alpha)
     draw.img('card', 0, 0, W * 0.22)
     love.graphics.setColor(0.2, 0.1, 0.1, alpha)
-    draw.img('stars/ord/' .. gallery[cur_page].id, 0, H * -0.06, W * 0.2)
+    draw.img('stars/ord/' .. entry.id, 0, H * -0.08, W * 0.2)
     draw(gallery_text_name[cur_page], 0, H * -0.225)
+
+    local draw_symbols = function (l, x, y)
+      for j = 1, #l do
+        draw.img('symbols/' .. l[j], W * (x + 0.025 * (-(#l + 1) / 2 + j)), H * y, W * 0.027)
+      end
+    end
+    for i = 1, #entry.annot do
+      local l, r, text = unpack(entry.annot[i])
+      local y = 0.075 + 0.055 * (i - 1)
+      draw_symbols(l, -0.06, y)
+      draw_symbols(r, 0.06, y)
+      love.graphics.setLineWidth(2)
+      love.graphics.line(
+        W * (-0.04 + math.max(#l, 1) / 2 * 0.02), H * y,
+        W * ( 0.04 - math.max(#r, 1) / 2 * 0.02), H * y)
+      if text then
+        draw(text_annot[text], 0, H * (y - 0.002), nil, nil, 0.5, 1)
+      end
+    end
 
     love.graphics.setColor(1, 1, 1, alpha)
     for i = 1, #buttons do buttons[i].draw() end

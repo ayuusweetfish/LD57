@@ -107,7 +107,7 @@ return function (puzzle_index)
       if fade_out_T > 0 then
         local x = clamp((fade_out_T - 150) / 180, 0, 1)
         local qx = ease_cubic(x)
-        img_scale = 1 - 0.4 * ease_quad(x)
+        img_scale = 1 - 0.5 * ease_quad(x)
         img_alpha = img_alpha * (1 - qx) * (1 - qx)
         img_x = img_x + (W * 0.1 - img_x) * qx
         img_y = img_y + (H * 0.6 - img_y) * qx

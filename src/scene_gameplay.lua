@@ -106,14 +106,14 @@ local create_gallery_overlay = function ()
   o.reset = function ()
     anim_t, anim_dir = 0, 0
     is_active = false
+    -- Update buttons here so that page buttons do not change abruptly at puzzle finish
+    last_button.enabled = (n_pages > 1)
+    next_button.enabled = (n_pages > 1)
   end
   o.reset()
 
   o.set_n_pages = function (n)
-    n = #gallery
     n_pages = n
-    last_button.enabled = (n > 1)
-    next_button.enabled = (n > 1)
   end
   o.set_n_pages(1)
 
@@ -522,6 +522,17 @@ return function (puzzle_index)
   btn_mug.y = (618 + 378/2) * (2/3)
   table.insert(buttons, 1, btn_mug)
 
+  ------ Helper methods ------
+
+  local go_to_interlude = function ()
+    if puzzles[puzzle_index].gallery then
+      local id = puzzles[puzzle_index].gallery
+      if type(id) == 'table' then id = id[#id] end
+      gallery_overlay.set_n_pages(gallery[id].index)
+    end
+    replaceScene(scene_interlude(puzzle_index), transitions['fade'](0.1, 0.1, 0.1))
+  end
+
   ------ Scene methods ------
 
   s.press = function (x, y)
@@ -565,7 +576,7 @@ return function (puzzle_index)
     elseif key == 'return' then pull_lever()
     elseif key == 'tab' then open_gallery()
     elseif key == 'space' then
-      replaceScene(scene_interlude(puzzle_index), transitions['fade'](0.1, 0.1, 0.1))
+      go_to_interlude()
     elseif key == 'n' then
       if puzzles[puzzle_index + 1] then
         replaceScene(scene_gameplay(puzzle_index + 1), transitions['fade'](0.1, 0.1, 0.1))
@@ -739,14 +750,7 @@ return function (puzzle_index)
     -- Puzzle-clear transition out
     if since_clear >= 0 then
       since_clear = since_clear + 1
-      if since_clear == 600 then
-        if puzzles[puzzle_index].gallery then
-          local id = puzzles[puzzle_index].gallery
-          if type(id) == 'table' then id = id[#id] end
-          gallery_overlay.set_n_pages(gallery[id].index)
-        end
-        replaceScene(scene_interlude(puzzle_index), transitions['fade'](0.1, 0.1, 0.1))
-      end
+      if since_clear == 600 then go_to_interlude() end
     end
 
     -- Mug rotation / language change animation
@@ -777,12 +781,6 @@ return function (puzzle_index)
   -- Get around the 60-upvalue limit > <
 
   local draw_1 = function ()
-    local orig_canvas = love.graphics.getCanvas()
-    love.graphics.setCanvas(canvas)
-    love.graphics.push()
-    love.graphics.replaceTransform(love.math.newTransform())
-    love.graphics.clear(0, 0, 0, 0)
-
     -- Ease on stuck directions
     local disp_ori = ant_ori
     if ant_ori_stuck_dir < 0 then
@@ -889,7 +887,7 @@ return function (puzzle_index)
     end
     for i = 0, N_ORI - 1 do
       symbol_list(responses[i], i, radar_r * 0.825, radar_r * -0.15, 0.225, 0.9, 0.9, 0.85)
-      symbol_list(transmits[i], i, radar_r * 0.4, radar_r * 0.15, 0.225 * 0.825 / 0.4, 0.3, 0.7, 0.4)
+      symbol_list(transmits[i], i, radar_r * 0.4, radar_r * 0.15, 0.225 * 0.825 / 0.4, 0.5, 0.7, 0.4)
     end
   end
 
@@ -1021,6 +1019,17 @@ return function (puzzle_index)
     local steer_frame = math.min(STEER_N_FRAMES, 1 + math.floor(steer_cont_dur / 20))
     local steer_flip_x = (last_steer_nonzero < 0)
     draw.img('steer/' .. tostring(steer_frame), 640, 664, steer_flip_x and -516 or 516, 112)
+  end
+
+  s.draw = function ()
+    local orig_canvas = love.graphics.getCanvas()
+    love.graphics.setCanvas(canvas)
+    love.graphics.push()
+    love.graphics.replaceTransform(love.math.newTransform())
+    love.graphics.clear(0, 0, 0, 0)
+
+    draw_1()
+    draw_2()
 
     -- Back to global canvas
     love.graphics.pop()
@@ -1033,11 +1042,6 @@ return function (puzzle_index)
 
     -- Gallery
     gallery_overlay.draw()
-  end
-
-  s.draw = function ()
-    draw_1()
-    draw_2()
   end
 
   s.destroy = function ()

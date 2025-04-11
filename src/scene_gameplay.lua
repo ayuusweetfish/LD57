@@ -291,6 +291,8 @@ local PLANET_FRAMES = {
   {{632,155,1},{624,149,2},{617,143,3},{609,139,4},{602,134,4},{594,129,4},{588,125,4},{581,121,4},{571,116,4},{566,112,4},{558,109,4},{550,103,4},{542,99,4},{533,94,4},{525,91,4},{517,86,4},{508,83,4},{501,79,4},{492,75,4},{484,72,4},{476,69,4},{467,65,4},{460,63,4},{452,57,4},{443,55,4},{435,52,4},{427,48,4},{418,46,4},{410,43,4},{402,41,4},{393,36,4},{384,35,4},{376,31,4},{368,30,4},{358,25,4},{351,25,4},{341,22,4},{330,20,4},{322,18,4},{314,16,4},{302,14,4},{292,13,4},{284,10,4},{275,10,4},{267,7,4},{256,7,4},{248,6,4},{240,5,4},{229,5,4},{219,5,4},{209,5,4},{202,4,4},{194,3,4},{183,3,4},{177,1,4},{174,0,56},{174,2,57},{174,3,58}}
 }
 
+_G['lang'] = false  -- false: en, true: zh
+
 return function (puzzle_index)
   local s = {}
   local W, H = W, H
@@ -394,6 +396,8 @@ return function (puzzle_index)
   local tv_planet_seq = -love.math.random(240, 2400)
   local tv_planet_t = 0
 
+  local since_lang_change = -1
+
   ------ Buttons ------
   local buttons = { }
 
@@ -470,6 +474,19 @@ return function (puzzle_index)
   open_gallery = function ()
     gallery_overlay.toggle_open()
   end
+
+  -- Mug button
+  local btn_mug = button(
+    draw.get('mug/1'),
+    function ()
+      _G['lang'] = not _G['lang']
+      since_lang_change = 0
+    end,
+    nil, { use_tint = true }
+  )
+  btn_mug.x = (1635 + 285/2) * (2/3)
+  btn_mug.y = (618 + 378/2) * (2/3)
+  table.insert(buttons, 1, btn_mug)
 
   ------ Scene methods ------
 
@@ -698,6 +715,13 @@ return function (puzzle_index)
       end
     end
 
+    -- Mug rotation / language change animation
+    if since_lang_change >= 0 then
+      since_lang_change = since_lang_change + 1
+      if since_lang_change >= 180 then since_lang_change = -1 end
+    end
+    btn_mug.enabled = (since_lang_change == -1)
+
     gallery_overlay.pull(-last_steer)
     gallery_overlay.update()
   end
@@ -921,6 +945,15 @@ return function (puzzle_index)
     else
       btn_gallery.hidden = false
     end
+
+    -- Mug
+    love.graphics.setColor(1, 1, 1)
+    local mug_frame = _G['lang'] and 11 or 1
+    if since_lang_change >= 0 then
+      local diff = math.ceil(since_lang_change / 20)
+      mug_frame = _G['lang'] and 1 + diff or 11 - diff
+    end
+    btn_mug.set_drawable(draw.get('mug/' .. mug_frame))
 
     love.graphics.setColor(1, 1, 1)
     for i = 1, #buttons do buttons[i].draw() end

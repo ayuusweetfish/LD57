@@ -22,6 +22,10 @@ end
 local ease_exp_out_inv = function (x)
   return (math.exp(-x * 4) - math.exp(-4)) / (1 - math.exp(-4))
 end
+local ease_cubic = function (x)
+  if x < 0.5 then return x * x * x * 4
+  else return 1 - (1 - x) * (1 - x) * (1 - x) * 4 end
+end
 
 return function (puzzle_index)
   local s = {}
@@ -92,17 +96,44 @@ return function (puzzle_index)
   local draw_step = function (step, T, base_alpha, fade_out_T)
     if step.gallery_id then
       local img_alpha = ease_quad(clamp(T / 120, 0, 1))
+      local img_x, img_y, img_scale, img_rota = W * 0.27, H * 0.48, 1, 0
+      -- Collect-to-book animation
+      if fade_out_T > 0 then
+        local x = clamp((fade_out_T - 150) / 180, 0, 1)
+        local qx = ease_cubic(x)
+        img_scale = 1 - 0.35 * ease_quad(x)
+        img_alpha = img_alpha * (1 - qx) * (1 - qx)
+        img_x = img_x + (W * 0.1 - img_x) * qx
+        img_y = img_y + (H * 0.65 - img_y) * qx
+        img_rota = -0.15 * qx
+      end
       love.graphics.setColor(0.97, 0.97, 0.97, img_alpha * base_alpha)
-      draw.img('stars/ord/' .. step.gallery_id, W * 0.27, H * 0.48, W * 0.5)
+      draw.img('stars/ord/' .. step.gallery_id, img_x, img_y,
+        W * 0.5 * img_scale, nil, 0.5, 0.5, img_rota)
 
       local x = clamp((T - 60) / 120, 0, 1)
-      love.graphics.setColor(0.97, 0.97, 0.97, ease_quad(x) * base_alpha)
+      love.graphics.setColor(0.97, 0.97, 0.97,
+        ease_quad(x) * ease_quad(clamp(1 - fade_out_T / 60, 0, 1)) * base_alpha)
       local text_base = H * (0.4 - (#step.desc_text - 1) * 0.04)
       draw(step.name_text, W * 0.5, text_base + H * ease_exp_out_inv(x) * 0.01, nil, nil, 0, 0)
       for i, t in ipairs(step.desc_text) do
         local x = clamp((T - 100 - 30 * (i - 1)) / 120, 0, 1)
-        love.graphics.setColor(0.97, 0.97, 0.97, ease_quad(x) * base_alpha)
+        love.graphics.setColor(0.97, 0.97, 0.97,
+          ease_quad(x) * ease_quad(clamp(1 - (fade_out_T - i * 7) / 60, 0, 1)) * base_alpha)
         draw(t, W * 0.5, text_base + H * (0.13 + (i - 1) * 0.08 + ease_exp_out_inv(x) * 0.01), nil, nil, 0, 0)
+      end
+
+      if fade_out_T > 0 then
+        local book_alpha, book_frame
+        if fade_out_T <= 200 then
+          book_alpha = ease_quad(clamp(fade_out_T / 120, 0, 1))
+          book_frame = clamp(1 + math.floor((fade_out_T - 80) / 20), 1, 6)
+        else
+          book_alpha = ease_quad(clamp((480 - fade_out_T) / 120, 0, 1))
+          book_frame = clamp(6 + math.floor((fade_out_T - 280) / 20), 6, 8)
+        end
+        love.graphics.setColor(0.97, 0.97, 0.97, book_alpha * base_alpha)
+        draw.img('gallery_book/' .. tostring(book_frame), 124, 484)
       end
     else
       for i, t in ipairs(step.cutscene_text) do

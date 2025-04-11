@@ -26,42 +26,42 @@ local gallery = {
     annot = {{{2}, {1, 1}, 'typ. L'}, {{2}, {2, 2}, 'typ. M'}, {{2}, {3, 3}, 'typ. N'}},
   }, {
     id = 'echo',
-    name = 'echo',
+    name = 'Canonis',
     desc = 'A mirror',
     annot = {{{1}, {1}}, {{2}, {2}}, {{3}, {3}}},
   }, {
     id = 'filter',
-    name = 'filter',
-    desc = 'A large tree covers most parts so only some signals can pass through',
+    name = 'Skia',
+    desc = 'A large tree covers most parts of it. Only certain signals can pass through.',
     annot = {{{2}, {2}, 'typ. M'}, {{1}, {4}}, {{3}, {4}}},
   }, {
     id = 'symmetry_pair',
-    name = 'symmetry_pair',
-    desc = 'The answer to the cosmos is symmetry',
+    name = 'Harmonia',
+    desc = 'The cosmos runs on symmetry.',
     annot = {{{1}, {1, 3}}, {{3}, {3, 1}}, {{2}, {2, 2}}},
   }, {
     id = 'echo_dust',
-    name = 'echo_dust',
+    name = 'Nebularis',
     desc = 'Buried in the stardusts',
     annot = {{{1}, {1, 4}}, {{3}, {3, 4}}, {{2}, {2, 4}}},
   }, {
     id = 'condense',
-    name = 'condense',
+    name = 'Plerosis',
     desc = 'Maybe another definition of symmetry',
     annot = {{{1, 1}, {1}}, {{1, 2}, {3}}, {{1, 3}, {2}}},
   }, {
     id = 'traverse',
-    name = 'traverse',
+    name = 'Triad',
     desc = 'A rotating lighthouse',
     annot = {{{2}, {1}}, {{2}, {2}}, {{2}, {3}}},
   }, {
     id = 'palindrome',
-    name = 'palindrome',
+    name = 'Ouroboros',
     desc = 'Duplex Ouroboros',
     annot = {{{1, 2, 3}, {3, 2, 1}}},
   }, {
     id = 'stickbug',
-    name = 'stickbug',
+    name = 'Versipellis',
     desc = 'Masquerader',
     annot = {{{2}, {1}, nil, '< 5 s'}, {{2}, {3}, nil, '> 5 s'}},
   }, {
@@ -71,7 +71,7 @@ local gallery = {
     annot = {{{}, {1}, '2 s'}, {{}, {1}, '2 s'}, {{2}, {}, '4 s'}},
   }, {
     id = 'long_double_echo',
-    name = 'long_double_echo',
+    name = 'Galaxias',
     desc = 'A galaxy far, far away',
     annot = {{{2}, {2}, '4 s'}, {{}, {2}, '7 s'}},
   },

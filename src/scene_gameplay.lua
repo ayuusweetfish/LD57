@@ -81,7 +81,7 @@ local create_gallery_overlay = function ()
   local anim_t, anim_dir  -- anim_dir = +1: in, 0: none, -1: out
   local is_active
 
-  local n_pages = #gallery -- 0
+  local n_pages = 0 -- #gallery
   local cur_page = 0
   local flip_page = function (delta)
     cur_page = cur_page + delta

@@ -711,7 +711,8 @@ return function (puzzle_index)
       if sym == 9 then
         -- Remove all responses from display
         for j = 1, #responses[i] do
-          responses[i][j].timestamp = T - RESP_DISP_DUR + 40
+          responses[i][j].timestamp = math.min(
+            responses[i][j].timestamp, T - RESP_DISP_DUR + 40)
         end
 
       elseif sym ~= nil then

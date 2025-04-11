@@ -177,7 +177,7 @@ local stickbug = function ()
   local last_T = -9999
   o.send = function (sym, T)
     local delta = T - last_T
-    local resp = (delta < 1200 and 1 or delta < 2400 and 3 or 2)
+    local resp = (delta < 1200 and 1 or 3)
     q.insert({resp, 180})
     last_T = T
   end
@@ -188,14 +188,18 @@ end
 
 local pulsar = function (n, offs) return function ()
   offs = offs or 0
+  offs = (offs + 1) % 480   -- First update is T = 1
   local o = {}
+  local q = decay_priority_queue()
   local last_T = -9999
   o.send = function (sym, T)
     last_T = T
+    q.insert({9, 60})
   end
   o.update = function (T)
     if (T + 60) % 480 == offs then return 9 end
-    if T % 480 == offs and T >= last_T + 1200 then return n end
+    if T % 480 == offs and T >= last_T + 960 then return n end
+    return q.pop()
   end
   o.id = 'pulsar'
   return o
@@ -313,13 +317,14 @@ return {
 
   ------ Chapter 3 ------
   {
-    seq = {1, 3, 2, 4},
+    seq = {1, 3, 4},
     resp = {block, block, stickbug, block, block, block, block, block},
     gallery = 'stickbug',
   },
   {
-    seq = {1},
-    resp = {block, block, block, block, block, block, block, block},
+    seq = {3, 2, 1, 2, 3},
+    resp = {block, stickbug, block, symmetry, block, block, block, block},
+    msg = '...',
   },
   {
     seq = {4, 4, 1, 4, 4},
@@ -327,8 +332,9 @@ return {
     gallery = 'pulsar',
   },
   {
-    seq = {1},
-    resp = {block, block, block, block, block, block, block, block},
+    seq = {1, 3, 1, 2, 2, 3, 1, 4},
+    resp = {pulsar(1, 0), block, echo_block, block, pulsar(3, 320), block, pulsar(2, 160), block},
+    msg = '...',
   },
   {
     seq = {1},

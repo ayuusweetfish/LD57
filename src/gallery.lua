@@ -63,7 +63,7 @@ local gallery = {
     id = 'stickbug',
     name = 'stickbug',
     desc = 'Masquerader',
-    annot = {{{1}, {1}, nil, '< 5 s'}, {{1}, {3}, nil, '< 10 s'}, {{1}, {2}, nil, '> 10 s'}},
+    annot = {{{1}, {1}, nil, '< 5 s'}, {{1}, {3}, nil, '> 5 s'}},
   }, {
     id = 'pulsar',
     name = 'Pulsar',

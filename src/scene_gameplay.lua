@@ -111,16 +111,24 @@ local create_gallery_overlay = function ()
   next_button.x, next_button.y = 120, 7
   buttons[#buttons + 1] = next_button
 
+  local cur_page_at_reset
+
   o.reset = function ()
     anim_t, anim_dir = 0, 0
     is_active = false
     -- Update buttons here so that page buttons do not change abruptly at puzzle finish
     last_button.enabled = (n_pages > 0)
     next_button.enabled = (n_pages > 0)
+    if cur_page_at_reset then
+      cur_page = cur_page_at_reset
+      cur_page_at_reset = nil
+    end
   end
   o.reset()
 
   o.set_n_pages = function (n)
+    -- Automatically flip
+    if cur_page == n_pages then cur_page_at_reset = n end
     n_pages = n
   end
 

@@ -706,7 +706,13 @@ return function (puzzle_index)
     local last_seq_pos = objective_pos
     for i = 0, N_ORI - 1 do if responders[i] then
       local sym = responders[i].update(T)
-      if sym ~= nil then
+      if sym == 9 then
+        -- Remove all responses from display
+        for j = 1, #responses[i] do
+          responses[i][j].timestamp = T - RESP_DISP_DUR + 40
+        end
+
+      elseif sym ~= nil then
         table.insert(responses[i], {symbol = sym, timestamp = T})
         rx_intensity_accum = rx_intensity_accum + 60
         if since_clear == -1 then

@@ -194,6 +194,7 @@ local pulsar = function (n, offs) return function ()
     last_T = T
   end
   o.update = function (T)
+    if (T + 60) % 480 == offs then return 9 end
     if T % 480 == offs and T >= last_T + 1200 then return n end
   end
   o.id = 'pulsar'

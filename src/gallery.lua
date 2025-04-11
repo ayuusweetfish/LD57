@@ -65,6 +65,11 @@ local gallery = {
     desc = 'Masquerader',
     annot = {{{1}, {1}, nil, '< 5 s'}, {{1}, {3}, nil, '< 10 s'}, {{1}, {2}, nil, '> 10 s'}},
   }, {
+    id = 'pulsar',
+    name = 'Pulsar',
+    desc = 'Highly stable periodic emitter',
+    annot = {{{}, {1, 1, 1}}, {{2}, {}}},
+  }, {
     id = 'long_double_echo',
     name = 'long_double_echo',
     desc = 'A galaxy far, far away',

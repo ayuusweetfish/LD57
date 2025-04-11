@@ -186,6 +186,20 @@ local stickbug = function ()
   return o
 end
 
+local pulsar = function (n, offs) return function ()
+  offs = offs or 0
+  local o = {}
+  local last_T = -9999
+  o.send = function (sym, T)
+    last_T = T
+  end
+  o.update = function (T)
+    if T % 480 == offs and T >= last_T + 1200 then return n end
+  end
+  o.id = 'pulsar'
+  return o
+end end
+
 return {
   ------ Chapter 1 ------
   -- Just play
@@ -307,8 +321,9 @@ return {
     resp = {block, block, block, block, block, block, block, block},
   },
   {
-    seq = {1},
-    resp = {block, block, block, block, block, block, block, block},
+    seq = {4, 4, 1, 4, 4},
+    resp = {block, pulsar(1, 0), block, block, block, pulsar(3, 120), block, block},
+    gallery = 'pulsar',
   },
   {
     seq = {1},

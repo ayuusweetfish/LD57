@@ -705,7 +705,7 @@ return function (puzzle_index)
     -- Update all responders and collect responses
     local last_seq_pos = objective_pos
     for i = 0, N_ORI - 1 do if responders[i] then
-      local sym = responders[i].update()
+      local sym = responders[i].update(T)
       if sym ~= nil then
         table.insert(responses[i], {symbol = sym, timestamp = T})
         rx_intensity_accum = rx_intensity_accum + 60

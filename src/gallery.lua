@@ -1,8 +1,8 @@
 local gallery = {
   {
     id = 'beacon_1',
-    name = 'Beacon of Light',
-    desc = 'The common language of the universe.',
+    name = 'Ignis Lucis',
+    desc = 'Responds with light — the common language of the universe.',
     annot = {{{2}, {1}}},
   }, {
     id = 'stardust',
@@ -11,18 +11,18 @@ local gallery = {
     annot = {{{2}, {4, 4}}},
   }, {
     id = 'beacon_3',
-    name = 'Beacon of Night',
-    desc = 'Nec lux sine nocte.',
+    name = 'Ignis Noctis',
+    desc = 'Nec lux sine nocte.\n[There is no light without darkness.]',
     annot = {{{2}, {3}}},
   }, {
     id = 'beacon_2',
-    name = 'Beacon of Worlds',
-    desc = 'Where Yggdrasil grows.',
+    name = 'Ignis Mundi',
+    desc = 'Where the tree of Yggdrasil grows.',
     annot = {{{2}, {2}}},
   }, {
     id = 'double_beacon',
-    name = 'Double Beacon',
-    desc = 'Repetition is the simplest way to counteract every type of interference',
+    name = 'Ignis Duplex',
+    desc = 'Repetition is the simplest way to counteract every type of interference.',
     annot = {{{2}, {1, 1}, 'typ. L'}, {{2}, {2, 2}, 'typ. M'}, {{2}, {3, 3}, 'typ. N'}},
   }, {
     id = 'echo',

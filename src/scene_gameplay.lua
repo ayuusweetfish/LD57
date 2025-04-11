@@ -741,6 +741,7 @@ return function (puzzle_index)
   end
 
   s.draw = function ()
+    local orig_canvas = love.graphics.getCanvas()
     love.graphics.setCanvas(canvas)
     love.graphics.push()
     love.graphics.replaceTransform(love.math.newTransform())
@@ -981,7 +982,7 @@ return function (puzzle_index)
 
     -- Back to global canvas
     love.graphics.pop()
-    love.graphics.setCanvas()
+    love.graphics.setCanvas(orig_canvas)
     love.graphics.clear(0.99, 0.99, 0.98)
     love.graphics.setShader(global_shader)
     love.graphics.setColor(1, 1, 1)

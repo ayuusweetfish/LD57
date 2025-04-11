@@ -135,6 +135,28 @@ transitions['fade'] = function (r, g, b)
   }
 end
 
+transitions['crossfade'] = function ()
+  local canvas = love.graphics.newCanvas(W, H)
+  return {
+    dur = 120,
+    draw = function (x)
+      local opacity = (x < 0.5 and x * x * 2 or 1 - (1 - x) * (1 - x) * 2)
+
+      love.graphics.setCanvas(canvas)
+      lastScene:draw()
+      love.graphics.setCanvas()
+      love.graphics.setColor(1, 1, 1)
+      love.graphics.draw(canvas, 0, 0)
+
+      love.graphics.setCanvas(canvas)
+      curScene:draw()
+      love.graphics.setCanvas()
+      love.graphics.setColor(1, 1, 1, opacity)
+      love.graphics.draw(canvas, 0, 0)
+    end
+  }
+end
+
 function love.draw()
   love.graphics.scale(globalScale)
   love.graphics.setColor(1, 1, 1)

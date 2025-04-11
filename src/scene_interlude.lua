@@ -84,12 +84,18 @@ return function (puzzle_index)
     if key == 'return' then move_on() end
   end
 
+  local continued = false
+
   s.update = function ()
     T = T + 1
     if cur_step > #steps and T == 0 then
-      local next_index = puzzle_index + 1
-      if not puzzles[next_index] then next_index = 1 end
-      replaceScene(scene_gameplay(next_index), transitions['fade'](0.1, 0.1, 0.1))
+      T = -1
+      if not continued then
+        continued = true
+        local next_index = puzzle_index + 1
+        if not puzzles[next_index] then next_index = 1 end
+        replaceScene(scene_gameplay(next_index), transitions['crossfade']())
+      end
     end
   end
 
@@ -104,7 +110,7 @@ return function (puzzle_index)
         img_scale = 1 - 0.35 * ease_quad(x)
         img_alpha = img_alpha * (1 - qx) * (1 - qx)
         img_x = img_x + (W * 0.1 - img_x) * qx
-        img_y = img_y + (H * 0.65 - img_y) * qx
+        img_y = img_y + (H * 0.62 - img_y) * qx
         img_rota = -0.15 * qx
       end
       love.graphics.setColor(0.97, 0.97, 0.97, img_alpha * base_alpha)
@@ -126,13 +132,15 @@ return function (puzzle_index)
       if fade_out_T > 0 then
         local book_alpha, book_frame
         if fade_out_T <= 200 then
-          book_alpha = ease_quad(clamp(fade_out_T / 120, 0, 1))
+          book_alpha = ease_quad(clamp(fade_out_T / 120, 0, 1)) * base_alpha
           book_frame = clamp(1 + math.floor((fade_out_T - 80) / 20), 1, 6)
         else
-          book_alpha = ease_quad(clamp((480 - fade_out_T) / 120, 0, 1))
+          book_alpha = ease_quad(clamp((480 - fade_out_T) / 120, 0, 1)) * base_alpha
           book_frame = clamp(6 + math.floor((fade_out_T - 280) / 20), 6, 8)
+          -- Stay if the last step
+          if step == steps[#steps] then book_alpha = 1 end
         end
-        love.graphics.setColor(0.97, 0.97, 0.97, book_alpha * base_alpha)
+        love.graphics.setColor(0.97, 0.97, 0.97, book_alpha)
         draw.img('gallery_book/' .. tostring(book_frame), 124, 484)
       end
     else
@@ -157,7 +165,7 @@ return function (puzzle_index)
         ease_quad(clamp(-T / 120, 0, 1)),
         steps[cur_step - 1].fade_out + T
       )
-    elseif cur_step <= #steps then
+    else
       draw_step(steps[cur_step], T, 1, 0)
     end
   end

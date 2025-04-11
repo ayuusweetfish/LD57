@@ -23,7 +23,7 @@ local gallery = {
     id = 'double_beacon',
     name = 'Double Beacon',
     desc = 'Repetition is the simplest way to counteract every type of interference',
-    annot = {{{2}, {1, 1}}, {{}, {2, 2}}, {{}, {3, 3}}},
+    annot = {{{2}, {1, 1}, 'typ. L'}, {{2}, {2, 2}, 'typ. M'}, {{2}, {3, 3}, 'typ. N'}},
   }, {
     id = 'echo',
     name = 'echo',
@@ -68,7 +68,7 @@ local gallery = {
     id = 'pulsar',
     name = 'Pulsar',
     desc = 'Highly stable periodic emitter',
-    annot = {{{}, {1, 1, 1}}, {{2}, {}}},
+    annot = {{{}, {1}, '2 s'}, {{}, {1}, '2 s'}, {{2}, {}, '4 s'}},
   }, {
     id = 'long_double_echo',
     name = 'long_double_echo',

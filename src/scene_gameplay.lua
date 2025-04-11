@@ -287,8 +287,8 @@ local create_gallery_overlay = function ()
       local entry = gallery[cur_page]
 
       love.graphics.setColor(0.2, 0.1, 0.1, alpha)
-      draw.img('stars/ord/' .. entry.id, 0, H * -0.08, W * 0.2)
-      draw(gallery_text_name[cur_page], 0, H * -0.225)
+      draw.img('stars/ord/' .. entry.id, 0, H * -0.072, W * 0.2)
+      draw(gallery_text_name[cur_page], 0, H * -0.22)
 
       local draw_symbols = function (l, x, y)
         for j = 1, #l do
@@ -297,7 +297,7 @@ local create_gallery_overlay = function ()
       end
       for i = 1, #entry.annot do
         local l, r, text_mid, text_lead = unpack(entry.annot[i])
-        local y = 0.075 + 0.055 * (i - 1)
+        local y = 0.085 + 0.055 * (i - 1)
         local l_cen, r_cen = -0.06, 0.06
         local lr_offs = 0.02  -- Distance to the start of the line
         if text_lead then l_cen, lr_offs = -0.005, 0.012 end
@@ -308,7 +308,9 @@ local create_gallery_overlay = function ()
           W * (l_cen + lr_offs + math.max(#l, 1) / 2 * 0.02), H * y,
           W * (r_cen - lr_offs - math.max(#r, 1) / 2 * 0.02), H * y)
         if text_mid then
-          draw(text_annot[text_mid], 0, H * (y - 0.002), nil, nil, 0.5, 1)
+          draw(text_annot[text_mid],
+            W * (math.max(#l, 1) - math.max(#r, 1)) * 0.004,
+            H * (y - 0.002), nil, nil, 0.5, 1)
         end
         if text_lead then
           love.graphics.line(

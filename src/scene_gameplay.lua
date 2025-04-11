@@ -40,6 +40,14 @@ local ease_stuck_inverse = function (y, t)
   return -t * math.log(1 - y / t)
 end
 
+local wrap_lines = function (font, text, limit)
+  local w, t = font:getWrap(text, limit)
+  for i = 1, #t do
+    t[i] = love.graphics.newText(font, t[i])
+  end
+  return t
+end
+
 -- Knuth-Morris-Pratt's partial match table (failure/next function)
 local calc_kmp_next = function (a)
   local next = {[0] = -1, [1] = 0}
@@ -73,12 +81,12 @@ local create_gallery_overlay = function ()
   local anim_t, anim_dir  -- anim_dir = +1: in, 0: none, -1: out
   local is_active
 
-  local n_pages = 1
-  local cur_page = 1
+  local n_pages = 0
+  local cur_page = 0
   local flip_page = function (delta)
     cur_page = cur_page + delta
-    if cur_page < 1 then cur_page = n_pages
-    elseif cur_page > n_pages then cur_page = 1 end
+    if cur_page < 0 then cur_page = n_pages
+    elseif cur_page > n_pages then cur_page = 0 end
   end
 
   local button_scale = W * 0.22 / draw.get('card'):getWidth()
@@ -107,15 +115,14 @@ local create_gallery_overlay = function ()
     anim_t, anim_dir = 0, 0
     is_active = false
     -- Update buttons here so that page buttons do not change abruptly at puzzle finish
-    last_button.enabled = (n_pages > 1)
-    next_button.enabled = (n_pages > 1)
+    last_button.enabled = (n_pages > 0)
+    next_button.enabled = (n_pages > 0)
   end
   o.reset()
 
   o.set_n_pages = function (n)
     n_pages = n
   end
-  o.set_n_pages(1)
 
   o.toggle_open = function ()
     if is_active then
@@ -211,6 +218,12 @@ local create_gallery_overlay = function ()
     end
   end
 
+  local text_poem = wrap_lines(_G['cyrillic_font'](19),
+[[Я-то знаю, как зовут звезду,
+Я и телефон ее найду,
+Пережду я очередь земную,
+Поверну я азбуку стальную…]], W * 0.2)
+
   o.draw = function ()
     if not is_active then return end
 
@@ -249,30 +262,41 @@ local create_gallery_overlay = function ()
     love.graphics.scale(scale_x, scale_y)
     love.graphics.rotate(rotation)
 
-    local entry = gallery[cur_page]
-
     love.graphics.setColor(1, 1, 1, alpha)
     draw.img('card', 0, 0, W * 0.22)
-    love.graphics.setColor(0.2, 0.1, 0.1, alpha)
-    draw.img('stars/ord/' .. entry.id, 0, H * -0.08, W * 0.2)
-    draw(gallery_text_name[cur_page], 0, H * -0.225)
 
-    local draw_symbols = function (l, x, y)
-      for j = 1, #l do
-        draw.img('symbols/' .. l[j], W * (x + 0.025 * (-(#l + 1) / 2 + j)), H * y, W * 0.027)
+    if cur_page == 0 then
+      love.graphics.setColor(0.2, 0.1, 0.1, alpha)
+      -- Random writing
+      for i = 1, #text_poem do
+        draw(text_poem[i], 0, H * 0.06 * (i - #text_poem / 2 - 0.5))
       end
-    end
-    for i = 1, #entry.annot do
-      local l, r, text = unpack(entry.annot[i])
-      local y = 0.075 + 0.055 * (i - 1)
-      draw_symbols(l, -0.06, y)
-      draw_symbols(r, 0.06, y)
-      love.graphics.setLineWidth(2)
-      love.graphics.line(
-        W * (-0.04 + math.max(#l, 1) / 2 * 0.02), H * y,
-        W * ( 0.04 - math.max(#r, 1) / 2 * 0.02), H * y)
-      if text then
-        draw(text_annot[text], 0, H * (y - 0.002), nil, nil, 0.5, 1)
+
+    else
+      -- Entry
+      local entry = gallery[cur_page]
+
+      love.graphics.setColor(0.2, 0.1, 0.1, alpha)
+      draw.img('stars/ord/' .. entry.id, 0, H * -0.08, W * 0.2)
+      draw(gallery_text_name[cur_page], 0, H * -0.225)
+
+      local draw_symbols = function (l, x, y)
+        for j = 1, #l do
+          draw.img('symbols/' .. l[j], W * (x + 0.025 * (-(#l + 1) / 2 + j)), H * y, W * 0.027)
+        end
+      end
+      for i = 1, #entry.annot do
+        local l, r, text = unpack(entry.annot[i])
+        local y = 0.075 + 0.055 * (i - 1)
+        draw_symbols(l, -0.06, y)
+        draw_symbols(r, 0.06, y)
+        love.graphics.setLineWidth(2)
+        love.graphics.line(
+          W * (-0.04 + math.max(#l, 1) / 2 * 0.02), H * y,
+          W * ( 0.04 - math.max(#r, 1) / 2 * 0.02), H * y)
+        if text then
+          draw(text_annot[text], 0, H * (y - 0.002), nil, nil, 0.5, 1)
+        end
       end
     end
 

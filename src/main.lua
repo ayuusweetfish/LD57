@@ -49,6 +49,8 @@ end
 _G['global_font'] = fontSizeFactory(nil, {28, 36})
 love.graphics.setFont(_G['global_font'](40))
 
+_G['cyrillic_font'] = fontSizeFactory('fnt/EBGaramond-MediumItalic_subset.ttf', {})
+
 _G['scene_intro'] = require 'scene_intro'
 _G['scene_gameplay'] = require 'scene_gameplay'
 _G['scene_interlude'] = require 'scene_interlude'

@@ -21,6 +21,7 @@ return function (drawable, fn, drawable_scale, options)
   end
 
   local use_tint = options.use_tint
+  local disabled_semitransparent = options.disabled_semitransparent
 
   local scale = 1
 
@@ -77,19 +78,21 @@ return function (drawable, fn, drawable_scale, options)
     if s.hidden then return end
     local sc = scale * s.s
     local x, y, sc = s.x - w/2 * sc, s.y - h/2 * sc, sc
+    love.graphics.push('all')
     if use_tint then
-      love.graphics.push('all')
       local tint = inside and 0.75 or 1
       love.graphics.setColor(tint, tint, tint)
+    end
+    if disabled_semitransparent and not s.enabled then
+      local r, g, b, a = love.graphics.getColor()
+      love.graphics.setColor(r, g, b, a * 0.35)
     end
     if drawable.draw then
       drawable:draw(x, y, sc * drawable_scale)
     else
       love.graphics.draw(drawable, x, y, 0, sc * drawable_scale)
     end
-    if use_tint then
-      love.graphics.pop()
-    end
+    love.graphics.pop()
   end
 
   return s

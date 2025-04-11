@@ -92,14 +92,14 @@ local create_gallery_overlay = function ()
   local last_button = button(
     draw.extend(draw.get('gallery_book/btn_prev'), 30, 30),
     function () flip_page(-1) end, button_scale,
-    { drawable_scale_is_absolute = true })
+    { drawable_scale_is_absolute = true, disabled_semitransparent = true })
   last_button.x, last_button.y = -120, 6
   buttons[#buttons + 1] = last_button
 
   local next_button = button(
     draw.extend(draw.get('gallery_book/btn_next'), 30, 30),
     function () flip_page(1) end, button_scale,
-    { drawable_scale_is_absolute = true })
+    { drawable_scale_is_absolute = true, disabled_semitransparent = true })
   next_button.x, next_button.y = 120, 7
   buttons[#buttons + 1] = next_button
 
@@ -111,7 +111,10 @@ local create_gallery_overlay = function ()
 
   o.set_n_pages = function (n)
     n_pages = n
+    last_button.enabled = (n > 1)
+    next_button.enabled = (n > 1)
   end
+  o.set_n_pages(1)
 
   o.toggle_open = function ()
     if is_active then

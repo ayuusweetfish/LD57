@@ -219,6 +219,40 @@ local pulsar = function (n, offs) return function ()
   return o
 end end
 
+local vagus = function ()
+  local o = {}
+  local q = decay_priority_queue()
+  local cnt, start = 0, 0
+  o.send = function (sym, T)
+    if cnt > 0 and T >= start then
+      -- Cancel
+      cnt, start = 0, 0
+      q.insert({9, 10})
+      q.insert({2, 40})
+      q.insert({2, 80})
+    else
+      cnt = cnt + 1
+      start = T + 480 * cnt
+    end
+  end
+  o.update = function (T)
+    if cnt > 0 and T >= start then
+      if T == start + (cnt - 1) * 480 + 40 then
+        -- Finish
+        cnt, start = 0, 0
+        return 2
+      elseif (T - start) % 480 == 0 then
+        return 4
+      elseif (T - start) % 480 == 440 then
+        return 9
+      end
+    end
+    return q.pop()
+  end
+  o.id = 'vagus'
+  return o
+end
+
 return {
   ------ Chapter 1 ------
   -- Just play
@@ -386,5 +420,21 @@ return {
     seq = {1, 2, 3, 2, 1, 2, 3},
     resp = {long_rep2, long_rep2, long_rep2, long_rep2, long_rep2, long_rep2, long_rep2, long_rep2},
     msg = 'That was a tough one',
+  },
+  {
+    seq = {4, 2, 4, 3, 4, 2},
+    resp = {block, block, vagus, block, stickbug, block, block, block},
+    gallery = 'vagus',
+  },
+  {
+    -- seq = {4, 3, 4, 3, 2},
+    seq = {2, 1, 4, 1, 2},
+    resp = {block, block, vagus, block, stickbug, block, block, block},
+    msg = '...',
+  },
+  {
+    seq = {2, 1, 4, 3, 2},
+    resp = {block, vagus, block, stickbug, block, stickbug, block, long_rep2},
+    msg = '...',
   },
 }

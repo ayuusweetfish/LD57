@@ -82,7 +82,7 @@ local gallery = {
   }, {
     id = 'vagus',
     name = 'Vagus',
-    desc = '...',
+    desc = 'A wandering traveller. Collects stardust on the way.',
     annot = {},
   }, {
     id = 'blackhole',

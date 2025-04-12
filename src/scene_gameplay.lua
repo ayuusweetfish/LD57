@@ -81,7 +81,7 @@ local create_gallery_overlay = function ()
   local anim_t, anim_dir  -- anim_dir = +1: in, 0: none, -1: out
   local is_active
 
-  local n_pages = 0 -- #gallery
+  local n_pages = #gallery -- 0
   local cur_page = 0
   local flip_page = function (delta)
     cur_page = cur_page + delta
@@ -301,6 +301,10 @@ local create_gallery_overlay = function ()
         local l_cen, r_cen = -0.06, 0.06
         local lr_offs = 0.02  -- Distance to the start of the line
         if text_lead then l_cen, lr_offs = -0.005, 0.012 end
+        if #l == 4 then
+          l_cen = l_cen + 0.0125
+          r_cen = r_cen + 0.0125
+        end
         draw_symbols(l, l_cen, y)
         draw_symbols(r, r_cen, y)
         love.graphics.setLineWidth(2)

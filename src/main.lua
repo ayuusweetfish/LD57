@@ -64,7 +64,7 @@ local bgm, bgm_update = audio.loop(
 bgm:setVolume(1)
 bgm:play()
 
-local curScene = scene_gameplay(1)  -- scene_intro()
+local curScene = scene_gameplay(27)  -- scene_intro()
 local lastScene = nil
 local transitionTimer = 0
 local currentTransition = nil

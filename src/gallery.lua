@@ -58,7 +58,7 @@ local gallery = {
     id = 'palindrome',
     name = 'Ouroboros',
     desc = 'Duplex Ouroboros',
-    annot = {{{1, 2, 3}, {3, 2, 1}}},
+    annot = {{{1, 2, 3}, {3, 2, 1}}, {{1, 2, 3, 3}, {4, 4}}},
   }, {
     id = 'stickbug',
     name = 'Versipellis',
@@ -71,9 +71,24 @@ local gallery = {
     annot = {{{}, {1}, '2 s'}, {{}, {1}, '2 s'}, {{2}, {}, '4 s'}},
   }, {
     id = 'long_double_echo',
-    name = 'Galaxias',
+    name = 'Galaxia',
     desc = 'A galaxy far, far away',
     annot = {{{2}, {2}, '4 s'}, {{}, {2}, '7 s'}},
+  }, {
+    id = 'fractus',
+    name = 'Fractus',
+    desc = '...',
+    annot = {},
+  }, {
+    id = 'vagus',
+    name = 'Vagus',
+    desc = '...',
+    annot = {},
+  }, {
+    id = 'blackhole',
+    name = 'Blackhole',
+    desc = '...',
+    annot = {},
   },
 }
 

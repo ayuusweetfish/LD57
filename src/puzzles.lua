@@ -21,6 +21,13 @@ local decay_priority_queue = function ()
     end
   end
 
+  o.count = function ()
+    return #q
+  end
+  o.clear = function ()
+    q = {}
+  end
+
   return o
 end
 
@@ -156,6 +163,13 @@ local palindrome = function ()
   local q = decay_priority_queue()
   local hist = {}
   o.send = function (sym, t)
+    if q.count() > 0 then
+      q.clear()
+      q.insert({4, 40})
+      q.insert({4, 80})
+      return
+    end
+
     hist[#hist + 1] = {sym, t}
     if #hist == 3 then
       local T = hist[#hist][2]

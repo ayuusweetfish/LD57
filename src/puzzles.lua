@@ -434,8 +434,8 @@ return {
     msg = '...',
   },
   {
-    seq = {2, 1, 4, 3, 2},
-    resp = {dust, vagus, dust, stickbug, dust, stickbug, dust, galaxia},
+    seq = {3, 4, 3, 3, 4},
+    resp = {dust, vagus, dust, galaxia, dust, stickbug, dust, stickbug},
     msg = '...',
   },
 }

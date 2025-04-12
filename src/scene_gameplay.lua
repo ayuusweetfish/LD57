@@ -385,7 +385,7 @@ return function (puzzle_index)
   local unisymbol = puzzle.unisymbol
   local chapter_index
 
-  local chapter_start = {1, 11, 19, 27}
+  local chapter_start = {1, 11, 19, 26}
   for i = #chapter_start, 1, -1 do
     if puzzle_index >= chapter_start[i] then
       chapter_index = i

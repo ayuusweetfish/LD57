@@ -1069,7 +1069,7 @@ return function (puzzle_index)
     -- Lever
     love.graphics.setColor(1, 1, 1)
     if T < T_last_lever + LEVER_COOLDOWN then
-      local frame = 1 + math.floor((T - T_last_lever) / 30)
+      local frame = math.min(11, 1 + math.floor((T - T_last_lever) / 30))
       draw.img('lever/' .. tostring(frame), (1344 + 420/2) * (2/3), (288 + 720/2) * (2/3))
     end
 

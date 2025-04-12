@@ -259,6 +259,17 @@ local vagus = function ()
   return o
 end
 
+local blackhole = function ()
+  local o = {}
+  o.send = function (sym)
+    o.finish = true   -- For game finish
+  end
+  o.update = function (T)
+  end
+  o.id = 'blackhole'
+  return o
+end
+
 return {
   ------ Chapter 1 ------
   -- Just play
@@ -436,6 +447,11 @@ return {
   {
     seq = {3, 4, 3, 3, 4},
     resp = {dust, vagus, dust, galaxia, dust, stickbug, dust, stickbug},
+    msg = '...',
+  },
+  {
+    seq = {2},
+    resp = {blackhole, blackhole, blackhole, blackhole, blackhole, blackhole, blackhole, blackhole},
     msg = '...',
   },
 }

@@ -80,6 +80,12 @@ local echo = function (...)
     local o = {}
     local q = decay_priority_queue()
     o.send = function (sym)
+      if q.count() > 0 then
+        q.clear()
+        q.insert({4, 40})
+        q.insert({4, 80})
+        return
+      end
       for i = 1, #t do
         q.insert({sym, t[i]})
       end
@@ -372,11 +378,6 @@ return {
   {
     seq = {3, 2, 1, 2, 3},
     resp = {block, stickbug, block, symmetry, block, block, block, block},
-    msg = '...',
-  },
-  {
-    seq = {1, 3, 2, 1, 2, 3},
-    resp = {block, stickbug, block, palindrome, block, block, block, block},
     msg = '...',
   },
   {

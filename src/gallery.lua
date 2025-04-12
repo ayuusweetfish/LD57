@@ -58,7 +58,7 @@ local gallery = {
     id = 'palindrome',
     name = 'Ouroboros',
     desc = 'Duplex Ouroboros',
-    annot = {{{1, 2, 3}, {3, 2, 1}}, {{1, 2, 3, 3}, {4, 4}}},
+    annot = {{{1, 2, 3}, {3, 2, 1}}--[[, {{1, 2, 3, 3}, {4, 4}}]]},
   }, {
     id = 'stickbug',
     name = 'Versipellis',
@@ -83,7 +83,7 @@ local gallery = {
     id = 'vagus',
     name = 'Vagus',
     desc = 'A wandering traveller. Collects stardust on the way.',
-    annot = {},
+    annot = {{{2}, {4}, '2 s'}, {{2, 2}, {4, 4}, '4 s'}, {{2, 2, 2}, {4, 4, 4}, '6 s'}},
   }, {
     id = 'blackhole',
     name = 'Blackhole',

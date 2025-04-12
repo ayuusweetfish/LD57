@@ -35,7 +35,7 @@ local gallery = {
     desc = 'A large tree covers most parts of it. Only certain signals can pass through.',
     annot = {{{2}, {2}, 'typ. M'}, {{1}, {4}}, {{3}, {4}}},
   }, {
-    id = 'symmetry_pair',
+    id = 'harmonia',
     name = 'Harmonia',
     desc = 'The cosmos runs on symmetry.',
     annot = {{{1}, {1, 3}}, {{3}, {3, 1}}, {{2}, {2, 2}}},

@@ -44,7 +44,7 @@ local murmur = function (n, dur, count) return function ()
   return o
 end end
 
-local block = murmur(4, 40, 2)
+local dust = murmur(4, 40, 2)
 
 local double_mur = function (n, t1, t2) return function ()
   t1 = t1 or 60
@@ -96,9 +96,9 @@ local echo = function (...)
   end
 end
 
-local long_rep2 = echo(960, 1680)
+local galaxia = echo(960, 1680)
 
-local echo_block = function ()
+local echo_dust = function ()
   local o = {}
   local q = decay_priority_queue()
   o.send = function (sym)
@@ -121,7 +121,7 @@ local invert = function ()
   return o
 end
 
-local symmetry = function ()
+local harmonia = function ()
   local o = {}
   local q = decay_priority_queue()
   o.send = function (sym)
@@ -129,7 +129,7 @@ local symmetry = function ()
     q.insert({4 - sym, 600})
   end
   o.update = q.pop
-  o.id = 'symmetry_pair'
+  o.id = 'harmonia'
   return o
 end
 
@@ -271,7 +271,7 @@ return {
   -- Find one inside many obstacles
   {
     seq = {1, 1, 1},
-    resp = {block, block, block, murmur(1), block},
+    resp = {dust, dust, dust, murmur(1), dust},
     unisymbol = true,
     gallery = 'stardust',
   },
@@ -292,14 +292,14 @@ return {
   -- Interleave responses
   {
     seq = {1, 3, 1, 1, 3, 1},
-    resp = {block, double_mur_slow(3), double_mur_slow(1), double_mur_slow(3), block},
+    resp = {dust, double_mur_slow(3), double_mur_slow(1), double_mur_slow(3), dust},
     unisymbol = true,
     msg = 'I guess the antenna works now!',
   },
   -- Select symbols
   {
     seq = {1, 2, 3, 2, 1},
-    resp = {block, echo(180), block, block, block},
+    resp = {dust, echo(180), dust, dust, dust},
     gallery = 'echo',
   },
   {
@@ -309,133 +309,133 @@ return {
   },
   {
     seq = {3, 1, 2, 2, 1, 3},
-    resp = {block, symmetry, block, block, block},
-    gallery = 'symmetry_pair',
+    resp = {dust, harmonia, dust, dust, dust},
+    gallery = 'harmonia',
   },
   {
     seq = {3, 2, 1, 2, 3},
-    resp = {block, symmetry, block, block, block},
+    resp = {dust, harmonia, dust, dust, dust},
     msg = 'The cosmos exercises restraint in communication. Messages in one direction never reach another.',
   },
   {
     seq = {1, 2, 1, 3, 2},
-    resp = {symmetry, symmetry, symmetry, symmetry, symmetry},
+    resp = {harmonia, harmonia, harmonia, harmonia, harmonia},
     msg = 'To Chapter 2',
   },
 
   ------ Chapter 2 ------
-  -- Introduce echo-block type
+  -- Introduce echo-dust type
   {
     seq = {2, 2, 4, 4, 4},
-    resp = {echo_block, block, echo_block, block, echo_block, block, echo_block, block},
+    resp = {echo_dust, dust, echo_dust, dust, echo_dust, dust, echo_dust, dust},
     gallery = 'echo_dust',
   },
   -- Challenge with time
   {
     seq = {4, 2, 4, 4, 2, 4},
-    resp = {double_mur_slow(2), block, echo_block, block, double_mur_slow(2), block, echo_block, block},
+    resp = {double_mur_slow(2), dust, echo_dust, dust, double_mur_slow(2), dust, echo_dust, dust},
     msg = 'So much stuff floating in space. I guess we might not be lonely at all.',
   },
   -- Sometimes you need to send more than one
   {
     seq = {1, 2, 3, 2, 1},
-    resp = {condense, block, condense, block, condense, block, condense, block},
+    resp = {condense, dust, condense, dust, condense, dust, condense, dust},
     gallery = 'condense',
   },
   -- And sometimes the response changes
   {
     seq = {1, 2, 3, 2, 1},
-    resp = {block, block, traverse, block, block, block, traverse, block},
+    resp = {dust, dust, traverse, dust, dust, dust, traverse, dust},
     gallery = 'traverse',
   },
   {
     seq = {1, 2, 2, 3, 2, 2, 1},
-    resp = {block, traverse, traverse, block, block, symmetry, symmetry, block},
+    resp = {dust, traverse, traverse, dust, dust, harmonia, harmonia, dust},
     msg = 'It takes patience, and solitude, to face the depths.',
   },
   {
     seq = {1, 4, 4, 2, 3},
-    resp = {block, block, palindrome, block, block, block, block, block},
+    resp = {dust, dust, palindrome, dust, dust, dust, dust, dust},
     gallery = 'palindrome',
   },
   {
     seq = {1, 3, 4, 3, 1},
-    resp = {block, block, palindrome, block, block, echo_block, block, block},
+    resp = {dust, dust, palindrome, dust, dust, echo_dust, dust, dust},
     msg = '... Do you think we will ever investigate every corner of the cosmos?',
   },
   {
     seq = {1, 4, 2, 2, 2, 4, 3},
-    resp = {symmetry, block, palindrome, block, symmetry, block, filter(2), block},
+    resp = {harmonia, dust, palindrome, dust, harmonia, dust, filter(2), dust},
     msg = 'To Chapter 3',
   },
 
   ------ Chapter 3 ------
   {
     seq = {1, 3, 3, 4},
-    resp = {block, block, stickbug, block, block, block, block, block},
+    resp = {dust, dust, stickbug, dust, dust, dust, dust, dust},
     gallery = 'stickbug',
   },
   {
     seq = {3, 2, 1, 2, 3},
-    resp = {block, stickbug, block, symmetry, block, block, block, block},
+    resp = {dust, stickbug, dust, harmonia, dust, dust, dust, dust},
     msg = '...',
   },
   {
     seq = {4, 4, 1, 4, 4},
-    resp = {block, pulsar(1, 0), block, block, block, pulsar(3, 120), block, block},
+    resp = {dust, pulsar(1, 0), dust, dust, dust, pulsar(3, 120), dust, dust},
     gallery = 'pulsar',
   },
   {
     seq = {1, 1, 1, 1, 2},
-    resp = {block, pulsar(1, 0), block, pulsar(3, 160), block, pulsar(3, 320), block, double_mur(2), block},
+    resp = {dust, pulsar(1, 0), dust, pulsar(3, 160), dust, pulsar(3, 320), dust, double_mur(2), dust},
     msg = '...',
   },
   {
     seq = {1, 2, 3, 3, 2},
-    resp = {block, pulsar(1, 0), block, pulsar(3, 240), block, symmetry, block, echo_block, block},
+    resp = {dust, pulsar(1, 0), dust, pulsar(3, 240), dust, harmonia, dust, echo_dust, dust},
     msg = '...',
   },
   {
     seq = {1, 3, 1, 2, 2, 3, 1, 4},
-    resp = {pulsar(1, 0), block, echo_block, block, pulsar(3, 320), block, pulsar(2, 160), block},
+    resp = {pulsar(1, 0), dust, echo_dust, dust, pulsar(3, 320), dust, pulsar(2, 160), dust},
     msg = 'This place is too noisy.',
   },
   {
     seq = {3, 1, 1, 1, 3, 2, 3},
-    resp = {murmur(2), block, palindrome, block, block, block, pulsar(1, 0), block},
+    resp = {murmur(2), dust, palindrome, dust, dust, dust, pulsar(1, 0), dust},
     msg = 'To Chapter 4',
   },
 
   ------ Chapter 4 ------
   {
     seq = {2, 2, 1, 3, 1, 3},
-    resp = {long_rep2, long_rep2, long_rep2, long_rep2, long_rep2, long_rep2, long_rep2, long_rep2},
+    resp = {galaxia, galaxia, galaxia, galaxia, galaxia, galaxia, galaxia, galaxia},
     gallery = 'long_double_echo',
   },
   {
     seq = {1, 2, 3, 2, 1},
-    resp = {long_rep2, long_rep2, long_rep2, long_rep2, long_rep2, long_rep2, long_rep2, long_rep2},
+    resp = {galaxia, galaxia, galaxia, galaxia, galaxia, galaxia, galaxia, galaxia},
     msg = 'But in the end, you receive something. Emptiness only prevails on the surface.',
   },
   {
     seq = {1, 2, 3, 2, 1, 2, 3},
-    resp = {long_rep2, long_rep2, long_rep2, long_rep2, long_rep2, long_rep2, long_rep2, long_rep2},
+    resp = {galaxia, galaxia, galaxia, galaxia, galaxia, galaxia, galaxia, galaxia},
     msg = 'That was a tough one',
   },
   {
     seq = {4, 2, 4, 3, 4, 2},
-    resp = {block, block, vagus, block, stickbug, block, block, block},
+    resp = {dust, dust, vagus, dust, stickbug, dust, dust, dust},
     gallery = 'vagus',
   },
   {
     -- seq = {4, 3, 4, 3, 2},
     seq = {2, 1, 4, 1, 2},
-    resp = {block, block, vagus, block, stickbug, block, block, block},
+    resp = {dust, dust, vagus, dust, stickbug, dust, dust, dust},
     msg = '...',
   },
   {
     seq = {2, 1, 4, 3, 2},
-    resp = {block, vagus, block, stickbug, block, stickbug, block, long_rep2},
+    resp = {dust, vagus, dust, stickbug, dust, stickbug, dust, galaxia},
     msg = '...',
   },
 }

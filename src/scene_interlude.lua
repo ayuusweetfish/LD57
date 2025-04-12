@@ -141,6 +141,7 @@ return function (puzzle_index)
           if step == steps[#steps] then book_alpha = 1 end
         end
         love.graphics.setColor(0.97, 0.97, 0.97, book_alpha)
+        if book_frame == 8 then book_frame = 1 end
         draw.img('gallery_book/outline_' .. tostring(book_frame), 124, 484)
       end
     else

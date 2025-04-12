@@ -1042,6 +1042,7 @@ return function (puzzle_index)
     end
     if book_frame ~= 1 then
       love.graphics.setColor(1, 1, 1)
+      if book_frame == 8 then book_frame = 1 end
       draw.img('gallery_book/' .. tostring(book_frame), 124, 484)
       btn_gallery.hidden = true
     else

@@ -58,6 +58,7 @@ _G['cyrillic_font'] = fontSizeFactory('fnt/EBGaramond-MediumItalic_subset.ttf', 
 _G['scene_intro'] = require 'scene_intro'
 _G['scene_gameplay'] = require 'scene_gameplay'
 _G['scene_interlude'] = require 'scene_interlude'
+_G['scene_ending'] = require 'scene_ending'
 
 local audio = require 'audio'
 local bgm, bgm_update = audio.loop(
@@ -68,7 +69,7 @@ local bgm, bgm_update = audio.loop(
 bgm:setVolume(1)
 bgm:play()
 
-local curScene = scene_gameplay(1)  -- scene_intro()
+local curScene = scene_ending()  -- scene_intro()
 local lastScene = nil
 local transitionTimer = 0
 local currentTransition = nil

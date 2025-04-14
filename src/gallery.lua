@@ -7,7 +7,7 @@ local gallery = {
   }, {
     id = 'stardust',
     name = 'Stardust',
-    desc = 'Cosmic dust permeating the space.',
+    desc = 'Cosmic dust permeating every crevice of the vast space.',
     annot = {{{2}, {4, 4}}},
   }, {
     id = 'beacon_3',
@@ -27,42 +27,42 @@ local gallery = {
   }, {
     id = 'echo',
     name = 'Canonis',
-    desc = 'A mirror',
+    desc = 'Sings every song that has been chanted.',
     annot = {{{1}, {1}}, {{2}, {2}}, {{3}, {3}}},
   }, {
     id = 'filter',
     name = 'Skia',
-    desc = 'A large tree covers most parts of it. Only certain signals can pass through.',
+    desc = 'Mostly harmless.',
     annot = {{{2}, {2}, 'typ. M'}, {{1}, {4}}, {{3}, {4}}},
   }, {
     id = 'harmonia',
     name = 'Harmonia',
-    desc = 'The cosmos runs on symmetry.',
+    desc = 'Where symmetry dwells, it spreads.',
     annot = {{{1}, {1, 3}}, {{3}, {3, 1}}, {{2}, {2, 2}}},
   }, {
     id = 'echo_dust',
     name = 'Nebularis',
-    desc = 'Buried in the stardusts',
+    desc = 'Buried in the stardusts — or some delicious nectar?',
     annot = {{{1}, {1, 4}}, {{3}, {3, 4}}, {{2}, {2, 4}}},
   }, {
     id = 'condense',
     name = 'Plerosis',
-    desc = 'Maybe another definition of symmetry',
+    desc = 'Contraria sunt complementa.\n[Opposites are complementary.]',
     annot = {{{1, 1}, {1}}, {{1, 2}, {3}}, {{1, 3}, {2}}},
   }, {
     id = 'traverse',
     name = 'Triad',
-    desc = 'A rotating lighthouse',
+    desc = 'A rotating lighthouse.',
     annot = {{{2}, {1}}, {{2}, {2}}, {{2}, {3}}},
   }, {
     id = 'palindrome',
     name = 'Ouroboros',
-    desc = 'Duplex Ouroboros',
+    desc = 'Falls apart once symmetry breaks. Just like the entire cosmos.',
     annot = {{{1, 2, 3}, {3, 2, 1}}--[[, {{1, 2, 3, 3}, {4, 4}}]]},
   }, {
     id = 'stickbug',
     name = 'Versipellis',
-    desc = 'Masquerader',
+    desc = 'Somehow it appears familiar. Is it an illusion?',
     annot = {{{2}, {1}, nil, '< 5 s'}, {{2}, {3}, nil, '> 5 s'}},
   }, {
     id = 'pulsar',
@@ -72,12 +72,12 @@ local gallery = {
   }, {
     id = 'long_double_echo',
     name = 'Galaxia',
-    desc = 'A galaxy far, far away',
+    desc = 'A galaxy far, far away. Tries to devour everything, but something always scatters back.',
     annot = {{{2}, {2}, '4 s'}, {{}, {2}, '7 s'}},
   }, {
     id = 'fractus',
     name = 'Fractus',
-    desc = '...',
+    desc = 'Looks like it needs a hug.',
     annot = {},
   }, {
     id = 'vagus',
@@ -87,7 +87,7 @@ local gallery = {
   }, {
     id = 'blackhole',
     name = 'Blackhole',
-    desc = '...',
+    desc = 'Look not directly into it, for it sees through everything.',
     annot = {},
   },
 }

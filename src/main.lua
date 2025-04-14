@@ -46,8 +46,12 @@ local fontSizeFactory = function (path, preload)
     return font[size]
   end
 end
-_G['global_font'] = fontSizeFactory(nil, {28, 36})
+_G['global_font'] = fontSizeFactory('fnt/Hershey-Noailles-Futura-Simplex-Regular.ttf', {28, 36})
 love.graphics.setFont(_G['global_font'](40))
+
+_G['global_font_b'] = fontSizeFactory('fnt/Hershey-Noailles-Futura-Simplex-Bold.ttf', {})
+_G['title_font_it'] = fontSizeFactory('fnt/Hershey-Noailles-Times-Duplex-Italic-Bold.ttf', {})
+_G['title_font'] = fontSizeFactory('fnt/Hershey-Noailles-Times-Duplex-Bold.ttf', {})
 
 _G['cyrillic_font'] = fontSizeFactory('fnt/EBGaramond-MediumItalic_subset.ttf', {})
 

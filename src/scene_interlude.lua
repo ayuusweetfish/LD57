@@ -31,6 +31,7 @@ return function (puzzle_index)
   local s = {}
   local W, H = W, H
   local font = _G['global_font']
+  local title_font = _G['title_font']
 
   local steps = {}
   if puzzles[puzzle_index].gallery then
@@ -40,7 +41,7 @@ return function (puzzle_index)
       local gallery_entry = gallery[gallery_id]
       steps[#steps + 1] = {
         gallery_id = gallery_id,
-        name_text = love.graphics.newText(font(48), gallery_entry.name),
+        name_text = love.graphics.newText(title_font(48), gallery_entry.name),
         desc_text = wrap_lines(font(36), gallery_entry.desc, W * 0.46),
         fade_out = 480,
       }

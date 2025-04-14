@@ -211,10 +211,11 @@ local create_gallery_overlay = function ()
     end
   end
 
-  local font = _G['global_font']
+  local font = _G['global_font_b']
+  local title_font = _G['title_font_it']
   local gallery_text_name = {}
   for i = 1, #gallery do
-    gallery_text_name[i] = love.graphics.newText(font(25), gallery[i].name)
+    gallery_text_name[i] = love.graphics.newText(title_font(25), gallery[i].name)
   end
   local text_annot = {}
   for i = 1, #gallery do
@@ -222,7 +223,7 @@ local create_gallery_overlay = function ()
       for k = 3, 4 do
         local s = gallery[i].annot[j][k]
         if s and not text_annot[s] then
-          text_annot[s] = love.graphics.newText(font(20), s)
+          text_annot[s] = love.graphics.newText(font(22), s)
         end
       end
     end

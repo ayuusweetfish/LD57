@@ -806,6 +806,22 @@ return function (puzzle_index)
       end
     end
 
+    -- Game finish?
+    if since_clear < 0 then
+      local all_finish = true
+      local one_finish = false
+      for i = 0, N_ORI - 1 do
+        if responders[i] and responders[i].finish then
+          one_finish = true
+        else
+          all_finish = false
+        end
+      end
+      if all_finish or (one_finish and T >= 240 * 30) then
+        since_clear = 0
+      end
+    end
+
     -- Puzzle-clear transition out
     if since_clear >= 0 then
       since_clear = since_clear + 1

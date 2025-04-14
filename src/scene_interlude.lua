@@ -94,8 +94,11 @@ return function (puzzle_index)
       if not continued then
         continued = true
         local next_index = puzzle_index + 1
-        if not puzzles[next_index] then next_index = 1 end
-        replaceScene(scene_gameplay(next_index), transitions['crossfade']())
+        if puzzles[next_index] then
+          replaceScene(scene_gameplay(next_index), transitions['crossfade']())
+        else
+          replaceScene(scene_ending(), transitions['fade'](0, 0, 0))
+        end
       end
     end
   end

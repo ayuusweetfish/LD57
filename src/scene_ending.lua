@@ -1,9 +1,13 @@
 local draw = require 'draw_utils'
 local button = require 'button'
 
+local tv_planet = require 'tv_planet'
+
 return function ()
   local s = {}
   local W, H = W, H
+
+  local tv_planet = tv_planet()
 
   local T = 0
 
@@ -21,6 +25,7 @@ return function ()
 
   s.update = function ()
     T = T + 1
+    tv_planet.update()
   end
 
   s.draw = function ()
@@ -28,6 +33,8 @@ return function ()
     love.graphics.setColor(1, 1, 1)
     draw.img('ending/bg_ext', W / 2, H / 2, W, H)
     draw.img('ending/bg_int', W / 2, H / 2, W, H)
+
+    tv_planet.draw()
 
     local radar_x, radar_y = W * 0.498, H * 0.367
     -- 630x630+641+81

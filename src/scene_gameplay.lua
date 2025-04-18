@@ -681,6 +681,7 @@ return function (puzzle_index)
       steer_cont_dur = 0
     elseif last_steer ~= 0 and accel == 0 then
       audio.sfx_stop('steer')
+      audio.sfx('steer_stop')
     end
     if accel ~= 0 then
       if steer_cont_dur < STEER_N_FRAMES * 20 then

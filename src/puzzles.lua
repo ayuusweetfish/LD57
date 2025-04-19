@@ -326,12 +326,12 @@ return {
   {
     seq = {3, 2, 1, 2, 3},
     resp = {dust, harmonia, dust, dust, dust},
-    msg = 'The cosmos exercises restraint in communication. Messages in one direction never reach another.',
+    msg = 'The cosmos exercises restraint in communication.\nMessages in one direction never reach another.',
   },
   {
     seq = {1, 2, 1, 3, 2},
     resp = {harmonia, harmonia, harmonia, harmonia, harmonia},
-    msg = 'To Chapter 2',
+    msg = 'Harmony is not only Earth\'s art.\nIn fact, the entire world is built around it.\nIs that why we broadcast our music to the depths we have never reached?',
   },
 
   ------ Chapter 2 ------
@@ -362,7 +362,7 @@ return {
   {
     seq = {1, 2, 2, 3, 2, 2, 1},
     resp = {dust, traverse, traverse, dust, dust, harmonia, harmonia, dust},
-    msg = 'It takes patience, and solitude, to face the depths.',
+    msg = 'Such patience and solitude it takes to face the depths.',
   },
   {
     seq = {1, 4, 4, 2, 3},
@@ -377,7 +377,7 @@ return {
   {
     seq = {1, 4, 2, 2, 2, 4, 3},
     resp = {harmonia, dust, palindrome, dust, harmonia, dust, filter(2), dust},
-    msg = 'To Chapter 3',
+    msg = 'Float further and we become stardust.\nIt is our destiny, but now is too early. Let\'s land.',
   },
 
   ------ Chapter 3 ------
@@ -389,7 +389,7 @@ return {
   {
     seq = {3, 2, 1, 2, 3},
     resp = {dust, stickbug, dust, harmonia, dust, dust, dust, dust},
-    msg = '...',
+    msg = '... But it had taken too long.',
   },
   {
     seq = {4, 4, 1, 4, 4},
@@ -399,22 +399,22 @@ return {
   {
     seq = {1, 1, 1, 1, 2},
     resp = {dust, pulsar(1, 0), dust, pulsar(3, 160), dust, pulsar(3, 320), dust, double_mur(2), dust},
-    msg = '...',
+    msg = '... And othertimes, too short.',
   },
   {
     seq = {1, 2, 3, 3, 2},
     resp = {dust, pulsar(1, 0), dust, pulsar(3, 240), dust, harmonia, dust, echo_dust, dust},
-    msg = '...',
+    msg = 'Never send a misinterpreted message.\nNever believe in false hopes.\nNever love.',
   },
   {
     seq = {1, 3, 1, 2, 2, 3, 1, 4},
     resp = {pulsar(1, 0), dust, echo_dust, dust, pulsar(3, 320), dust, pulsar(2, 160), dust},
-    msg = 'This place is too noisy.',
+    msg = 'This place is too noisy. Space is elsewhere.',
   },
   {
     seq = {3, 1, 1, 1, 3, 2, 3},
     resp = {murmur(2), dust, palindrome, dust, dust, dust, pulsar(1, 0), dust},
-    msg = 'To Chapter 4',
+    msg = 'Seafarers do not know whether they will return to the land when they set sail.\nNor do pilots at their takeoff.',
   },
 
   ------ Chapter 4 ------
@@ -431,7 +431,7 @@ return {
   {
     seq = {1, 2, 3, 2, 1, 2, 3},
     resp = {galaxia, galaxia, galaxia, galaxia, galaxia, galaxia, galaxia, galaxia},
-    msg = 'That was a tough one',
+    msg = 'The most indifferent stars might be the ones most sentimental.',
   },
   {
     seq = {4, 2, 4, 3, 4, 2},
@@ -447,7 +447,7 @@ return {
   {
     seq = {3, 4, 3, 3, 4},
     resp = {dust, vagus, dust, galaxia, dust, stickbug, dust, stickbug},
-    msg = '...',
+    msg = 'Should we continue waiting, or should we pull up all our expectancy, and move on?',
   },
   {
     seq = {2},

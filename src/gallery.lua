@@ -12,18 +12,18 @@ local gallery = {
   }, {
     id = 'beacon_3',
     name = 'Ignis Noctis',
-    desc = 'Nec lux sine nocte.\n[There is no light without darkness.]',
+    desc = 'Nec lux sine nocte.\n[Nor is light without darkness.]',
     annot = {{{2}, {3}}},
   }, {
     id = 'beacon_2',
     name = 'Ignis Mundi',
-    desc = 'Where the tree of Yggdrasil grows.',
+    desc = 'Where the world tree grows.',
     annot = {{{2}, {2}}},
   }, {
     id = 'double_beacon',
     name = 'Ignis Duplex',
     desc = 'Repetition is the simplest way to counteract every type of interference.',
-    annot = {{{2}, {1, 1}, 'typ. L'}, {{2}, {2, 2}, 'typ. M'}, {{2}, {3, 3}, 'typ. N'}},
+    annot = {{{2}, {1, 1}, 'type L'}, {{2}, {2, 2}, 'type M'}, {{2}, {3, 3}, 'type N'}},
   }, {
     id = 'echo',
     name = 'Canonis',
@@ -32,8 +32,8 @@ local gallery = {
   }, {
     id = 'filter',
     name = 'Skia',
-    desc = 'Mostly harmless.',
-    annot = {{{2}, {2}, 'typ. M'}, {{1}, {4}}, {{3}, {4}}},
+    desc = 'Apparently harmless.',
+    annot = {{{2}, {2}, 'type M'}, {{1}, {4}, "''"}, {{3}, {4}, "''"}},
   }, {
     id = 'harmonia',
     name = 'Harmonia',
@@ -57,7 +57,7 @@ local gallery = {
   }, {
     id = 'palindrome',
     name = 'Ouroboros',
-    desc = 'Falls apart once symmetry breaks. Just like the entire cosmos.',
+    desc = 'Falls apart once symmetry breaks. Just like our greater world.',
     annot = {{{1, 2, 3}, {3, 2, 1}}--[[, {{1, 2, 3, 3}, {4, 4}}]]},
   }, {
     id = 'stickbug',
@@ -67,7 +67,7 @@ local gallery = {
   }, {
     id = 'pulsar',
     name = 'Pulsar',
-    desc = 'Highly stable periodic emitter',
+    desc = 'Heartbeats of spacetime and matter.',
     annot = {{{}, {1}, '2 s'}, {{}, {1}, '2 s'}, {{2}, {}, '4 s'}},
   }, {
     id = 'long_double_echo',
@@ -82,7 +82,7 @@ local gallery = {
   }, {
     id = 'vagus',
     name = 'Vagus',
-    desc = 'A wandering traveller. Collects stardust on the way.',
+    desc = 'A wandering traveller, collecting stardust on the way.\n... Or ourselves, in the eyes of others.',
     annot = {{{2}, {4}, '2 s'}, {{2, 2}, {4, 4}, '4 s'}, {{2, 2, 2}, {4, 4, 4}, '6 s'}},
   }, {
     id = 'blackhole',

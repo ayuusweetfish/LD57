@@ -1023,7 +1023,7 @@ return function (puzzle_index)
       draw.img('symbols/' .. objective_seq[i] .. '_tv', x, y, 54 * scale, 54 * scale, 0.5, 0.5, 0.03)
     end
 
-    love.graphics.setColor(0.1, 0.1, 0.1)
+    love.graphics.setColor(0.1, 0.1, 0.1, 0.1)
     love.graphics.print(chapter_index .. '-' .. (puzzle_index - chapter_start[chapter_index] + 1), W * 0.04, H * 0.88)
 
     -- Gallery book
